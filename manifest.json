@@ -4,7 +4,7 @@
   "description": "Tamper your application's UI to demo almost anything",
   "version": "7.1.1",
   "author": "Severin Neumann <severin.neumann@altmuehlnet.de>",
-  "homepage_url": "https://github.com/Appdynamics/demomonkey/",
+  "homepage_url": "https://github.com/svrnm/DemoMonkey/",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "icons": {
     "16": "icons/monkey_16.png",

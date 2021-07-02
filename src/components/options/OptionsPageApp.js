@@ -304,6 +304,10 @@ class App extends React.Component {
     this.props.actions.setBaseTemplate(baseTemplate)
   }
 
+  setAnalyticsSnippet(analyticsSnippet) {
+    this.props.actions.setAnalyticsSnippet(analyticsSnippet)
+  }
+
   saveGlobalVariables(globalVariables) {
     this.props.actions.saveGlobalVariables(globalVariables)
   }
@@ -329,6 +333,8 @@ class App extends React.Component {
             configurations={this.props.configurations}
             onToggleOptionalFeature={(feature) => this.toggleOptionalFeature(feature)}
             onSetBaseTemplate={(baseTemplate) => this.setBaseTemplate(baseTemplate)}
+            onSetAnalyticsSnippet={(analyticsSnippet) => this.setAnalyticsSnippet(analyticsSnippet)}
+            getRepository={() => this.getRepository()}
             onSaveGlobalVariables={(globalVariables) => this.saveGlobalVariables(globalVariables)}
             onSetMonkeyInterval={(value) => this.setMonkeyInterval(value)}
             onDownloadAll={(event) => this.downloadAll(event)}
@@ -483,6 +489,9 @@ const OptionsPageApp = connect(
       },
       setBaseTemplate: (baseTemplate) => {
         dispatch({ type: 'SET_BASE_TEMPLATE', baseTemplate })
+      },
+      setAnalyticsSnippet: (analyticsSnippet) => {
+        dispatch({ type: 'SET_ANALYTICS_SNIPPET', analyticsSnippet })
       },
       saveGlobalVariables: (globalVariables) => {
         dispatch({ type: 'SAVE_GLOBAL_VARIABLES', globalVariables })

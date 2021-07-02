@@ -5,7 +5,7 @@ import CommandBuilder from '../../src/commands/CommandBuilder'
 import assert from 'assert'
 import fs from 'fs'
 
-var complexConfiguration
+let complexConfiguration
 
 before(function (done) {
   fs.readFile('./examples/test.mnky', 'utf8', function (err, data) {
@@ -17,17 +17,17 @@ before(function (done) {
   })
 })
 
-var emptyConfiguration = new Configuration('')
-var simpleConfiguration = new Configuration('a = b')
-var configurationWithOption = new Configuration('@a = b')
-var configurationWithInclude = new Configuration('@include = /www/')
-var configurationWithBlacklist = new Configuration('@blacklist = div')
-var configurationWithWhitelist = new Configuration('@whitelist = style')
-var configurationWithVariable = new Configuration('$a = default\rx = $a', null, true, { a: 'v' })
-var configurationWithUnsetVariable = new Configuration('$a = default\rv = $a', null, true, {})
-var configurationWithSharedPrefixVariable = new Configuration('[Section]\r[Section.SubSection]\r$a = a1\r$ab = a2\rdefault = $ab', null, true, { a: 'v', ab: 'v2' })
-var configurationWithImport = new Configuration('[Section]\r+Cities')
-var configurationWithCommand = new Configuration('[Section]\r!replace(a) = b\r$x = y\r$z = w\r!replace($x) = $z')
+const emptyConfiguration = new Configuration('')
+const simpleConfiguration = new Configuration('a = b')
+const configurationWithOption = new Configuration('@a = b')
+const configurationWithInclude = new Configuration('@include = /www/')
+const configurationWithBlockList = new Configuration('@blocklist = div')
+const configurationWithAllowList = new Configuration('@allowlist = style')
+const configurationWithVariable = new Configuration('$a = default\rx = $a', null, true, { a: 'v' })
+const configurationWithUnsetVariable = new Configuration('$a = default\rv = $a', null, true, {})
+const configurationWithSharedPrefixVariable = new Configuration('[Section]\r[Section.SubSection]\r$a = a1\r$ab = a2\rdefault = $ab', null, true, { a: 'v', ab: 'v2' })
+const configurationWithImport = new Configuration('[Section]\r+Cities')
+const configurationWithCommand = new Configuration('[Section]\r!replace(a) = b\r$x = y\r$z = w\r!replace($x) = $z')
 
 describe('Configuration', function () {
   describe('#getVariables', function () {
@@ -43,13 +43,13 @@ describe('Configuration', function () {
       ])
     })
     it('should return the variables from imported configurations', function () {
-      var repository = new Repository({ other: configurationWithVariable })
+      const repository = new Repository({ other: configurationWithVariable })
       assert.deepStrictEqual((new Configuration('+other', repository)).getVariables(), [
         new Variable('a', 'default', '', 'other')
       ])
     })
     it('should return variables with reassigned value', function () {
-      var repository = new Repository({ other: configurationWithVariable })
+      const repository = new Repository({ other: configurationWithVariable })
       assert.deepStrictEqual((new Configuration('+other\r$a = reassigned', repository)).getVariables(), [
         new Variable('a', 'reassigned', '')
       ])
@@ -98,7 +98,7 @@ describe('Configuration', function () {
 
   describe('#apply', function () {
     it('empty configuration should return untouched node', function () {
-      var node = {
+      const node = {
         value: 'a'
       }
       emptyConfiguration.apply(node)
@@ -106,7 +106,7 @@ describe('Configuration', function () {
     })
 
     it("configuration with pattern ['a', 'b'] should replace node.value from a to b", function () {
-      var node = {
+      const node = {
         value: 'a'
       }
       simpleConfiguration.apply(node)
@@ -114,7 +114,7 @@ describe('Configuration', function () {
     })
 
     it('configuration with no matching pattern should return untouched node', function () {
-      var node = {
+      const node = {
         value: 'x'
       }
       simpleConfiguration.apply(node)
@@ -122,7 +122,7 @@ describe('Configuration', function () {
     })
 
     it('should apply patterns with set variables', function () {
-      var node = {
+      const node = {
         value: 'x'
       }
       configurationWithVariable.apply(node)
@@ -136,23 +136,23 @@ describe('Configuration', function () {
     })
 
     it('should apply patterns from imported configurations', function () {
-      var node = {
+      const node = {
         value: 'a'
       }
 
-      var configuration = new Configuration('+other', new Repository({ other: simpleConfiguration }))
+      const configuration = new Configuration('+other', new Repository({ other: simpleConfiguration }))
 
       configuration.apply(node)
       assert.strictEqual(node.value, 'b')
     })
 
     it('should apply variables from imported configurations', function () {
-      var node = {
+      const node = {
         value: 'x'
       }
 
-      var repository = new Repository({ other: configurationWithVariable })
-      var configuration = new Configuration('+other', repository, true, { a: 'b' })
+      const repository = new Repository({ other: configurationWithVariable })
+      const configuration = new Configuration('+other', repository, true, { a: 'b' })
 
       configuration.apply(node)
       assert.strictEqual(node.value, 'b')
@@ -208,68 +208,68 @@ describe('Configuration', function () {
 
   describe('#isTagBlacklisted', function () {
     it('should return true if tagname is blacklisted', function () {
-      var node = {
+      const node = {
         nodeType: 3,
         parentNode: {
           nodeType: 1,
           nodeName: 'DIV'
         }
       }
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node), true)
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node.parentNode), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node.parentNode), true)
     })
     it('should return true if tagname is script', function () {
-      var node = {
+      const node = {
         nodeType: 3,
         parentNode: {
           nodeType: 1,
           nodeName: 'SCRIPT'
         }
       }
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node), true)
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node.parentNode), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node.parentNode), true)
     })
     it('should return true if tagname is style', function () {
-      var node = {
+      const node = {
         nodeType: 3,
         parentNode: {
           nodeType: 1,
           nodeName: 'STYLE'
         }
       }
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node), true)
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node.parentNode), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node.parentNode), true)
     })
     it('should return false if tagname is style and style is whitelisted', function () {
-      var node = {
+      const node = {
         nodeType: 3,
         parentNode: {
           nodeType: 1,
           nodeName: 'STYLE'
         }
       }
-      assert.strictEqual(configurationWithWhitelist.isTagBlacklisted(node), false)
-      assert.strictEqual(configurationWithWhitelist.isTagBlacklisted(node.parentNode), false)
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node), false)
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node.parentNode), false)
     })
     it('should return false if tagname is not blacklisted', function () {
-      var node = {
+      const node = {
         nodeType: 3,
         parentNode: {
           nodeType: 1,
           nodeName: 'INPUT'
         }
       }
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node), false)
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node.parentNode), false)
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node), false)
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node.parentNode), false)
     })
     it('should return false if node type is not TEXT or ELEMENT', function () {
-      var node = {
+      const node = {
         nodeType: 99,
         parentNode: {
           nodeName: 'DIV'
         }
       }
-      assert.strictEqual(configurationWithBlacklist.isTagBlacklisted(node), false)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), false)
     })
   })
 })

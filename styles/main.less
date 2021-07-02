@@ -199,6 +199,7 @@ input {
 
 .content {
   overflow: auto;
+  height: 100%;
 }
 
 .inner-content {
@@ -251,7 +252,12 @@ label {
 }
 
 .settings {
+  height: 100%;
   max-width: 800px;
+
+  .editor-box {
+    height: calc(100% - 160px);
+  }
 }
 
 .accessControl,
@@ -338,6 +344,10 @@ label {
     height: 18px;
   }
 
+}
+
+.unsaved-warning {
+  color: @danger;
 }
 
 .error-box {

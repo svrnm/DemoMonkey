@@ -19,6 +19,8 @@ class Settings extends React.Component {
     settings: PropTypes.object.isRequired,
     configurations: PropTypes.arrayOf(PropTypes.object).isRequired,
     onSetBaseTemplate: PropTypes.func.isRequired,
+    onSetAnalyticsSnippet: PropTypes.func.isRequired,
+    getRepository: PropTypes.func.isRequired,
     onSaveGlobalVariables: PropTypes.func.isRequired,
     onSetMonkeyInterval: PropTypes.func.isRequired,
     onToggleOptionalFeature: PropTypes.func.isRequired,
@@ -34,6 +36,7 @@ class Settings extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      analyticsSnippet: this.props.settings.analyticsSnippet,
       baseTemplate: this.props.settings.baseTemplate,
       monkeyInterval: this.props.settings.monkeyInterval,
       archiveValue: 30
@@ -56,6 +59,12 @@ class Settings extends React.Component {
     this.props.onSetMonkeyInterval(this.state.monkeyInterval)
   }
 
+  updateAnalyticsSnippet(analyticsSnippet) {
+    this.setState({
+      analyticsSnippet
+    })
+  }
+
   updateBaseTemplate(baseTemplate) {
     this.setState({
       baseTemplate
@@ -64,6 +73,10 @@ class Settings extends React.Component {
 
   saveBaseTemplate() {
     this.props.onSetBaseTemplate(this.state.baseTemplate)
+  }
+
+  saveAnalyticsSnippet() {
+    this.props.onSetAnalyticsSnippet(this.state.analyticsSnippet)
   }
 
   render() {
@@ -148,13 +161,6 @@ class Settings extends React.Component {
         label: 'Write Logs.',
         description: <span>Turn this feature on to have a DemoMonkey logs accessible via the <b>Logs</b> navigation item.</span>
       }
-      /*
-      {
-        id: 'hookIntoKonva',
-        label: 'Hook into konva.js API.',
-        description: <span>Turn this feature on to allow DemoMonkey to hook into <a href="https://konvajs.org/" target="_blank" rel='noopener noreferrer'>konva.js</a> API to modify text on canvas.</span>
-      }
-      */
     ]
 
     return (
@@ -181,32 +187,31 @@ class Settings extends React.Component {
               }
             </Pane>
             <Pane label="Base Template" name="baseTemplate">
-              <div className="template-box">
                 <label htmlFor="template">
                   <p>
                     This base template will be used for new configurations you create. It will auto-save while you edit it.
                   </p>
                   <p>
-                    (Do not forget to click on save)
+                    <button className="save-button" onClick={() => this.saveBaseTemplate()}>Save</button>
+                    <span style={{ display: this.props.settings.baseTemplate === this.state.baseTemplate ? 'none' : 'inline' }} className="unsaved-warning">(Unsaved Changes)</span>
                   </p>
                 </label>
                 <CodeEditor value={this.state.baseTemplate}
-                  onChange={(content) => this.handleUpdate('content', content)}
+                  onChange={(content) => this.updateBaseTemplate(content)}
                   annotations={(content) => {}}
-                  getRepository={() => {}}
+                  getRepository={this.props.getRepository}
                   variables={[]}
                   onVimWrite={() => this.handleClick(null, 'save')}
-                  onAutoSave={(event) => this.props.settings.optionalFeatures.autoSave ? this.handleClick(event, 'save') : event.preventDefault() }
+                  onAutoSave={(event) => this.props.settings.optionalFeatures.autoSave ? this.saveBaseTemplate() : event.preventDefault() }
                   keyboardHandler={this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null}
                   editorAutocomplete={this.props.settings.optionalFeatures.editorAutocomplete}
                   isDarkMode={this.props.isDarkMode}
                 />
-              </div>
             </Pane>
             <Pane label="Global Variables" name="globalVariables">
               <GlobalVariables globalVariables={this.props.settings.globalVariables} onSaveGlobalVariables={this.props.onSaveGlobalVariables} isDarkMode={this.props.isDarkMode} />
             </Pane>
-            <Pane label="Demo Analytics" name="more">
+            <Pane label="Demo Analytics" name="analytics">
               <div>
                 <label htmlFor="template">
                   <p>
@@ -215,7 +220,8 @@ class Settings extends React.Component {
                     and it will be injected when an @include[] in your demo configuration matches.
                   </p>
                   <p>
-                    (Do not forget to click on save)
+                    <button className="save-button" onClick={() => this.saveAnalyticsSnippet()}>Save</button>
+                    <span style={{ display: this.props.settings.analyticsSnippet === this.state.analyticsSnippet ? 'none' : 'inline' }} className="unsaved-warning">(Unsaved Changes)</span>
                   </p>
                 </label>
                 <AceEditor
@@ -224,11 +230,11 @@ class Settings extends React.Component {
                   minLines={20}
                   theme={ this.props.isDarkMode ? 'merbivore' : 'xcode' }
                   mode="html"
-                  value=''
+                  value={this.state.analyticsSnippet}
                   name="template"
+                  onChange={(content) => this.updateAnalyticsSnippet(content)}
                   editorProps={{ $blockScrolling: true }}
                   />
-                <button className="save-button" onClick=''>Save</button>
               </div>
             </Pane>
             <Pane label="More" name="more">

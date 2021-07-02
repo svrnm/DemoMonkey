@@ -49,6 +49,11 @@ const settings = function (state = '', action) {
         ...state,
         baseTemplate: action.baseTemplate
       }
+    case 'SET_ANALYTICS_SNIPPET':
+      return {
+        ...state,
+        analyticsSnippet: action.analyticsSnippet
+      }
     case 'SAVE_GLOBAL_VARIABLES':
       return {
         ...state,

@@ -17,12 +17,14 @@ class GlobalVariables extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      globalVariables: props.globalVariables
+      globalVariables: props.globalVariables,
+      hasUnsavedChanges: false
     }
   }
 
   addVariable() {
     this.setState({
+      hasUnsavedChanges: true,
       globalVariables: this.state.globalVariables.concat({
         key: '',
         value: ''
@@ -68,6 +70,7 @@ class GlobalVariables extends React.Component {
     console.log(globalVariables)
 
     this.setState({
+      hasUnsavedChanges: true,
       globalVariables
     })
   }
@@ -78,6 +81,7 @@ class GlobalVariables extends React.Component {
       key, value
     }
     this.setState({
+      hasUnsavedChanges: true,
       globalVariables
     })
   }
@@ -85,6 +89,9 @@ class GlobalVariables extends React.Component {
   save() {
     const globalVariables = this.state.globalVariables.filter((v) => v.key !== '')
     this.props.onSaveGlobalVariables(globalVariables)
+    this.setState({
+      hasUnsavedChanges: false
+    })
   }
 
   render() {
@@ -99,8 +106,8 @@ class GlobalVariables extends React.Component {
         return (<div className="variable-box" key={index}>
           <label htmlFor="variable-1">
             <input type="text" value={variable.name} onChange={(e) => this.updateVariable(index, e.target.value, variable.value)} />&nbsp;
-            <form id={'variable-form-' + index } style={{ display: 'none' }}>
-              <input multiple id={'variable-upload-' + index} type="file"/>
+            <form id={'variable-form-' + index} style={{ display: 'none' }}>
+              <input multiple id={'variable-upload-' + index} type="file" />
             </form>
             <small><a href="#" onClick={(e) => this.showUploadDialog(e, index, variable.name)}>
               (from image)
@@ -115,7 +122,7 @@ class GlobalVariables extends React.Component {
           <AceEditor height="4.5em" width="700px"
             name={variable.id}
             minLines={5}
-            theme={ this.props.isDarkMode ? 'merbivore' : 'xcode' }
+            theme={this.props.isDarkMode ? 'merbivore' : 'xcode'}
             mode="html"
             wrapEnabled={true}
             highlightActiveLine={false}
@@ -137,7 +144,9 @@ class GlobalVariables extends React.Component {
         </div>)
       })}
       <button className="save-button" onClick={() => this.addVariable()}>Add Variable</button>
-      <button className="save-button" onClick={() => this.save()}>Save</button></div>
+      <button className="save-button" onClick={() => this.save()}>Save</button>
+      <span style={{ display: this.state.hasUnsavedChanges ? 'inline' : 'none' }} className="unsaved-warning">(Unsaved Changes)</span>
+    </div>
     )
   }
 }

@@ -16,7 +16,7 @@ class ErrorBox extends React.Component {
         <div className="error-message">Message: { e.message }</div>
         <div className="error-details"><pre>{ e.stack }</pre></div>
         <div className="error-report">
-          <a href={`https://github.com/Appdynamics/demomonkey/issues/new?title=${e.message}&body=${e.stack}`} target="blank" rel="noopener noreferer">Report Issue</a>
+          <a href={`https://github.com/svrnm/DemoMonkey/issues/new?title=${e.message}&body=${e.stack}`} target="blank" rel="noopener noreferer">Report Issue</a>
             &nbsp;:&nbsp;
           <a href="backup.html">Open Backup Page</a>
         </div>

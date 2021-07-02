@@ -222,6 +222,7 @@ import { logger, connectLogger } from './helpers/logger'
     }],
     settings: {
       baseTemplate: require('../examples/baseTemplate.mnky'),
+      analyticsSnippet: '',
       optionalFeatures: defaultsForOptionalFeatures,
       globalVariables: [
         {

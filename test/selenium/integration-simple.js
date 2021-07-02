@@ -4,7 +4,7 @@ import base from './base'
 const expect = chai.expect
 
 describe('Integration (Simple)', function () {
-  const url = 'https://github.com/Appdynamics/demomonkey'
+  const url = 'https://github.com/svrnm/demomonkey'
 
   before('Start Webdriver', base.start)
   after('Quit Webdriver', base.quit)
@@ -14,7 +14,7 @@ describe('Integration (Simple)', function () {
     it('github page of this project has demomonkey in its title', async function () {
       await base.getDriver().get(url)
       const title = await base.getDriver().getTitle()
-      expect(title).to.include.string('demomonkey')
+      expect(title).to.include.string('DemoMonkey')
     })
   })
 
@@ -26,7 +26,7 @@ describe('Integration (Simple)', function () {
       return base.disableOptionalFeature('editorAutocomplete')
     })
     it('allows to create new configurations', function () {
-      return base.createConfig('testape', 'demomonkey = testape\n@include = /.*/\n')
+      return base.createConfig('testape', 'DemoMonkey = testape\n@include = /.*/\n')
     })
     it('has toggle buttons on the popup menu', function () {
       return base.enableConfig('testape')

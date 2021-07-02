@@ -39,8 +39,8 @@ try {
         }
       }
 
-      function updateBadge(count) {
-        console.log('Updating Badge')
+      function onStart(count) {
+        console.log('Updating Badge:', count)
         if (isTopFrame()) {
           scope.chrome.runtime.sendMessage({
             receiver: 'background',
@@ -57,8 +57,7 @@ try {
         const settings = new Settings(store.getState().settings)
 
         const inlineConfig = {
-          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
-          hookIntoKonva: settings.isFeatureEnabled('hookIntoKonva')
+          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax')
         }
 
         const inlineConfigScriptTag = scope.document.createElement('script')
@@ -80,10 +79,10 @@ try {
           hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
           webRequestHook: settings.isFeatureEnabled('webRequestHook')
         })
-        updateBadge($DEMO_MONKEY.start())
+        onStart($DEMO_MONKEY.start())
         logger('debug', 'DemoMonkey enabled. Tampering the content. Interval: ', settings.monkeyInterval).write()
 
-        const modeManager = new ModeManager(scope, $DEMO_MONKEY, new Manifest(scope.chrome), settings.isDebugEnabled(), settings.isFeatureEnabled('debugBox'), settings.isLiveModeEnabled())
+        const modeManager = new ModeManager(scope, $DEMO_MONKEY, new Manifest(scope.chrome), settings.isDebugEnabled(), settings.isFeatureEnabled('debugBox'), settings.isLiveModeEnabled(), settings.analyticsSnippet)
 
         function restart() {
           logger('debug', 'Restart DemoMonkey').write()
@@ -95,7 +94,7 @@ try {
             webRequestHook: settings.isFeatureEnabled('webRequestHook')
           })
           $DEMO_MONKEY.stop()
-          updateBadge(newMonkey.start())
+          onStart(newMonkey.start())
           $DEMO_MONKEY = newMonkey
           modeManager.reload($DEMO_MONKEY, settings.isDebugEnabled(), settings.isFeatureEnabled('debugBox'), settings.isLiveModeEnabled())
         }

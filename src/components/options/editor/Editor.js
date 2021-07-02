@@ -61,7 +61,7 @@ class Editor extends React.Component {
     if (event) {
       event.preventDefault()
     }
-    var config = this.state.currentConfiguration
+    const config = this.state.currentConfiguration
     config[key] = value
     this.setState({ currentConfiguration: config, unsavedChanges: true }, function () {
       if (key === 'hotkeys') {
@@ -76,7 +76,7 @@ class Editor extends React.Component {
   }
 
   updateVariable(id, value) {
-    var values = this.state.currentConfiguration.values ? this.state.currentConfiguration.values : {}
+    const values = this.state.currentConfiguration.values ? this.state.currentConfiguration.values : {}
     if (value === null) {
       delete values[id]
     } else {
@@ -125,14 +125,14 @@ class Editor extends React.Component {
   }
 
   _buildAnnotations(content) {
-    var result = []
+    const result = []
 
     const lines = content.split('\n')
 
     // Capture namespaces for the command builder.
     const nsPattern = /^@namespace(?:\[\])?\s*=\s*(.*)$/mg
-    var match
-    var namespaces = []
+    let match
+    const namespaces = []
     while ((match = nsPattern.exec(content))) {
       namespaces.push(match[1])
     }
@@ -168,7 +168,7 @@ class Editor extends React.Component {
       }
 
       if (line.includes('=')) {
-        const [lhs, rhs] = line.split(/=(.+)/, 2).map(e => e.trim())
+        const [, rhs] = line.split(/=(.+)/, 2).map(e => e.trim())
         if (typeof rhs === 'string' && rhs.startsWith('/') && rhs.endsWith('/')) {
           result.push({ row: rowIdx, column: 0, text: 'expression = regex', type: 'info' })
         }
@@ -273,7 +273,7 @@ class Editor extends React.Component {
           </Pane> */}
           <Pane link={(e) => {
             e.preventDefault()
-            window.open('https://github.com/Appdynamics/demomonkey/blob/master/SHORTCUTS.md')
+            window.open('https://github.com/svrnm/DemoMonkey/blob/master/SHORTCUTS.md')
           }} label="Shortcuts"/>
         </Tabs>
       </div>
