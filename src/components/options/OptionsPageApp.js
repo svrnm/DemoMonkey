@@ -482,7 +482,6 @@ const OptionsPageApp = connect(
         return dispatch({ type: 'ADD_CONFIGURATION', configuration })
       },
       setBaseTemplate: (baseTemplate) => {
-        console.log('BS', baseTemplate);
         dispatch({ type: 'SET_BASE_TEMPLATE', baseTemplate })
       },
       saveGlobalVariables: (globalVariables) => {
