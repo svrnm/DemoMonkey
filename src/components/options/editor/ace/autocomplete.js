@@ -5,7 +5,9 @@ import ReplaceFlowmapIcon from '../../../../commands/appdynamics/ReplaceFlowmapI
 
 import registry from '../../../../commands/CommandRegistry'
 
-import { snippetManager } from 'ace-builds/src-noconflict/snippets/snippets'
+import ace from 'ace-builds'
+
+const snippetManager = ace.require('ace/snippets').snippetManager
 
 function signature2snippet(signature) {
   return signature.replace(/\${(\d):[^}]*}/g, (match, d) => { return '${' + d + '}' })
@@ -60,11 +62,7 @@ function autocomplete(getRepository, variables) {
       }
     }
     const content = getRepository().findByName(data.configName).rawContent
-    if (content.includes('@template')) {
-      snippetManager.insertSnippet(editor, content.replace('@template', ''))
-    } else {
-      editor.execCommand('insertstring', content)
-    }
+    snippetManager.insertSnippet(editor, content.replace(/@template\S*[\r\n]+/g, ''))
   }
 
   langTools.setCompleters([{
