@@ -1,28 +1,44 @@
 import React from 'react'
 import marked from 'marked'
-import hljs from 'highlight.js'
+import highlight from 'highlight.js'
 
 class Help extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      usage: null,
+      loaded: false
+    }
+  }
+
+  componentDidMount() {
+    // We try to fetch USAGE.md from github directly, this allows to update
+    // the inline usage docs without having to make a release every time
+    // on the google chrome webstore.
+    fetch('https://raw.githubusercontent.com/svrnm/DemoMonkey/main/USAGE.md')
+      .then(response => response.text())
+      .then(data => this.setState({ usage: data, loaded: true }))
+      .catch(() => {
+        this.setState({
+          usage: require('../../../USAGE.md'),
+          loaded: true
+        })
+      })
+  }
+
   render() {
-    /*
-    const readme = require('../../../USAGE.md')
-    const converter = new showdown.Converter({
-      prefixHeaderId: 'welcome ',
-      ghCompatibleHeaderId: true,
-      simplifiedAutoLink: true
-    })
+    if (!this.state.loaded) {
+      return ''
+    }
 
-    const html = converter.makeHtml(readme)
-    */
-
-    const usage = require('../../../USAGE.md')
+    const usage = this.state.usage
     const html = marked(usage, {
       gfm: true,
       headerIds: true,
       highlight: (code, lang) => {
-        const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-        console.log(lang, language);
-        return hljs.highlight(code, { language }).value
+        const language = highlight.getLanguage(lang) ? lang : 'plaintext'
+        return highlight.highlight(code, { language }).value
       }
     })
 
