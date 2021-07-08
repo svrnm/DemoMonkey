@@ -35,7 +35,7 @@ class App extends React.Component {
   }
 
   render() {
-    var configurations = this.props.configurations.filter((config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined')
+    const configurations = this.props.configurations.filter((config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined')
     return <Page preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode} syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}>
       <Tabs activeTab={this.state.activeTab} onNavigate={(e) => this.updateActiveTab(e)}>
         <Pane label="Apply" name="apply">
@@ -56,6 +56,10 @@ class App extends React.Component {
             <b>Version:&nbsp;
             </b>
             {manifest.version()}
+          </div>
+          <div>
+            <b>Report bugs at </b>
+            {manifest.supportLink()}
           </div>
         </Pane>
         <Pane link={(e) => {

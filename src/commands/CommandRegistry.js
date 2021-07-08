@@ -26,11 +26,20 @@ import Stage from './Stage'
 import UndoElement from './UndoElement'
 import QuerySelector from './QuerySelector'
 import If from './If'
+import AddScript from './AddScript'
 import ReplaceAjaxResponse from './ReplaceAjaxResponse'
 import PatchAjaxResponse from './PatchAjaxResponse'
 import extractParameters from '../helpers/extractParameters'
 
 export default [
+  {
+    name: 'addScript',
+    signature: '(${1}) = ${3}',
+    aliases: [],
+    command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
+      return new AddScript(parameters, value)
+    }
+  },
   {
     name: 'replaceAjaxResponse',
     aliases: ['replaceAjax', 'replaceResponse'],
@@ -209,7 +218,7 @@ export default [
     aliases: [],
     signature: '(${1}, ${2}) = ${3}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      var iframeCode = '<head><title>' + parameters[1] + '</title><style>html {height:100%;}</style></head><body style="margin:0;padding:0;width:100%;height:100%;overflow:hidden;"><iframe src="' + value + '" style="width:100%;height:100%"></body>'
+      const iframeCode = '<head><title>' + parameters[1] + '</title><style>html {height:100%;}</style></head><body style="margin:0;padding:0;width:100%;height:100%;overflow:hidden;"><iframe src="' + value + '" style="width:100%;height:100%"></body>'
       return new OverwriteHTML(parameters[0], '', iframeCode, location)
     }
   },

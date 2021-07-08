@@ -58,7 +58,7 @@ class CommandBuilder {
   }
 
   _buildCustomCommand(namespace, name, parameters, value) {
-    var location = typeof window === 'undefined' ? '' : window.location
+    const location = typeof window === 'undefined' ? '' : window.location
 
     // Run namespaced command
     if (this.commands['_' + namespace] && this.commands['_' + namespace][name]) {
@@ -85,8 +85,8 @@ class CommandBuilder {
       return { extracted: false }
     }
 
-    var namespace = ''
-    var parameters = []
+    let namespace = ''
+    let parameters = []
 
     if (command.indexOf('(') !== -1) {
       if (command.substr(-1) !== ')') {
@@ -107,12 +107,12 @@ class CommandBuilder {
 
   _buildCommand(key, value) {
     // handle regular expressions
-    var regex = key.match(/^\/(.+)\/([gimp]+)?$/)
+    const regex = key.match(/^\/(.+)\/([gimp]+)?$/)
     if (regex !== null) {
       return this._buildRegex(regex[1], regex[2], value)
     }
 
-    var rawCommand = this._extractForCustomCommand(key)
+    const rawCommand = this._extractForCustomCommand(key)
 
     if (rawCommand.extracted) {
       return this._buildCustomCommand(rawCommand.namespace, rawCommand.command, rawCommand.parameters, value)
@@ -127,11 +127,11 @@ class CommandBuilder {
 
     // Reverse of the replacement of \= defined in Ini.js
     if (typeof value === 'string') {
-      value = value.replace('\u2260', '=')
+      value = value.replaceAll('\u2260', '=')
     }
 
     if (typeof key === 'string') {
-      key = key.replace('\u2260', '=')
+      key = key.replaceAll('\u2260', '=')
     }
 
     if (key.charAt(0) === '!') {

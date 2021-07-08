@@ -23,8 +23,16 @@ class Manifest {
     return this.homepageUrl
   }
 
+  supportUrl() {
+    return this.homepageUrl + 'issues/new'
+  }
+
   homepage() {
     return <a href={this.url()} target="_blank" rel='noopener noreferrer'>{this.url()}</a>
+  }
+
+  supportLink() {
+    return <a href={this.supportUrl()} target="_blank" rel='noopener noreferrer'>{this.supportUrl()}</a>
   }
 
   version() {

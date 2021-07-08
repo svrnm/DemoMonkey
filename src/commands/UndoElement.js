@@ -5,6 +5,13 @@ class UndoElement {
     this.original = original
     this.replacement = replacement
     this.source = source
+    this.callback = false
+  }
+
+  static fromFunction(func) {
+    const undoElement = new UndoElement()
+    undoElement.callback = func
+    return undoElement
   }
 
   setSource(source) {
@@ -19,19 +26,23 @@ class UndoElement {
   }
 
   apply() {
+    if (typeof this.callback === 'function') {
+      return this.callback()
+    }
+
     if (typeof this.target === 'undefined') {
       return false
     }
 
-    var target = this.target
+    let target = this.target
     if (typeof target === 'string' && target.startsWith('dmid-')) {
       target = document.querySelector(`[data-demo-monkey-id=${target}]`)
     }
 
-    var key = this.key
+    let key = this.key
 
     if (key.includes('.')) {
-      var path = key.split('.')
+      const path = key.split('.')
       key = path.pop()
       // Note that there is no proper error handling, so if the path is broken, strange things can happen.
       path.forEach(k => {

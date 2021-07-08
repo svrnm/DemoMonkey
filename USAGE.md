@@ -30,6 +30,7 @@
   - [Modify CSS](#modify-css)
   - [Overwrite HTML](#overwrite-html)
   - [Replace based on CSS selector](#replace-based-on-css-selector)
+  - [Add Javascript](#add-javascript)
   - [Replace Neighbor](#replace-neighbor)
   - [Insert before and after a DOM element](#insert-before-and-after-a-dom-element)
   - [Replace and patch response of AJAX requests](#replace-and-patch-response-of-ajax-requests)
@@ -411,6 +412,36 @@ Additionally you can add an attribute that should be replaced:
 ```ini
 !querySelector(#cart > .items-count, style.background) = red
 ```
+
+### Add Javascript
+If you need to add a small piece of JavaScript into a website, you can do this with DemoMonkey:
+
+```ini
+!addScript() = console.log('hello')
+```
+
+For more complex scripts it is a good practice to put them into a variable:
+
+```
+!addScript() = ${myScript}
+```
+
+With that you can use the `Variables` tab to edit the content of the script.
+
+
+As an alternative you can provide attributes in the list of the parameters, including a `src`:
+
+```ini
+!addScript(id\=myscriptid, src\=https://myserver/script.js)
+```
+
+Note that you need to escape the `=` in the parameters. Also, be aware that there might be a 
+[Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) that does not allow you
+to inject scripts this way.
+
+
+DemoMonkey is not a perfect match for more complex use cases. There are multiple chrome extensions that do a better job, if needed.
+
 
 ### Replace Neighbor
 The command `!replaceNeighbor` allows you to search for labels _close by_ and replace them. This is especially useful to change numbers, which might not be unique or static. You can use this command like the following:
