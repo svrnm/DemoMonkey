@@ -6,6 +6,8 @@ class Help extends React.Component {
   constructor(props) {
     super(props)
 
+    this.fallback = require('../../../USAGE.md')
+
     this.state = {
       usage: null,
       loaded: false
@@ -21,18 +23,14 @@ class Help extends React.Component {
       .then(data => this.setState({ usage: data, loaded: true }))
       .catch(() => {
         this.setState({
-          usage: require('../../../USAGE.md'),
-          loaded: true
+          loaded: true,
+          usage: this.fallback
         })
       })
   }
 
   render() {
-    if (!this.state.loaded) {
-      return ''
-    }
-
-    const usage = this.state.usage
+    const usage = this.state.loaded ? this.state.usage : this.fallback
     const html = marked(usage, {
       gfm: true,
       headerIds: true,

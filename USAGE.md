@@ -17,7 +17,7 @@
   - [Global Variables](#global-variables)
 - [Imports: Reuse existing configurations](#imports-reuse-existing-configurations)
 - [Snippets](#snippets)
-- [Commands](#commands)
+- [Generic Commands](#generic-commands)
   - [Run regular expressions](#run-regular-expressions)
   - [Replace with filters](#replace-with-filters)
   - [Replace Attribute](#replace-attribute)
@@ -33,6 +33,12 @@
   - [Replace Neighbor](#replace-neighbor)
   - [Insert before and after a DOM element](#insert-before-and-after-a-dom-element)
   - [Replace and patch response of AJAX requests](#replace-and-patch-response-of-ajax-requests)
+- [Commands in Namespaces](#commands-in-namespaces)
+  - [AppDynamics](#appdynamics)
+    - [Replace Flowmap Icons](#replace-flowmap-icons)
+    - [Hide Applications, Databases, BTs](#hide-applications-databases-bts)
+    - [Replace Flowmap Connections](#replace-flowmap-connections)
+- [Learn More](#learn-more)
 
 ## Configurations
 
@@ -227,7 +233,7 @@ Inventory = ${2:default}
 Do not make use of variables in your snippet templates since the underlying editor will assume that those are snippet variables and remove them
 before copying the content.
 
-## Commands
+## Generic Commands
 
 Beyond simple text replacements you can use commands to achieve more complex things, like using regular expressions, replace images or URLs. 
 
@@ -283,6 +289,7 @@ For example, if you have a row in a table (`<tr class="row-price"><td>Price</td>
 ```ini
 !hide(Price, 2, row-price, /cartpage.html)
 ```
+
 
 ### Replace Images
 
@@ -437,3 +444,79 @@ Now you can replace a response or you can apply a [JSON patch](http://jsonpatch.
 ```
 
 Use this feature with care, since this will patch native javascript functionality to intercept API calls. 
+
+## Commands in Namespaces
+
+DemoMonkey has `namespaces` that hold commands that are specific to a certain web application. 
+As of now the only namespace that exists is `appdynamics`. Since DemoMonkey is open source, you
+can easily [contribute your own](https://github.com/svrnm/DemoMonkey/blob/main/CONTRIBUTE.md)
+
+### AppDynamics
+
+The following set of commands is specific to the [AppDynamics](https://www.appdynamics.com/) controller UI. 
+All commands require a `appdynamics` prefix or you can include the namespace anywhere in your configuration:
+
+```ini
+@namespace[] = appdynamics
+```
+
+#### Replace Flowmap Icons
+
+You can replace icons on the flowmap with `!replaceFlowmapIcon`:
+
+```ini
+!replaceFlowmapIcon(api.mainsupplier.com) = SAP
+!replaceFlowmapIcon(ECommerce-Service) = PHP
+```
+
+DemoMonkey will provide you with a list of tier and backend types you can use for replacement via autocompletion.
+
+#### Hide Applications, Databases, BTs
+
+Besides the generic `!hide` command there are multiple specific commands to hide elements in the AppDynamics controller UI:
+
+```ini
+!hideApplication(E-Commerce)
+!hideBusinessTransaction(/checkout)
+!hideDatabase(E-Commerce Database)
+!hideBrowserApplication(eCommerce Browser)
+!hideDashboard(AD-*)
+!hideMobileApplication(Ecommerce iOS)
+!hideBusinessJourney(Loan Approval)
+!hideAnalyticsSearch(AD-*)
+```
+
+#### Replace Flowmap Connections
+
+To change the state of a connection on the flowmap to critical or warning, use the following command:
+
+```ini
+!replaceFlowmapConnection(ECommerce-Services, Inventory-Services) = warning
+```
+
+Note, that the order of the elements is important. The first attribute is the exit node, the second node is the downstream entry node.
+
+If you'd like to forece a connection to being set to a certain value, even if no baseline is set, you can set a `force` parameter:
+
+```ini
+!replaceFlowmapConnection(ECommerce-Services, Inventory-Services, 1) = warning
+```
+
+To set a different protocol or to make the connection async, add the keywords to the replacement:
+
+```ini
+!replaceFlowmapConnection(ECommerce-Services, Inventory-Services, 1) = warning,async,http
+```
+
+Finally, you can also hide flowmap connections, either by using the keyword `hide` in your replacement or
+by using a special command:
+
+```ini
+!hideFlowmapConnection(ECommerce-Services, Inventory-Services)
+```
+
+## Learn More
+
+The documentation might not include all commands and all options you have with DemoMonkey. 
+
+If you want to learn more about DemoMonkey, the quickest way is, to [get in touch](mailto:severin.neumann@altmuelnet.de)
