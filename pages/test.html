@@ -5,13 +5,13 @@
   <meta charset="utf-8">
 </head>
 <style>
-[data-label]:after {
+[data-label]::after {
   border: 1px solid blue;
   content: attr(data-label);
 }
 </style>
 <body>
-  <div style="border: 1px solid green">
+  <div style="border: 1px solid green;">
     <h1>DemoMonkey Test Page</h1>
     <div id="monkey-stats">
 
@@ -31,11 +31,10 @@
 
   <div id="svg">
 
-    <svg class="adsFlowMap absoluteExpanded ng-isolate-scope" width="1040" height="599" style="" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg class="adsFlowMap absoluteExpanded ng-isolate-scope" width="1040" height="599" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <style type="text/css">
         .x-vml-base,
-        svg,
-        vml {
+        svg {
           overflow: hidden;
         }
 
@@ -73,10 +72,6 @@
           pointer-events: none;
           fill: rgb(25, 33, 43);
           fill-opacity: 1;
-        }
-
-        .adsFlowMapText,
-        .adsFlowMapTextShadow {
           font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
           font-size: 9px;
         }
@@ -178,11 +173,13 @@
         .ads-node-ring-spacer,
         .adsNodeCountBackground {
           fill: rgb(255, 255, 255);
-          stroke-width: 0px;
+          stroke-width: 0;
         }
       </style>
       <svg pointer-events="all" viewBox="0 0 1559 898">
-        <style>.adsFlowmapSelected { filter:url(#dropGlow); } </style>
+        <style>
+          .adsFlowmapSelected { filter: url(#dropGlow); }
+        </style>
         <defs>
           <filter id="dropGlow" filterUnits="userSpaceOnUse" x="-30%" y="-30%" width="160%" height="160%">
             <feColorMatrix values=".137 0 0  .137 0   0 .545 0  .545 0   0 0 .953  .953 0   0 0 0  1 0 " type="matrix" in="SourceAlpha" result="coloredSource" />
