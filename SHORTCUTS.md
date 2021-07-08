@@ -1,4 +1,9 @@
-DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Configuration* view. Ace comes with a predefined [set of shortcuts](https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts) you can use, while editing your configurations. Below you will find a complete list. Please be aware, that not all commands might work with DemoMonkey as expected. Additionally you can use *Ctrl+s / Command+s* to save your current configuration on every screen.
+# Shortcuts
+
+DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Configuration* view. Ace comes with a
+predefined [set of shortcuts](https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts) you can use, while editing
+your configurations. Below you will find a complete list. Please be aware, that not all commands might work with
+DemoMonkey as expected. Additionally you can use *Ctrl+s / Command+s* to save your current configuration on every screen.
 
 ## Line Operations
 
@@ -14,7 +19,6 @@ DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Confi
 | Ctrl-Backspace | Option-Backspace, Ctrl-Option-Backspace | Remove word left |
 | Ctrl-Delete | Option-Delete | Remove word right |
 | --- | Ctrl-O | Split line |
-
 
 ## Selection
 
@@ -38,7 +42,6 @@ DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Confi
 | Ctrl-Shift-D | Command-Shift-D | Duplicate selection |
 | Ctrl-Shift-P | --- | Select to matching bracket |
 
-
 ## Multicursor
 
 | Windows/Linux                  | Mac                            | Action                         |
@@ -52,7 +55,6 @@ DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Confi
 | Ctrl-Alt-Shift-Right | Ctrl-Option-Shift-Right | Remove current occurrence from multi-selection and move to next |
 | Ctrl-Alt-Shift-Left | Ctrl-Option-Shift-Left | Remove current occurrence from multi-selection and move to previous |
 | Ctrl-Shift-L | Ctrl-Shift-L | Select all from multi-selection |
-
 
 ## Go to
 
@@ -77,7 +79,6 @@ DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Confi
 | --- | Option-PageDown | Scroll page down |
 | --- | Option-PageUp | Scroll page up |
 
-
 ## Find/Replace
 
 | Windows/Linux                  | Mac                            | Action                         |
@@ -87,7 +88,6 @@ DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Confi
 | Ctrl-K | Command-G | Find next |
 | Ctrl-Shift-K | Command-Shift-G | Find previous |
 
-
 ## Folding
 
 | Windows/Linux                  | Mac                            | Action                         |
@@ -96,7 +96,6 @@ DemoMonkey uses the [Ace](https://ace.c9.io/) as editor component for the *Confi
 | Alt-Shift-L, Ctrl-Shift-F1 | Command-Option-Shift-L, Command-Shift-F1 | Unfold |
 | Alt-0 | Command-Option-0 | Fold all |
 | Alt-Shift-0 | Command-Option-Shift-0 | Unfold all |
-
 
 ## Other
 

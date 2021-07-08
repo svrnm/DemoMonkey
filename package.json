@@ -77,6 +77,8 @@
     "less": "^4.1.1",
     "less-loader": "^10.0.0",
     "lint-staged": "^11.0.0",
+    "markdownlint": "^0.23.1",
+    "markdownlint-cli": "^0.27.1",
     "mini-css-extract-plugin": "^1.5.0",
     "mocha": "^9.0.1",
     "postcss": "^8.2.10",
@@ -98,6 +100,7 @@
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
-    "*.less": "stylelint --cache --fix"
+    "*.less": "stylelint --cache --fix",
+    "*.md": "npx markdownlint-cli --fix --config .markdownlint.jsonc"
   }
 }
