@@ -2,18 +2,18 @@
 
 button {
   background-color: white;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   margin: 8px 1px;
 
   &:focus,
   &:hover {
-    box-shadow: 0px 0px 10px lighten(@base, 20%);
+    box-shadow: 0 0 10px lighten(@base, 20%);
   }
 }
 
 .save-button {
   background-color: @success;
-  color: #ffffff;
+  color: #fff;
 
   &:hover {
     background-color: lighten(@success, 5%);
@@ -23,16 +23,16 @@ button {
 .sync-button,
 .share-button {
   background-color: lighten(@success, 5%);
-  color: #ffffff;
+  color: #fff;
 
   &.left {
-    margin-right:0;
-    border-right:0;
+    margin-right: 0;
+    border-right: 0;
     height: 36px;
   }
 
   &.right {
-    margin-left:0;
+    margin-left: 0;
     border-left: 1px solid white;
     height: 36px;
   }
@@ -42,10 +42,9 @@ button {
   }
 }
 
-
 .copy-button {
   background-color: lighten(@success, 10%);
-  color: #ffffff;
+  color: #fff;
 
   &:hover {
     background-color: lighten(@success, 15%);
@@ -54,60 +53,57 @@ button {
 
 .delete-button {
   background-color: @danger;
-  color: #ffffff;
+  color: #fff;
 
   &:focus,
   &:hover {
     background: lighten(@danger, 5%);
-    border-color: #cccccc;
-    box-shadow: 0px 0px 5px lighten(@danger, 20%);
+    border-color: #ccc;
+    box-shadow: 0 0 5px lighten(@danger, 20%);
   }
 }
 
 .download-button {
   background-color: lighten(@success, 15%);
-  color: #ffffff;
+  color: #fff;
 
   &:hover {
     background-color: lighten(@success, 20%);
   }
 }
 
-
 button.disabled {
-  background-color: #333333;
-  color: #999999;
+  background-color: #333;
+  color: #999;
 
   &:focus,
   &:hover {
-    background-color: lighten(#333333, 5%);
+    background-color: lighten(#333, 5%);
     box-shadow: none;
   }
 }
 
-
 .drop-down-menu {
   list-style-type: none;
-      position: absolute;
-     margin: 0;
-     padding: 0;
-     top:43px;
-     right:0px;
-     background-color: white;
-     font-weight:bold;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 43px;
+  right: 0;
+  background-color: white;
+  font-weight: bold;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  z-index: 9999999;
 
-     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-     z-index: 9999999;
+  & button {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 8px;
+  }
 
-     & button {
-       margin-top: 0;
-       margin-bottom: 0;
-       padding: 8px;
-     }
-
-     & li {
-       margin:0;
-       padding:0;
-       background: green;
-     }
+  & li {
+    margin: 0;
+    padding: 0;
+    background: green;
+  }
 }

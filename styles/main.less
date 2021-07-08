@@ -12,82 +12,68 @@
   --base-color: @base;
   --base-link-color: @base;
   --darker-base-color: darken(@base, 20%);
-  --highlight-background-color: #eeeeee;
+  --highlight-background-color: #eee;
   --hover-link-color: lighten(@base, 20%);
   --input-background-color: #fefefe;
   --lighter-base-color: lighten(@base, 75%);
-  --mode-color: #ffffff;
-  --mode-text-color: #111111;
+  --mode-color: #fff;
+  --mode-text-color: #111;
   --navigation-background: desaturate(lighten(@base, 79%), 40%);
   --navigation-read-only: lighten(@base, 20%);
   --navigation-item-color: rgb(241, 247, 236);
   --navigation-active-color: #a8c987;
   --navigation-text-color: #284907;
-
-  --help-text-color: #666666;
-
+  --help-text-color: #666;
   --success-color: @success;
   --danger-color: @danger;
   --warning-color: @warning;
-
   --warning-background-color: lighten(@warning, 37%);
-
-  --editor-title-background: #ffffff;
-
-  --editor-comment-color: #aa5500;
-  --editor-group-color: #aa0000;
-  --editor-option-color: #ff5500;
-  --editor-search-color: #0000ff;
-  --editor-function-color: #770088;
+  --editor-title-background: #fff;
+  --editor-comment-color: #a50;
+  --editor-group-color: #a00;
+  --editor-option-color: #f50;
+  --editor-search-color: #00f;
+  --editor-function-color: #708;
   --editor-import-color: #31b404;
   --editor-variable-color: #bf00ff;
   --editor-disabled-color: #f3f3f3;
   --editor-string-url-color: #0cc8ed;
-
-  --table-header-color: #cccccc;
+  --table-header-color: #ccc;
   --table-2n-color: #f0f0f0;
 }
 
 .dark-mode {
-  --mode-color: #000000;
-  --mode-text-color: #eeeeee;
+  --mode-color: #000;
+  --mode-text-color: #eee;
   --base-color: @darkBase;
-  --base-link-color: #eeeeee;
-  --hover-link-color: #aaaaaa;
+  --base-link-color: #eee;
+  --hover-link-color: #aaa;
   --lighter-base-color: lighten(@darkBase, 75%);
   --darker-base-color: lighten(@darkBase, 20%);
-  --highlight-background-color: #444444;
-  --input-background-color: #444444;
+  --highlight-background-color: #444;
+  --input-background-color: #444;
   --navigation-background: desaturate(lighten(@darkBase, 21%), 40%);
   --navigation-read-only: lighten(@darkBase, 20%);
-  --navigation-item-color: #222222;
-  --navigation-active-color: #444444;
-  --navigation-text-color: #eeeeee;
-
-  --help-text-color: #aaaaaa;
-
+  --navigation-item-color: #222;
+  --navigation-active-color: #444;
+  --navigation-text-color: #eee;
+  --help-text-color: #aaa;
   --warning-color: @warning;
   --danger-color: lighten(@danger, 20%);
-
   --warning-background-color: darken(@warning, 37%);
-
   --success-color: lighten(@success, 20%);
-
   --editor-title-background: #030303;
-
-
   --editor-comment-color: #09ffe7;
-  --editor-group-color: #00bb00;
-  --editor-option-color: spin(#ff5500, 180);
-  --editor-search-color: spin(#0000ff, 180);
+  --editor-group-color: #0b0;
+  --editor-option-color: spin(#f50, 180);
+  --editor-search-color: spin(#00f, 180);
   --editor-function-color: #f79580;
   --editor-import-color: #d060f8;
   --editor-variable-color: spin(#bf00ff, 180);
   --editor-disabled-color: spin(#f3f3f3, 180);
   --editor-url-color: #0cc8ed;
-
-  --table-header-color: #666666;
-  --table-2n-color: #333333;
+  --table-header-color: #666;
+  --table-2n-color: #333;
 }
 
 html {
@@ -107,13 +93,21 @@ html,
   color: var(--mode-text-color);
   font-family: sans-serif;
   font-size: 12px;
+
   /* height: 100vh !important; */
-  margin: 0px;
+  margin: 0;
+
   /* min-height: 100vh !important; */
   overflow-y: hidden;
-  padding: 0px;
+  padding: 0;
 }
 
+label {
+  display: block;
+  font-weight: bold;
+  line-height: 100%;
+  margin: 12px 0;
+}
 
 .popup-app {
   max-width: 800px;
@@ -143,7 +137,7 @@ html,
   }
 
   label {
-   margin: 8px 0px;
+    margin: 8px 0;
   }
 
   .latest-configurations {
@@ -204,28 +198,17 @@ input {
 
 .inner-content {
   height: 93%;
-}
-
-.inner-content {
   margin: 8px;
 }
 
-label {
-  display: block;
-  font-weight: bold;
-  line-height: 100%;
-  margin: 12px 0px;
-  vertical-align: middle;
-}
-
-/*.CodeMirror {
+/* .CodeMirror {
   //border: 1px solid #cccccc;
   height: 100%;
 }
 
 .moustrap-auto-save-area {
   height: 100%;
-}*/
+} */
 
 .no-variables {
   background: var(--warning-background-color);
@@ -234,7 +217,7 @@ label {
   margin: 1em;
   padding: 1em;
 
-  &:before {
+  &::before {
     content: '\26A0\00A0';
   }
 }
@@ -248,7 +231,7 @@ label {
 
 .read-only {
   background: #efefef;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
 }
 
 .settings {
@@ -269,7 +252,7 @@ label {
   h1,
   h2,
   h3 {
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #eee;
     padding-bottom: 8px;
   }
 }
@@ -303,11 +286,9 @@ label {
     font-size: 110%;
     font-weight: bold;
     margin-right: 1em;
-
-
   }
 
-  /*& input {
+  /* & input {
     border: 1px solid desaturate(lighten(@base, 40%), 30%);
     border-radius: 4px;
     display: block;
@@ -317,7 +298,7 @@ label {
     min-width: 300px;
     padding: 4px;
     width: 50%;
-  }*/
+  } */
 
   & .help {
     color: var(--help-text-color);
@@ -329,21 +310,19 @@ label {
   border: 1px solid var(--warning-color);
   color: var(--warning-color);
   margin: 8px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   padding: 4px;
-
 
   &.fixed {
     position: absolute;
     top: 0;
     left: 0;
-    margin: 0px;
-    border: 0px;
+    margin: 0;
+    border: 0;
     border-bottom: 2px solid var(--warning-color);
     width: 100%;
     height: 18px;
   }
-
 }
 
 .unsaved-warning {
@@ -355,8 +334,8 @@ label {
   border: 1px solid @danger;
   color: @danger;
   margin: 8px;
-  margin-bottom: 0px;
-  margin-top: 0px;
+  margin-bottom: 0;
+  margin-top: 0;
   padding: 4px;
 
   .error-title {
@@ -369,9 +348,10 @@ label {
     font-size: 110%;
   }
 
-  .error-message, .error-details {
+  .error-message,
+  .error-details {
     margin: 8px;
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 
@@ -396,8 +376,8 @@ label {
 }
 
 .ace_editor {
-  border: 1px solid #cccccc;
-  height: calc(100%-50px);
+  border: 1px solid #ccc;
+  height: calc(100% - 50px);
 }
 
 .connection-status-failed {

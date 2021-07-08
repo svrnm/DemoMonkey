@@ -5,16 +5,16 @@
   border-right: 1px solid var(--base-color);
   flex-basis: 250px;
   height: 100%;
-  margin: 0px;
+  margin: 0;
   min-height: 100%;
   min-width: 250px;
   overflow-x: hidden;
   overflow-y: hidden;
-  padding: 0px;
+  padding: 0;
 
   ul {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
   }
 
   & > div {
@@ -26,12 +26,11 @@
     font-style: italic;
 
     a {
-      color: --var(--navigation-read-only)
+      color: --var(--navigation-read-only);
     }
   }
 
   .navigation-item {
-
     a {
       text-decoration: none;
     }
@@ -47,17 +46,17 @@
 
       & button {
         background: transparent;
-        border: 0px;
+        border: 0;
         cursor: pointer;
         font-size: 140%;
         font-weight: bold;
-        margin: 0px;
+        margin: 0;
         margin-right: 4px;
-        padding: 0px;
+        padding: 0;
 
         &:focus,
         &:hover {
-            box-shadow: none !important;
+          box-shadow: none !important;
         }
 
         &.delete-configuration {
@@ -67,7 +66,6 @@
         &.edit-configuration {
           color: blue;
         }
-
       }
     }
 
@@ -77,12 +75,11 @@
     }
 
     .configuration-updated-at time {
-
-      &:before {
+      &::before {
         content: '(';
       }
 
-      &:after {
+      &::after {
         content: ')';
       }
     }
@@ -92,39 +89,13 @@
     max-height: 90px;
   }
 
-  .context-menu {
-    position: fixed;
-    border: 1px solid var(--mode-text-color);
-    color: var(--mode-text-color);
-    margin: 4px;
-    padding: 0px;
-    background: var(--mode-color);
-    z-index: 999999;
-    min-width: 100px;
-
-    li {
-      list-style-type: none;
-      padding: 4px;
-      border-bottom: 1px solid var(--mode-text-color);
-
-      &:last-of-type {
-        border: 0px;
-      }
-
-      &:hover {
-        text-decoration: underline;
-        background: var(--highlight-background-color)
-      }
-    }
-  }
-
   .actions {
-
     background-color: var(--base-color);
 
     a {
       color: #f0f0f0;
       display: block;
+      font-weight: bold;
       padding: 8px 8px;
       text-align: center;
       text-decoration: none;
@@ -143,15 +114,37 @@
     li {
       list-style-type: none;
       width: 33.333%;
+    }
+  }
+
+  .context-menu {
+    position: fixed;
+    border: 1px solid var(--mode-text-color);
+    color: var(--mode-text-color);
+    margin: 4px;
+    padding: 0;
+    background: var(--mode-color);
+    z-index: 999999;
+    min-width: 100px;
+
+    li {
+      list-style-type: none;
+      padding: 4px;
+      border-bottom: 1px solid var(--mode-text-color);
 
       &:last-of-type {
-        border-right: 0px;
+        border: 0;
+      }
+
+      &:hover {
+        text-decoration: underline;
+        background: var(--highlight-background-color);
       }
     }
+  }
 
-    a {
-      font-weight: bold;
-    }
+  .navigation .actions li:last-of-type {
+    border-right: 0;
   }
 
   .items {
@@ -167,7 +160,7 @@
 
   .searchBox {
     border-bottom: 1px solid var(--base-color);
-    border-left: 0px;
+    border-left: 0;
     border-right: 1px solid var(--base-color);
     border-top: 1px solid var(--base-color);
     height: 24px;

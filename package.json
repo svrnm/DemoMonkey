@@ -83,6 +83,8 @@
     "raw-loader": "^4.0.2",
     "responsive-loader": "^2.3.0",
     "selenium-webdriver": "^4.0.0-beta.4",
+    "stylelint": "^13.13.1",
+    "stylelint-config-standard": "^22.0.0",
     "webpack": "^5.34.0",
     "webpack-cli": "^4.7.2",
     "webpack-extension-reloader": "^1.1.4",
@@ -95,6 +97,7 @@
     ]
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix"
+    "*.js": "eslint --cache --fix",
+    "*.less": "stylelint --cache --fix"
   }
 }
