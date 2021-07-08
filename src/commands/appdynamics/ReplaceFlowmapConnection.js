@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Command from '../Command'
 import UndoElement from '../UndoElement'
 
@@ -15,14 +28,14 @@ class ReplaceFlowmapConnection extends Command {
     // and search for the connection. This is currently not possible with DemoMonkey
     // An "advantage" of this approach is, that by going from the node "up" makes sure that we are within the (right) flowmap
     if (typeof node[key] === 'string' && node[key].trim() === this.tier1) {
-      var topLevelGraphics = this._walk(node, 3)
+      const topLevelGraphics = this._walk(node, 3)
       if (topLevelGraphics.className.baseVal === 'topLevelGraphics') {
-        var tier1id = ''
-        var tier2id = ''
-        var nodes = topLevelGraphics.querySelectorAll('g.adsFlowMapNode')
+        let tier1id = ''
+        let tier2id = ''
+        const nodes = topLevelGraphics.querySelectorAll('g.adsFlowMapNode')
         nodes.forEach((node) => {
-          var id = node.id
-          var text = node.querySelector('title').innerHTML
+          const id = node.id
+          const text = node.querySelector('title').innerHTML
           if (text === this.tier1) {
             tier1id = id
           }
@@ -31,7 +44,7 @@ class ReplaceFlowmapConnection extends Command {
           }
         })
 
-        var flowmapid = ''
+        let flowmapid = ''
         // Check if this is Appd4.3+ and we have a "flowmapid"
         if (tier1id.split('_').length === 3) {
           flowmapid = '_' + tier1id.split('_').pop()

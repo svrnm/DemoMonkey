@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Command from '../Command'
 import Color from 'color'
 import colorString from 'color-string'
@@ -21,18 +34,18 @@ class RecolorDashboard extends Command {
   }
 
   _recolorTimeseriesGraph(node) {
-    var svgs = node.querySelectorAll('ad-widget-timeseries-graph svg')
+    const svgs = node.querySelectorAll('ad-widget-timeseries-graph svg')
 
-    var r = []
+    const r = []
 
     svgs.forEach((svg) => {
-      var dots = svg.querySelectorAll('path[fill="' + this.search.hex() + '"], path[fill="' + this.search.hex().toLowerCase() + '"], path[fill="' + this.search.rgb().string() + '"]')
+      const dots = svg.querySelectorAll('path[fill="' + this.search.hex() + '"], path[fill="' + this.search.hex().toLowerCase() + '"], path[fill="' + this.search.rgb().string() + '"]')
 
-      var rects = svg.querySelectorAll('rect[fill="' + this.search.hex() + '"], rect[fill="' + this.search.hex().toLowerCase() + '"], rect[fill="' + this.search.rgb().string() + '"]')
+      const rects = svg.querySelectorAll('rect[fill="' + this.search.hex() + '"], rect[fill="' + this.search.hex().toLowerCase() + '"], rect[fill="' + this.search.rgb().string() + '"]')
 
-      var lines = svg.querySelectorAll('path[stroke="' + this.search.hex() + '"], path[stroke="' + this.search.hex().toLowerCase() + '"], path[stroke="' + this.search.rgb().string() + '"]')
+      const lines = svg.querySelectorAll('path[stroke="' + this.search.hex() + '"], path[stroke="' + this.search.hex().toLowerCase() + '"], path[stroke="' + this.search.rgb().string() + '"]')
 
-      var stops = svg.querySelectorAll('stop[stop-color="' + this.search.hex() + '"], stop[stop-color="' + this.search.hex().toLowerCase() + '"], stop[stop-color="' + this.search.rgb().string() + '"]')
+      const stops = svg.querySelectorAll('stop[stop-color="' + this.search.hex() + '"], stop[stop-color="' + this.search.hex().toLowerCase() + '"], stop[stop-color="' + this.search.rgb().string() + '"]')
 
       dots.forEach(path => {
         path.setAttribute('fill', this.replace.rgb().toString())
@@ -59,24 +72,24 @@ class RecolorDashboard extends Command {
   }
 
   _recolorLabels(node) {
-    var labels = node.querySelectorAll('ad-widget-label')
-    var r = []
+    const labels = node.querySelectorAll('ad-widget-label')
+    const r = []
 
     labels.forEach((label) => {
-      var currentBackgroundColor = Color(label.parentElement.style.backgroundColor)
+      const currentBackgroundColor = Color(label.parentElement.style.backgroundColor)
 
       if (this.search.rgb().toString() === currentBackgroundColor.rgb().toString()) {
-        var original = label.parentElement.style.backgroundColor
+        const original = label.parentElement.style.backgroundColor
         label.parentElement.style.backgroundColor = this.replace.rgb().toString()
         r.push(new UndoElement(label.parentElement.style, 'backgroundColor', original, label.parentElement.style.backgroundColor))
       }
 
-      var textLabel = label.querySelector('.ad-widget-label')
+      const textLabel = label.querySelector('.ad-widget-label')
       if (textLabel !== null) {
-        var currentTextColor = Color(textLabel.style.color)
+        const currentTextColor = Color(textLabel.style.color)
 
         if (this.search.rgb().toString() === currentTextColor.rgb().toString()) {
-          var original2 = textLabel.style.color
+          const original2 = textLabel.style.color
           textLabel.style.color = this.replace.rgb().toString()
           r.push(new UndoElement(textLabel.style, 'color', original2, textLabel.style.color))
         }
@@ -86,20 +99,20 @@ class RecolorDashboard extends Command {
   }
 
   _recolorImages(node) {
-    var images = node.querySelectorAll('ad-widget-image')
+    const images = node.querySelectorAll('ad-widget-image')
 
-    var r = []
+    const r = []
 
     images.forEach((image) => {
-      var img = image.querySelector('img:not([class])')
+      const img = image.querySelector('img:not([class])')
       if (!img || !img.src.includes('<svg')) {
         return
       }
-      var original = img.src
+      const original = img.src
 
       img.src = img.src.replace(new RegExp('(fill|stroke)="(%23|#)' + (this.search.hex().slice(1)) + '"', 'gi'), '$1="$2' + this.replace.hex().slice(1) + '"')
       // Rerun with short color code
-      var shortHex = colorString.to.hex(this.search.array()).split('').filter((_, i) => [1, 3, 5, 7].includes(i)).join('')
+      const shortHex = colorString.to.hex(this.search.array()).split('').filter((_, i) => [1, 3, 5, 7].includes(i)).join('')
       img.src = img.src.replace(new RegExp('(fill|stroke)="(%23|#)' + (shortHex) + '"', 'gi'), '$1="$2' + this.replace.hex().slice(1) + '"')
 
       if (original !== img.src) {
@@ -111,15 +124,15 @@ class RecolorDashboard extends Command {
   }
 
   _recolorAnalytics(node) {
-    var analyticsWidgets = node.querySelectorAll('ad-widget-analytics')
+    const analyticsWidgets = node.querySelectorAll('ad-widget-analytics')
 
-    var r = []
+    const r = []
 
     analyticsWidgets.forEach((widget) => {
-      var currentBackgroundColor = Color(widget.parentElement.style.backgroundColor)
+      const currentBackgroundColor = Color(widget.parentElement.style.backgroundColor)
       if (this.search.rgb().toString() === currentBackgroundColor.rgb().toString()) {
         Array.from(widget.querySelectorAll('[style*="background-color"]')).concat(widget.parentElement).forEach(element => {
-          var original = element.style.backgroundColor
+          const original = element.style.backgroundColor
           element.style.backgroundColor = this.replace.rgb().toString()
           r.push(new UndoElement(element.style, 'backgroundColor', original, element.style.backgroundColor))
         })
@@ -133,10 +146,10 @@ class RecolorDashboard extends Command {
     if (!this._checkDashboardId() || !this.search || !this.replace) {
       return false
     }
-    var tsg = this._recolorTimeseriesGraph(node)
-    var labels = this._recolorLabels(node)
-    var images = this._recolorImages(node)
-    var analytics = this._recolorAnalytics(node)
+    const tsg = this._recolorTimeseriesGraph(node)
+    const labels = this._recolorLabels(node)
+    const images = this._recolorImages(node)
+    const analytics = this._recolorAnalytics(node)
 
     return tsg.concat(labels).concat(images).concat(analytics)
   }

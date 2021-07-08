@@ -1,4 +1,16 @@
-/* global chrome */
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react'
 import Navigation from './navigation/Navigation'
 import { connect } from 'react-redux'
@@ -59,23 +71,23 @@ class App extends React.Component {
     this.mql.addListener(this.darkModeUpdated)
 
     this.permissionsUpdated = () => {
-      chrome.permissions.getAll((permissions) => {
+      window.chrome.permissions.getAll((permissions) => {
         logger('info', 'Permissions updated:', permissions).write()
         this.setState({ permissions })
       })
     }
 
-    if (chrome.permissions.onAdded) {
-      chrome.permissions.onAdded.addListener(this.permissionsUpdated)
-      chrome.permissions.onRemoved.addListener(this.permissionsUpdated)
+    if (window.chrome.permissions.onAdded) {
+      window.chrome.permissions.onAdded.addListener(this.permissionsUpdated)
+      window.chrome.permissions.onRemoved.addListener(this.permissionsUpdated)
     }
   }
 
   componentWillUnmount() {
     this.mql.removeListener(this.darkModeUpdated)
-    if (chrome.permissions.onAdded) {
-      chrome.permissions.onAdded.removeListener(this.permissionsUpdated)
-      chrome.permissions.onRemoved.removeListener(this.permissionsUpdated)
+    if (window.chrome.permissions.onAdded) {
+      window.chrome.permissions.onAdded.removeListener(this.permissionsUpdated)
+      window.chrome.permissions.onRemoved.removeListener(this.permissionsUpdated)
     }
     window.removeListener('onpopstate', this.ops)
     delete this.mql
@@ -283,7 +295,7 @@ class App extends React.Component {
   }
 
   registerProtocolHandler() {
-    const url = chrome.runtime.getURL('/options.html?s=%s')
+    const url = window.chrome.runtime.getURL('/options.html?s=%s')
     const method = this.props.settings.optionalFeatures.registerProtocolHandler ? 'registerProtocolHandler' : 'unregisterProtocolHandler'
     console.log(method)
     window.navigator[method](
@@ -392,7 +404,7 @@ class App extends React.Component {
   requestExtendedPermissions(revoke = false) {
     console.log(revoke)
     if (revoke) {
-      chrome.permissions.remove({
+      window.chrome.permissions.remove({
         origins: ['http://*/*', 'https://*/*']
       }, function (removed) {
         if (removed) {
@@ -402,7 +414,7 @@ class App extends React.Component {
         }
       })
     } else {
-      chrome.permissions.request({
+      window.chrome.permissions.request({
         origins: ['http://*/*', 'https://*/*']
       }, function (granted) {
         if (granted) {

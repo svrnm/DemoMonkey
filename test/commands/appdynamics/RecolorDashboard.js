@@ -1,18 +1,31 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import RecolorDashboard from '../../../src/commands/appdynamics/RecolorDashboard'
 
-var assert = require('assert')
+const assert = require('assert')
 
-var location = {
+const location = {
   toString() {
     return '&dashboard=1'
   }
 }
 
-var attr1 = {'fill': 'green'}
-var attr2 = {'stroke': 'green'}
-var attr3 = {backgroundColor: 'green'}
+let attr1 = { fill: 'green' }
+let attr2 = { stroke: 'green' }
+let attr3 = { backgroundColor: 'green' }
 
-var node = {
+const node = {
   querySelectorAll(query) {
     if (query === 'ad-widget-timeseries-graph svg') {
       return [{
@@ -44,7 +57,7 @@ var node = {
     if (query === 'ad-widget-label') {
       return [{
         querySelector(query) {
-          return {style: {color: '#ff0000'}}
+          return { style: { color: '#ff0000' } }
         },
         parentElement: {
           style: attr3
@@ -59,14 +72,13 @@ describe('RecolorDashboard', function () {
   describe('#apply', function () {
     it('changes the colors of a dashboard', function () {
       [['green', 'blue'], ['#008000', '#0000ff'], ['008000', '0000ff'], ['rgb(0,128,0)', 'rgb(0,0,255)'], ['nocolor', 'nocolor']].forEach(pair => {
-        var [search, replace] = pair
+        const [search, replace] = pair
 
-        attr1 = {'fill': 'green'}
-        attr2 = {'stroke': 'green'}
-        attr3 = {'backgroundColor': 'green'}
+        attr1 = { fill: 'green' }
+        attr2 = { stroke: 'green' }
+        attr3 = { backgroundColor: 'green' }
 
-        var result = new RecolorDashboard(search, replace, '1', location).apply(node, 'data')
-
+        const result = new RecolorDashboard(search, replace, '1', location).apply(node, 'data')
 
         if (result !== false) {
           assert.equal(result.length, 3)
@@ -80,9 +92,9 @@ describe('RecolorDashboard', function () {
     })
 
     it('does not change the colors of a dashboard if dashboard id does not match', function () {
-      attr1 = {'fill': 'green'}
-      attr2 = {'stroke': 'green'}
-      attr3 = {backgroundColor: 'green'}
+      attr1 = { fill: 'green' }
+      attr2 = { stroke: 'green' }
+      attr3 = { backgroundColor: 'green' }
 
       new RecolorDashboard('green', 'blue', '2', location).apply(node, 'data')
 

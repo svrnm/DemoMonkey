@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react'
 import PropTypes from 'prop-types'
 import NavigationHeader from './NavigationHeader'
@@ -34,21 +47,21 @@ class Navigation extends React.Component {
       }
     }
     items.forEach((orig, index) => {
-      var item = Object.assign({}, orig)
+      const item = Object.assign({}, orig)
       if (!find(item)) {
         return
       }
-      var currentIsActive = state.active === item.id
+      const currentIsActive = state.active === item.id
       if (currentIsActive) {
         item.active = true
         cursor = item
       }
       item.nodeType = 'item'
-      var path = ('./' + item.name).split('/')
+      const path = ('./' + item.name).split('/')
       item.name = path.pop()
-      var sub = path.reverse().reduce((acc, dir, index) => {
-        var id = '/' + path.slice(index, -1).join('/')
-        var result = {
+      const sub = path.reverse().reduce((acc, dir, index) => {
+        const id = '/' + path.slice(index, -1).join('/')
+        const result = {
           name: dir,
           nodeType: 'directory',
           id,
@@ -68,7 +81,7 @@ class Navigation extends React.Component {
 
   constructor(props) {
     super(props)
-    var { tree, cursor } = Navigation.buildTree(this.props.items, { active: props.active, search: '', toggled: {} })
+    const { tree, cursor } = Navigation.buildTree(this.props.items, { active: props.active, search: '', toggled: {} })
     this.state = {
       data: tree,
       cursor: cursor,
@@ -80,7 +93,7 @@ class Navigation extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    var { tree, cursor } = Navigation.buildTree(nextProps.items, { ...prevState, active: nextProps.active })
+    const { tree, cursor } = Navigation.buildTree(nextProps.items, { ...prevState, active: nextProps.active })
     return { data: tree, cursor: cursor }
   }
 
@@ -90,7 +103,7 @@ class Navigation extends React.Component {
 
   handleSearchUpdate(event) {
     this.setState({ search: event.target.value.toLowerCase() }, function () {
-      var { tree, cursor } = Navigation.buildTree(this.props.items, this.state)
+      const { tree, cursor } = Navigation.buildTree(this.props.items, this.state)
       this.setState({ data: tree, cursor: cursor })
     })
   }
@@ -103,7 +116,7 @@ class Navigation extends React.Component {
     node.active = true
     if (node.children) {
       node.toggled = toggled
-      var s = this.state.toggled
+      const s = this.state.toggled
       s[node.id] = toggled
       this.setState({ toggled: s })
     } else {

@@ -1,4 +1,16 @@
-/* global chrome */
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import '../styles/main.less'
 import '../icons/monkey.png'
 import '../icons/monkey-dev.png'
@@ -15,14 +27,14 @@ import { logger, connectLogger } from './helpers/logger'
 
 function updateCurrentView(v) {
   if (window.location.hash !== '#' + v) {
-    var cv = typeof v === 'undefined' ? '' : v
+    const cv = typeof v === 'undefined' ? '' : v
     window.history.pushState(null, null, '#' + cv)
     window.dispatchEvent(new Event('viewchange'))
   }
 }
 
 function renderOptionsPageApp(root, store) {
-  chrome.permissions.getAll(function (permissions) {
+  window.chrome.permissions.getAll(function (permissions) {
     ReactDOM.render(
       <Provider store={store}>
         <OptionsPageApp
@@ -33,14 +45,14 @@ function renderOptionsPageApp(root, store) {
       </Provider>, root)
   })
 
-  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  window.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.receiver && request.receiver === 'dashboard' && typeof request.logMessage !== 'undefined') {
       console.log('Message received', request.logMessage)
-      var msg = typeof request.logMessage === 'string' ? request.logMessage : JSON.stringify(request.logMessage)
-      var mbox = document.getElementById('message-box')
+      const msg = typeof request.logMessage === 'string' ? request.logMessage : JSON.stringify(request.logMessage)
+      const mbox = document.getElementById('message-box')
       mbox.className = 'fade-to-visible'
       mbox.innerHTML = '(' + new Date().toLocaleTimeString() + ') ' + msg
-      var timeoutid = setTimeout(function () {
+      const timeoutid = setTimeout(function () {
         console.log(timeoutid, mbox.dataset.timeoutid)
         if (parseInt(mbox.dataset.timeoutid) === timeoutid) {
           mbox.className = 'fade-to-hidden'
@@ -52,7 +64,7 @@ function renderOptionsPageApp(root, store) {
 }
 
 function renderPopupPageApp(root, store) {
-  chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+  window.chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
     const currentUrl = tabs.length > 0 ? tabs[0].url : ''
     ReactDOM.render(
       <Provider store={store}><PopupPageApp currentUrl={currentUrl}/></Provider>, root)
@@ -81,7 +93,7 @@ store.ready().then(() => {
 
   // updateCurrentPage()
 
-  const manifest = new Manifest(chrome)
+  const manifest = new Manifest(window.chrome)
 
   logger('debug', `DemoMonkey ${manifest.version()}`).write()
 
@@ -105,7 +117,7 @@ store.ready().then(() => {
         break
       case 'DevToolsPageApp':
         if (window.store.state.settings.optionalFeatures.inDevTools === true) {
-          chrome.devtools.panels.create(`DemoMonkey ${manifest.version()}`,
+          window.chrome.devtools.panels.create(`DemoMonkey ${manifest.version()}`,
             'icons/monkey_16.png',
             'options.html',
             function (panel) {

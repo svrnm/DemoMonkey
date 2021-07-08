@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import SearchAndReplace from '../../src/commands/SearchAndReplace'
 import Hide from '../../src/commands/Hide'
 import Group from '../../src/commands/Group'
@@ -8,8 +21,8 @@ import Command from '../../src/commands/Command'
 import CommandBuilder from '../../src/commands/CommandBuilder'
 import chai from 'chai'
 
-var assert = chai.assert
-var expect = chai.expect
+const assert = chai.assert
+const expect = chai.expect
 
 describe('Command', function () {
   describe('#_extractForCustomCommand', function () {
@@ -93,12 +106,12 @@ describe('Command', function () {
     it('supports quoting for parameter lists', function () {
       assert.deepEqual(new CommandBuilder()._extractForCustomCommand(
         'ns.cmd("a,\'s",\' "d \',f,  g, (h), "i\')'),
-        ({
-          extracted: true,
-          command: 'cmd',
-          namespace: 'ns',
-          parameters: ['a,\'s', ' "d ', 'f', 'g', '(h)', '"i\'']
-        }))
+      ({
+        extracted: true,
+        command: 'cmd',
+        namespace: 'ns',
+        parameters: ['a,\'s', ' "d ', 'f', 'g', '(h)', '"i\'']
+      }))
     })
   })
   describe('#build', function () {
@@ -107,33 +120,33 @@ describe('Command', function () {
     })
 
     it('should create a SearchAndReplace for regular expression command', function () {
-      var command = new CommandBuilder().build('!/a/', 'b')
+      const command = new CommandBuilder().build('!/a/', 'b')
       expect(command).to.be.an.instanceof(SearchAndReplace)
       expect(command.search).to.be.an.instanceof(RegExp)
     })
 
     it('should create a SearchAndReplace for regular expression command with standard modifier', function () {
-      var command = new CommandBuilder().build('!/a/i', 'b')
+      const command = new CommandBuilder().build('!/a/i', 'b')
       expect(command).to.be.an.instanceof(SearchAndReplace)
       expect(command.search).to.be.an.instanceof(RegExp)
     })
 
     it('should create an no-op Command for an invalid regular expression', function () {
-      var command = new CommandBuilder().build('!/??/i', 'b')
+      const command = new CommandBuilder().build('!/??/i', 'b')
       expect(command).to.be.an.instanceof(Command)
     })
 
     it('should create a SearchAndReplace for regular expression command with p modifier', function () {
-      var command = new CommandBuilder().build('!/TestCase/ip', 'CaseTested')
+      const command = new CommandBuilder().build('!/TestCase/ip', 'CaseTested')
       expect(command).to.be.an.instanceof(SearchAndReplace)
       expect(command.search).to.be.an.instanceof(RegExp)
       expect(command.replace).to.be.a('function')
 
-      var n1 = {
+      const n1 = {
         value: 'TestCase'
       }
 
-      var n2 = {
+      const n2 = {
         value: 'TESTCASE'
       }
 
@@ -173,12 +186,12 @@ describe('Command', function () {
       })
 
     it('should create a (effect-less) Command for an unknown command', function () {
-      var command = new CommandBuilder().build('!unknown', 'b')
+      const command = new CommandBuilder().build('!unknown', 'b')
       expect(command).to.be.an.instanceof(Command)
     })
 
     it('should create a group of commands for !replaceFlowmapNode and namespaces [appdynamics]', function () {
-      var command = new CommandBuilder(['appdynamics']).build('!replaceFlowmapNode(service1)', 'new-name,php,5,critical,critical')
+      const command = new CommandBuilder(['appdynamics']).build('!replaceFlowmapNode(service1)', 'new-name,php,5,critical,critical')
       expect(command).to.be.an.instanceof(Group)
       expect(command.helpers[0]).to.be.an.instanceof(ReplaceFlowmapIcon)
       expect(command.helpers[1]).to.be.an.instanceof(Group)
@@ -188,7 +201,7 @@ describe('Command', function () {
     })
 
     it('should create an If command with child for !if', function () {
-      var command = new CommandBuilder(['appdynamics']).build('!if(test, .test, !replaceFlowmapIcon(service1))', 'service2')
+      const command = new CommandBuilder(['appdynamics']).build('!if(test, .test, !replaceFlowmapIcon(service1))', 'service2')
       expect(command).to.be.an.instanceof(If)
       expect(command.thenCmd).to.be.an.instanceof(ReplaceFlowmapIcon)
     })

@@ -1,4 +1,16 @@
-/* global chrome */
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react'
 import Tabs from '../shared/Tabs'
 import Pane from '../shared/Pane'
@@ -8,7 +20,7 @@ import { connect } from 'react-redux'
 import ConfigurationList from './ConfigurationList'
 import PropTypes from 'prop-types'
 
-const manifest = new Manifest(chrome)
+const manifest = new Manifest(window.chrome)
 
 /* The PopupPageApp will be defined below */
 class App extends React.Component {
@@ -64,7 +76,7 @@ class App extends React.Component {
         </Pane>
         <Pane link={(e) => {
           e.preventDefault()
-          chrome.runtime.openOptionsPage()
+          window.chrome.runtime.openOptionsPage()
         }} label="Dashboard"/>
       </Tabs>
     </Page>

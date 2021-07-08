@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import UndoElement from './UndoElement'
 import Color from 'color'
 import match from '../helpers/match.js'
@@ -70,7 +83,7 @@ class Command {
     if (value.match(/^(?:[0-9a-f]{3,4}|(?:[0-9a-f]{6}(?:[0-9a-f]{2})?))$/i) !== null) {
       value = '#' + value
     }
-    var color = false
+    let color = false
     try {
       color = Color(value)
     } catch (e) {
@@ -111,7 +124,7 @@ class Command {
   }
 
   _hideNode(node) {
-    var original = node.style.display
+    const original = node.style.display
     node.style.display = 'none'
     if (original !== node.style.display) {
       return new UndoElement(node, 'style.display', original, 'none')

@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Command from './Command'
 import UndoElement from './UndoElement'
 
@@ -31,10 +44,10 @@ class ReplaceNeighbor extends Command {
     // Check if we can find search in the current node
     if (typeof target[key] !== 'undefined' && this._match(target[key].trim(), this.search, null) && this._checkLocation()) {
       // Walk up some parent nodes
-      var parentNode = this._walk(target, this.nthParent)
+      const parentNode = this._walk(target, this.nthParent)
       // Check if the parent node exists and has a querySelector, _walk can return false
       if (parentNode && typeof parentNode.querySelector === 'function') {
-        var neighbor = parentNode.querySelector(this.cssSelector)
+        const neighbor = parentNode.querySelector(this.cssSelector)
         // Check if we found a proper neighbor:
         // - If cb is defined, we use it for updating the found neighbor
         // - Otherwise, if this neighbor has at least one childNode, we assume that the child is a textNode

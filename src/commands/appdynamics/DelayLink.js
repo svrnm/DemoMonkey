@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Command from '../Command'
 import UndoElement from '../UndoElement'
 
@@ -14,12 +27,12 @@ class DelayLink extends Command {
   }
 
   apply(target, key = 'value') {
-    var document = this.window.document
+    const document = this.window.document
 
     if (this._match(target[key], this.search)) {
-      var delayFunction = (event) => {
+      const delayFunction = (event) => {
         event.preventDefault()
-        var icons = [
+        const icons = [
           'data:image/gif;base64,R0lGODlhEgASAPUAAFpuhGNvgXF6iHuJnFyJu2SErHuMo2uMtH2cvGaOwmaSxHucw3SczXKe0nOi1Xyj1Hqm242WoYqcs5WqvIOgxIujxIqmy5usw4yr04Or26O93Kq925294p/C7aHH9rvW+8TS4czX49Pf+NTi9Nrm9N3p9tPl+93s/d31/+fr7+3u7+Xs9OPu/Onv+e/09uT1/+31/OX4//T09Pn09fL1+vn1+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAQHAAAAIf4gQ3JvcHBlZCB3aXRoIGV6Z2lmLmNvbSBHSUYgbWFrZXIAIf8LTkVUU0NBUEUyLjADAQAAACwAAAAAEgASAAAGkUCZUEhz0Wiw5KtWdLlUQ9mxFQkMLqKj0xWVOUmBwyKh0KBgyG4RFuJgHhCKpZWOzma12gsGmjwaG3tdd3kwLzElDwwVJjBdakUfCAwejo9ELikuKBQMGZaXRzQyLxcKDqCPoqQXBKihoqMvBgUYqUOxRycABx23RLkrAhIjo6q5MCssaLC5SL/HR0mX1NXWQ0EAOw==',
           'data:image/gif;base64,R0lGODlhEgASAPUAAFNsimNvgWRzjHuJnFuGum6Go3uMo3SNq3WRrWOLu3WStHqWulqKxGOTzHucw3SczXGe2HSgz32q3JKdroObtYqcs4KdupWlu4qmy5usw4Or25O03KS1y6q906O93LrF1rLF2pzI9aHH9tTf7dHf9MXg/czk/dPp/931/+3u7+Xs9OPu/P7v8+/09uT1/+31/PT09Pn09fL1+vn1+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAQHAAAALAAAAAASABIAAAaQQJhQRiwSX8iXsJUaGp/IFkwqrFaRF8EGVbR6VS+DwYFJeqszIunyeHhQyrPztdI8LKa43FpSPEJ6ZzExQigLERKBVTKLLy4ZDRBUXoyERI8MknJEQy8oBwQak1acMDIvJgAJInpGTi4uBQAVJ6RdUy0rAwAIHS62pC0fARQcSCx7pi0jEyBwL8jJ0sktozBBADs=',
           'data:image/gif;base64,R0lGODlhEgASAPUAAD1soVNsiltxikttlEJtnUtzo0p1qlJ8rHuMo3SNq2OJtWGHumOLu2ySvXWStFWJw2uUxGOTzHOaxXSczW2f2XKe0nKh2n2q3IObtYKdup6ptpWlu5SsxJusw52xxIOr25u006zD3LTE1bLF2pzF+avF46HH9tTf7czk/drm9NPl+9Pp/93s/d31//Pz7+vv9O/09uT1/+31/PT09PL1+vn1+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAQHAAAALAAAAAASABIAAAZ5wJlwSBTSYMVk8qhszmIxGs1ZHHleU+qQcADFtEOIJKMCC1GOCklmbqUvbCpNFutELHGlayajcx4UeU1zLQkLH4JKfSgBECaJRH0xLAoFGStONX0qCAMNIS2DNCgYAAYOIDCQQqobAgwTJS19VCcaIikwSFqSMbpDQQA7',
@@ -37,20 +50,20 @@ class DelayLink extends Command {
           'data:image/gif;base64,R0lGODlhEgASAPUAAFRrhFNsiltxikJtnUJtokRypFuGum6Go3CHpWOJtWuMtH2cvFWJw2OTzGqVynSczW2d1G2f2XKe0nqm24SVq4ybrYObtYqcs5yrvKKuvISlzJusw5Styp2xxJWy05O03LO8yqq904Sx5ouz5JXC9ZzE9MTS4czX49Tf7dHf9NTi9Nrm9NPl+9nn+t31/+/09uT1/+31/PT09Pn09fL1+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAQHAAAALAAAAAASABIAAAZyQJmMRozFYEjYkTibCYW02CqDEAAOGBXxCYVxCAWDAwJpMDyuGE34elkChseoRBJBIguNURgDDRQbLEZGLB0SECExfCYJHy5KgzAuExAXLXyDTy9QNCoUFSiYUVycMCknMKSqq6ytrq+wsbKztLW2tzJBADs=',
           'data:image/gif;base64,R0lGODlhEgASAPUAAFRrhFtxikttlHSJnluGumOLu3qUtHOTu32cvFqKxGuUxGOTzG2bzXucw3SczW2d1G2f2XKe0nyj1HKh2pWlu5yrvKKuvIOgxJquyoyr04Or25Kv052724Sx5pXC9ZzE9KTC5bvN4tvj7czk/drm9NPl+931/9z4/+Xs9Ovv9O/09uT1/+31/PT09PL1+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAQHAAAALAAAAAASABIAAAZuwJZQyGKtjsihcoiyDACBQYWkWiovAoKCwVgkNiaWywo6aD6eTiTSyKTGy6KcVcI8IJwTfOjqu4orJhMPCCN7VkQsIwYOHyyISmImBhEaj5CRFAoSl5hEFQWcnkMsIhQhh5h/R6mjrq+wsbKzS0EAOw=='
         ]
-        var counter = 0
+        let counter = 0
 
         // <div style="position: fixed; bottom:0; left:0; background: #f2f2f2; border: 1px solid #b3b3b3; font-size: 10px; padding: 1px; border-radius: 2px">Waiting for ...</div>
-        var loading = document.createElement('div')
+        const loading = document.createElement('div')
         loading.setAttribute('style', 'position: fixed; bottom:0; left:0; width: 480px; background: #f2f2f2; border: 1px solid #b3b3b3; font-size: 10px; padding: 1px; border-radius: 2px')
         loading.innerHTML = 'Waiting for ' + target[key] + '...'
         document.getElementsByTagName('body')[0].append(loading)
 
         document.querySelectorAll('link[rel="icon"]').forEach((e) => e.remove())
-        var favicon = document.createElement('link')
+        const favicon = document.createElement('link')
         // '<link rel="icon" href="' + icons[counter] + '">'
         favicon.setAttribute('rel', 'icon')
         document.getElementsByTagName('head')[0].appendChild(favicon)
-        var updateFavicon = function () {
+        const updateFavicon = function () {
           favicon.href = icons[(++counter) % (icons.length)]
           setTimeout(updateFavicon, 75)
         }
@@ -60,7 +73,7 @@ class DelayLink extends Command {
         }, this.delay * 1000)
         return false
       }
-      var original = target.onclick
+      const original = target.onclick
       target.onclick = delayFunction
       return new UndoElement(target, 'onClick', original, delayFunction)
     }

@@ -1,30 +1,43 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Group from '../../src/commands/Group'
 import Hide from '../../src/commands/Hide'
 
-var assert = require('assert')
+const assert = require('assert')
 
-var window = {
+const window = {
   location: {
     href: '',
     hash: '#/location=APPS_ALL_DASHBOARD&timeRange=last_15_minutes.BEFORE_NOW.-1.-1.15'
   }
 }
 
-var appNode = {
+const appNode = {
   style: {
     display: 'block'
   },
   className: 'ads-application-card'
 }
 
-var appNode2 = {
+const appNode2 = {
   style: {
     display: 'block'
   },
   className: 'x-grid-row'
 }
 
-var node = {
+const node = {
   data: ' UserOffers ',
   parentElement: {
     data: 'inner',
@@ -40,7 +53,7 @@ var node = {
   }
 }
 
-var node2 = {
+const node2 = {
   data: ' UserOffers ',
   parentElement: {
     data: 'inner',

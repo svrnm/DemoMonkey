@@ -1,11 +1,24 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Hide from '../../src/commands/Hide'
 import UndoElement from '../../src/commands/UndoElement'
 import chai from 'chai'
 
-var assert = chai.assert
-var expect = chai.expect
+const assert = chai.assert
+const expect = chai.expect
 
-var location = {
+const location = {
   href: '/folder',
   hash: '#hash'
 }
@@ -13,7 +26,7 @@ var location = {
 describe('Hide', function () {
   describe('#apply', function () {
     it('hides a text node', function () {
-      var node = {
+      const node = {
         value: 'test',
         parentElement: {
           style: {
@@ -35,7 +48,7 @@ describe('Hide', function () {
     })
 
     it('hides a text node with "contains" match', function () {
-      var node = {
+      const node = {
         value: 'abctestabc',
         parentElement: {
           style: {
@@ -57,7 +70,7 @@ describe('Hide', function () {
     })
 
     it('hides a text node with "not" match', function () {
-      var node = {
+      const node = {
         value: 'abcnotabc',
         parentElement: {
           style: {
@@ -81,7 +94,7 @@ describe('Hide', function () {
     })
 
     it('hides a text node if filter applies', function () {
-      var node = {
+      const node = {
         value: 'test',
         parentElement: {
           style: {
