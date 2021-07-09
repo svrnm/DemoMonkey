@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "DemoMonkey",
   "description": "Tamper your application's UI to demo almost anything",
-  "version": "7.1.1",
+  "version": "7.2.0",
   "author": "Severin Neumann <severin.neumann@altmuehlnet.de>",
   "homepage_url": "https://github.com/svrnm/DemoMonkey/",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
