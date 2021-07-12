@@ -14,7 +14,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Variable from '../../../models/Variable'
-import AceEditor from 'react-ace'
+import VariableEditor from '../../shared/Variable'
 
 import 'ace-builds/src-noconflict/theme-xcode'
 import 'ace-builds/src-noconflict/theme-merbivore'
@@ -76,11 +76,8 @@ class GlobalVariables extends React.Component {
     upload.click()
   }
 
-  deleteVariable(event, index) {
-    event.preventDefault()
+  deleteVariable(index) {
     const globalVariables = this.state.globalVariables.filter((v, i) => i !== index)
-
-    console.log(globalVariables)
 
     this.setState({
       hasUnsavedChanges: true,
@@ -110,55 +107,19 @@ class GlobalVariables extends React.Component {
   render() {
     const variables = this.state.globalVariables.filter(v => v != null).map(v => new Variable(v.key, v.value))
 
+    const unsaved = this.state.hasUnsavedChanges ? 'inline' : 'none'
+
     return (<div>
       <p>
         Global variables defined here can be used in all your configurations. You can store images and colors as variables to simplify the process of replacing them.
       </p>
       {variables.length > 0 ? '' : <div className="no-variables">No variables defined</div>}
       {variables.map((variable, index) => {
-        return (<div className="variable-box" key={index}>
-          <label htmlFor="variable-1">
-            <input type="text" value={variable.name} onChange={(e) => this.updateVariable(index, e.target.value, variable.value)} />&nbsp;
-            <form id={'variable-form-' + index} style={{ display: 'none' }}>
-              <input multiple id={'variable-upload-' + index} type="file" />
-            </form>
-            <small><a href="#" onClick={(e) => this.showUploadDialog(e, index, variable.name)}>
-              (from image)
-            </a>&nbsp;</small>
-            <input type="color" id={'variable-color-' + index} style={{ display: 'none' }} />
-            <small><a href="#" onClick={(e) => this.showColorDialog(e, index, variable.name)}>
-              (from color)
-            </a>&nbsp;</small>
-            <small><a href="#" onClick={(e) => { e.preventDefault(); this.updateVariable(index, variable.name, '') }}>(reset)</a>&nbsp;</small>
-            <small><a href="#" onClick={(e) => this.deleteVariable(e, index)}>(delete)</a></small>
-          </label>
-          <AceEditor height="4.5em" width="700px"
-            name={variable.id}
-            minLines={5}
-            theme={this.props.isDarkMode ? 'merbivore' : 'xcode'}
-            mode="html"
-            wrapEnabled={true}
-            highlightActiveLine={false}
-            showGutter={false}
-            autoScrollEditorIntoView={true}
-            value={variable.value}
-            ref={(c) => { this.editor = c }}
-            onChange={(value) => this.updateVariable(index, variable.name, value)}
-            editorProps={{ $blockScrolling: 'Infinity' }}
-          />
-          <div className="help">{variable.description}</div>
-          <div>
-            {
-              variable.value.startsWith('data:image')
-                ? <img src={variable.value} style={{ width: '100px', heigth: '100px' }} />
-                : ''
-            }
-          </div>
-        </div>)
+        return (<VariableEditor key={index} onUpdate={(name, value) => this.updateVariable(index, name, value)} onDelete={() => this.deleteVariable(index)} variable={variable} isGlobal={true} isDarkMode={this.props.isDarkMode} />)
       })}
       <button className="save-button" onClick={() => this.addVariable()}>Add Variable</button>
       <button className="save-button" onClick={() => this.save()}>Save</button>
-      <span style={{ display: this.state.hasUnsavedChanges ? 'inline' : 'none' }} className="unsaved-warning">(Unsaved Changes)</span>
+      <span style={{ display: unsaved }} className="unsaved-warning">(Unsaved Changes)</span>
     </div>
     )
   }

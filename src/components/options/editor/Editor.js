@@ -14,7 +14,7 @@
 import React from 'react'
 import Tabs from '../../shared/Tabs'
 import Pane from '../../shared/Pane'
-import Variable from './Variable'
+import Variable from '../../shared/Variable'
 import CodeEditor from './CodeEditor'
 import Configuration from '../../../models/Configuration'
 import PropTypes from 'prop-types'
@@ -277,7 +277,7 @@ class Editor extends React.Component {
             <div className="scrolling-pane">
               {variables.length > 0 ? '' : <div className="no-variables">No variables defined</div>}
               {variables.map((variable, index) => {
-                return <Variable key={variable.id} onValueUpdate={(id, value) => this.updateVariable(id, value)} variable={variable} isDarkMode={this.props.isDarkMode} />
+                return <Variable isGlobal={false} key={variable.id} onUpdate={(id, value) => this.updateVariable(id, value)} variable={variable} isDarkMode={this.props.isDarkMode} />
               })}
             </div>
           </Pane>
