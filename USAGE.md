@@ -373,6 +373,29 @@ to block them:
 !blockUrl(http://api.demomonkey.net/)
 ```
 
+If you want to hook only into certain types of requests, you can provide a type as second parameter:
+
+```ini
+!blockUrl(http://api.demomonkey.net/, xmlhttprequest)
+```
+
+The available types are:
+
+- `*`
+- `main_frame`
+- `sub_frame`
+- `stylesheet`
+- `script`
+- `image`
+- `font`
+- `object`
+- `xmlhttprequest`
+- `ping`
+- `csp_report`
+- `media`
+- `websocket`
+- `other`
+
 ### Conditional Replacements
 
 Some but not all commands of demo monkey allow you to restrict application of the command based on CSS selectors or URL

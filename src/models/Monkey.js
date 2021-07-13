@@ -88,7 +88,7 @@ class Monkey {
     const sum = {}
     // Some UIs provide corner cases we want to cover with DemoMonkey for ease of use
     // Most of them are text, that is shortened or split over multiple elements.
-    // We do them early, because later modfications may cause problems to get them solved.
+    // We do them early, because later modifications may cause problems to get them solved.
     this._cornerCases(configuration)
 
     sum.text = (this._applyOnXpathGroup(configuration, '//body//text()[ normalize-space(.) != ""]', 'text', 'data'))
@@ -98,7 +98,6 @@ class Monkey {
     sum.input = (this._applyOnXpathGroup(configuration, '//body//input', 'input', 'value'))
     sum.image = (this._applyOnXpathGroup(configuration, '//body//img', 'image', 'src'))
     sum.image += (this._applyOnXpathGroup(configuration, '//body//div[contains(@ad-test-id, "dash-image-widget-renderer")]', 'image', 'style.backgroundImage'))
-    sum.link = (this._applyOnXpathGroup(configuration, '//body//a', 'link', 'href'))
     sum.dashboard = (this._applyOnXpathGroup(configuration, '//body//div[contains(@class, "ads-dashboard-canvas-pane")]', 'ad-dashboard', 'style'))
 
     // Apply the text commands on the title element

@@ -13,15 +13,23 @@
  */
 import Command from './Command'
 
-class DelayUrl extends Command {
-  constructor(search, delay, type = '*', includeRules, excludeRules) {
+class InterceptWebRequest extends Command {
+  constructor(search, value, action, type = '*', includeRules, excludeRules) {
     super()
     this.search = search
-    this.delay = delay
+    this.action = action
     this.type = type
     this.includeRules = includeRules
     this.excludeRules = excludeRules
-    this.id = this.search + '-delay-' + this.delay + '-type-' + this.type + '-includes-' + this.includeRules.join('--') + '-excludes-' + this.excludeRules.join('--')
+
+    this.options = {}
+
+    if (this.action === 'block') {
+      this.id = this.search + '-block' + '-type-' + this.type + '-includes-' + this.includeRules.join('--') + '-excludes-' + this.excludeRules.join('--')
+    } else {
+      this.options[this.action] = value
+      this.id = this.search + '-' + this.action + '-' + value + '-type-' + this.type + '-includes-' + this.includeRules.join('--') + '-excludes-' + this.excludeRules.join('--')
+    }
   }
 
   isApplicableForGroup(group) {
@@ -40,9 +48,9 @@ class DelayUrl extends Command {
     target.add({
       id: this.id,
       url: this.search,
-      action: 'delay',
+      action: this.action,
       type: this.type,
-      options: { delay: this.delay },
+      options: this.options,
       includeRules: this.includeRules,
       excludeRules: this.excludeRules
     })
@@ -57,4 +65,4 @@ class DelayUrl extends Command {
   }
 }
 
-export default DelayUrl
+export default InterceptWebRequest

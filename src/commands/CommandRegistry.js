@@ -21,7 +21,6 @@ import Hide from './Hide'
 import Group from './Group'
 import ReplaceImage from './ReplaceImage'
 import RecolorImage from './RecolorImage'
-import ReplaceLink from './ReplaceLink'
 import ReplaceNeighbor from './ReplaceNeighbor'
 import InsertHTML from './InsertHTML'
 import OverwriteHTML from './OverwriteHTML'
@@ -29,13 +28,10 @@ import ReplaceFlowmapIcon from './appdynamics/ReplaceFlowmapIcon'
 import ReplaceFlowmapConnection from './appdynamics/ReplaceFlowmapConnection'
 import RecolorDashboard from './appdynamics/RecolorDashboard'
 import SetDashboardBackground from './appdynamics/SetDashboardBackground'
-import DelayLink from './appdynamics/DelayLink'
 import ReplaceGeoStatus from './appdynamics/ReplaceGeoStatus'
 import RemoveFlowmapNode from './appdynamics/RemoveFlowmapNode'
 import AddFlowmapNode from './appdynamics/AddFlowmapNode'
-import BlockUrl from './BlockUrl'
-import DelayUrl from './DelayUrl'
-import ReplaceUrl from './ReplaceUrl'
+import InterceptWebRequest from './InterceptWebRequest'
 import Eval from './Eval'
 import Stage from './Stage'
 import UndoElement from './UndoElement'
@@ -193,7 +189,7 @@ export default [
     signature: '(${1}) = ${2}',
     deprecated: true,
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new ReplaceLink(parameters[0], value)
+      return new QuerySelector(`a[href="${parameters[0]}"]`, 'href', value)
     }
   },
   {
@@ -201,7 +197,7 @@ export default [
     aliases: [],
     signature: '(${1})',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new BlockUrl(parameters[0], parameters[1], includeRules, excludeRules)
+      return new InterceptWebRequest(parameters[0], value, 'block', parameters[1], includeRules, excludeRules)
     }
   },
   {
@@ -209,7 +205,7 @@ export default [
     aliases: [],
     signature: '(${1}) = ${2}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new DelayUrl(parameters[0], value, parameters[1], includeRules, excludeRules)
+      return new InterceptWebRequest(parameters[0], value, 'delay', parameters[1], includeRules, excludeRules)
     }
   },
   {
@@ -217,7 +213,7 @@ export default [
     aliases: ['redirectUrl'],
     signature: '(${1}) = ${2}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new ReplaceUrl(parameters[0], value, parameters[1], includeRules, excludeRules)
+      return new InterceptWebRequest(parameters[0], value, 'replace', parameters[1], includeRules, excludeRules)
     }
   },
   {
@@ -423,14 +419,6 @@ export default [
           new OverwriteHTML('EUM_MOBILE_SESSION_DETAILS', 'ad-screenshot-tile-stitcher[ad-container-width="500"] > div', screenshotHtml, location),
           new OverwriteHTML('EUM_MOBILE_SESSION_DETAILS', 'ad-screenshot-tile-stitcher[ad-container-width="202"] > div', thumbnailHtml, location)
         ])
-      }
-    },
-    {
-      name: 'delayLink',
-      aliases: [],
-      signature: '(${1}) = ${2}',
-      command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-        return new DelayLink(parameters[0], value, window)
       }
     },
     {

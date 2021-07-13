@@ -79,7 +79,6 @@ import { logger, connectLogger } from './helpers/logger'
   function webRequestHook(details) {
     return Object.keys(hookedUrls).reduce((acc, id) => {
       const { url, type, action, options, includeRules, excludeRules } = hookedUrls[id]
-      // "main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", or "other"
       if (new MatchRule(includeRules, excludeRules).test(details.url) && match(details.url, url) && (type === '*' || type.split(',').map(e => e.trim()).includes(details.type))) {
         logger('info', `Applying hook ${action} on ${details.url} [${details.type}] (matching ${url})`).write()
         return Object.assign(acc, hooks[action](options))
