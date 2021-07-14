@@ -36,6 +36,7 @@ into a personalized experience for your audience.**
   - [Replace Neighbor](#replace-neighbor)
   - [Insert before and after a DOM element](#insert-before-and-after-a-dom-element)
   - [Replace and patch response of AJAX requests](#replace-and-patch-response-of-ajax-requests)
+  - [Demo Stages](#demo-stages)
 - [Commands in Namespaces](#commands-in-namespaces)
   - [AppDynamics](#appdynamics)
     - [Replace Flowmap Icons](#replace-flowmap-icons)
@@ -533,6 +534,21 @@ and turn on `Hook into Ajax`. Now you can replace a response or you can apply a 
 ```
 
 Use this feature with care, since this will patch native javascript functionality to intercept API calls.
+
+### Demo Stages
+
+If you have a set of common demo flows you use regularly, DemoMonkey can help you to understand how long it takes
+you to go from one step (or stage) of your flow to another. Provide "stages" by providing parts of the URL or parts
+of the page title:
+
+```ini
+!stage(homepage.html, Homepage) = Demo Start
+!stage(WIZARD_STEP_1) = Demo - Step1
+!stage(,Overview) = Demo - Last Step
+```
+
+While going through your demo, DemoMonkey will measure the time it takes you to go from one stage to another
+and log that information into the `Logs` you can access from the main dashboard navigation.
 
 ## Commands in Namespaces
 

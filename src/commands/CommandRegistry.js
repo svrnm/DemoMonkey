@@ -246,7 +246,7 @@ export default [
     aliases: [],
     signature: '(${1}) = ${2}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new Stage(parameters, value)
+      return new Stage(parameters[0], parameters[1], value)
     }
   },
   {
