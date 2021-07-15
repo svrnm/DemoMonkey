@@ -442,16 +442,17 @@ export default [
       aliases: [],
       signature: '(${1}, ${2}) = ${3}',
       command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-        if (typeof value === 'string' && ['λ', 'lambda'].includes(value.toLowerCase())) {
+        if (typeof value === 'string' && ['λ', 'lambda', 'otel', 'opentelemetry'].includes(value.toLowerCase())) {
+          const imageName = ['λ', 'lambda'].includes(value.toLowerCase()) ? 'AWSLambda' : 'openTelemetry'
           return new Group([
             new ReplaceNeighbor(parameters[0], '', 2, 'text.adsNodeCountText', '', '', location),
             new ReplaceNeighbor(parameters[0], '', 2, 'text.adsNodeCountTextLarge', '', '', location),
             new ReplaceNeighbor(parameters[0], '', 2, 'text.adsNodeCountTextSmall', '', '', location),
-            new ReplaceNeighbor(parameters[0], 'images/tierTypes/AWSLambda.svg', 2, 'g.adsNodeCountContainer image', '', '', location, (search, replace, node) => {
+            new ReplaceNeighbor(parameters[0], 'images/tierTypes/' + imageName + '.svg', 2, 'g.adsNodeCountContainer image', '', '', location, (search, replace, node) => {
               // <image transform="translate(-15, -15 )" width="30" height="30" xlink:href=""></image>
               const bg = node.parentElement.querySelector('.adsNodeCountBackground')
               if (bg && bg.style && bg.style.fill !== 'rgb(255, 255, 255)') {
-                replace = 'images/tierTypes/AWSLambda_white.svg'
+                replace = 'images/tierTypes/' + imageName + '_white.svg'
               }
               if (node.href.baseVal !== replace) {
                 const original = node.href.baseVal

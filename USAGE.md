@@ -42,6 +42,7 @@ into a personalized experience for your audience.**
     - [Replace Flowmap Icons](#replace-flowmap-icons)
     - [Hide Applications, Databases, BTs](#hide-applications-databases-bts)
     - [Replace Flowmap Connections](#replace-flowmap-connections)
+    - [Replace Flowmap Node Count](#replace-flowmap-node-count)
 - [Learn More](#learn-more)
 
 ## Configurations
@@ -619,6 +620,28 @@ by using a special command:
 
 ```ini
 !hideFlowmapConnection(ECommerce-Services, Inventory-Services)
+```
+
+#### Replace Flowmap Node Count
+
+To change the number of nodes (and tiers) on a flowmap node, use the following:
+
+```ini
+!replaceNodeCount(NodeName) = 5
+```
+
+This will increase the node count to 5. If you have a business application with nodes and tiers you can provide
+two numbers to have both replaced:
+
+```ini
+!replaceNodeCount(OtherApplication) = 15,31
+```
+
+Finally, if you have a AWS Lambda or an OpenTelemetry tier, you can set them here as well:
+
+```ini
+!replaceNodeCount(LambdaApp) = lambda
+!replaceNodeCount(Service_OT) = otel
 ```
 
 ## Learn More
