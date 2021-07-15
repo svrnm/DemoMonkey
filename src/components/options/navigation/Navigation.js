@@ -132,6 +132,7 @@ class Navigation extends React.Component {
 
   _safeRenderTree() {
     try {
+      console.log(navigationTheme)
       return <Treebeard style={navigationTheme} decorators={decorators} data={this.state.data} onToggle={this.onToggle} />
     } catch (e) {
       return <ErrorBox error={e} />

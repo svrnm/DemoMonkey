@@ -12,6 +12,10 @@
  * limitations under the License.
  */
 export default {
+  subtree: {
+    listStyle: 'none',
+    paddingLeft: '19px'
+  },
   tree: {
     base: {
       listStyle: 'none',
@@ -93,10 +97,6 @@ export default {
           textAlign: 'right',
           width: '68px'
         }
-      },
-      subtree: {
-        listStyle: 'none',
-        paddingLeft: '19px'
       },
       loading: {
         color: '#E2C089'

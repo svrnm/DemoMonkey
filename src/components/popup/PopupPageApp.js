@@ -20,21 +20,21 @@ import { connect } from 'react-redux'
 import ConfigurationList from './ConfigurationList'
 import PropTypes from 'prop-types'
 
-const manifest = new Manifest(window.chrome)
-
 /* The PopupPageApp will be defined below */
 class App extends React.Component {
   static propTypes = {
     currentUrl: PropTypes.string,
     actions: PropTypes.objectOf(PropTypes.func).isRequired,
     configurations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    settings: PropTypes.object.isRequired
+    settings: PropTypes.object.isRequired,
+    manifest: PropTypes.instanceOf(Manifest).isRequired
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      activeTab: 'apply'
+      activeTab: 'apply',
+      commitHash: false
     }
   }
 
@@ -47,6 +47,7 @@ class App extends React.Component {
   }
 
   render() {
+    const manifest = this.props.manifest
     const configurations = this.props.configurations.filter((config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined')
     return <Page preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode} syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}>
       <Tabs activeTab={this.state.activeTab} onNavigate={(e) => this.updateActiveTab(e)}>
@@ -68,6 +69,10 @@ class App extends React.Component {
             <b>Version:&nbsp;
             </b>
             {manifest.version()}
+          </div>
+          <div>
+            <b>Build from </b>
+            {manifest.buildFromLink()}
           </div>
           <div>
             <b>Report bugs at </b>

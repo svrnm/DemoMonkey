@@ -456,7 +456,7 @@ Sometimes a simple replacement can not do the job, especially when the word you'
 One way to get there is using `!querySelector`:
 
 ```ini
-!querySelector(#cart > .items-count) = 15
+!querySelector(\#cart > .items-count) = 15
 ```
 
 This will replace the number of items in the cart without you needing to replace every occurrence of `15` or without you
@@ -465,7 +465,7 @@ needing to make sure that the number of items is fixed.
 Additionally you can add an attribute that should be replaced:
 
 ```ini
-!querySelector(#cart > .items-count, style.background) = red
+!querySelector(\#cart > .items-count, style.background) = red
 ```
 
 ### Add Javascript

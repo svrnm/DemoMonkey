@@ -63,11 +63,11 @@ function renderOptionsPageApp(root, store) {
   })
 }
 
-function renderPopupPageApp(root, store) {
+function renderPopupPageApp(root, store, manifest) {
   window.chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
     const currentUrl = tabs.length > 0 ? tabs[0].url : ''
     ReactDOM.render(
-      <Provider store={store}><PopupPageApp currentUrl={currentUrl}/></Provider>, root)
+      <Provider store={store}><PopupPageApp currentUrl={currentUrl} manifest={manifest} /></Provider>, root)
     // The following is required to fix https://bugs.chromium.org/p/chromium/issues/detail?id=428044
     window.setTimeout(() => {
       document.body.style.minHeight = (document.body.clientHeight + 1) + 'px'
@@ -79,54 +79,54 @@ const store = new Store({
   portName: 'DEMO_MONKEY_STORE' // communication port name
 })
 
-store.ready().then(() => {
-  document.getElementById('backup-message').remove()
-  const root = document.getElementById('app')
+let commitHash = ''
+fetch(window.chrome.extension.getURL('COMMITHASH')).then((r) => {
+  return r.text()
+}).then(r => {
+  commitHash = r
+}).catch((e) => {
+  // Could not fetch COMMITHASH, that should never happen, but we have a safeguard here.
+  console.log(e)
+}).finally(() => {
+  store.ready().then(() => {
+    document.getElementById('backup-message').remove()
+    const root = document.getElementById('app')
 
-  window.store = store
+    window.store = store
 
-  const app = root.getAttribute('data-app')
+    const app = root.getAttribute('data-app')
 
-  if (store.getState().settings.optionalFeatures.writeLogs) {
-    connectLogger(store, { source: 'monkey.js' })
-  }
+    if (store.getState().settings.optionalFeatures.writeLogs) {
+      connectLogger(store, { source: 'monkey.js' })
+    }
 
-  // updateCurrentPage()
+    // updateCurrentPage()
 
-  const manifest = new Manifest(window.chrome)
+    const manifest = new Manifest(window.chrome, commitHash)
 
-  logger('debug', `DemoMonkey ${manifest.version()}`).write()
+    logger('debug', `DemoMonkey ${manifest.version()}`).write()
 
-  const protocolHandler = new ProtocolHandler('web+mnky:')
-  protocolHandler.handle(window.location.search).catch(error => {
-    logger('error', error).write()
-    window.history.replaceState({}, document.title, window.location.pathname + window.location.hash)
-  }).then((configuration) => {
-    if (configuration) {
-      const configurations = store.getState().configurations
-      store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
-        const latest = configurations[configurations.length - 1]
-        store.dispatch({ type: 'SET_CURRENT_VIEW', view: `configuration/${latest.id}` })
-      })
+    const protocolHandler = new ProtocolHandler('web+mnky:')
+    protocolHandler.handle(window.location.search).catch(error => {
+      logger('error', error).write()
       window.history.replaceState({}, document.title, window.location.pathname + window.location.hash)
-    }
-  }).finally(() => {
-    switch (app) {
-      case 'OptionsPageApp':
-        renderOptionsPageApp(root, store)
-        break
-      case 'DevToolsPageApp':
-        if (window.store.state.settings.optionalFeatures.inDevTools === true) {
-          window.chrome.devtools.panels.create(`DemoMonkey ${manifest.version()}`,
-            'icons/monkey_16.png',
-            'options.html',
-            function (panel) {
-              // code invoked on panel creation
-            })
-        }
-        break
-      default:
-        renderPopupPageApp(root, store)
-    }
+    }).then((configuration) => {
+      if (configuration) {
+        const configurations = store.getState().configurations
+        store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
+          const latest = configurations[configurations.length - 1]
+          store.dispatch({ type: 'SET_CURRENT_VIEW', view: `configuration/${latest.id}` })
+        })
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash)
+      }
+    }).finally(() => {
+      switch (app) {
+        case 'OptionsPageApp':
+          renderOptionsPageApp(root, store)
+          break
+        default:
+          renderPopupPageApp(root, store, manifest)
+      }
+    })
   })
 })

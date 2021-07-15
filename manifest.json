@@ -13,6 +13,7 @@
   },
   "web_accessible_resources": [
     "manifest.json",
+    "COMMITHASH",
     "js/inline.js"
   ],
   "background": {

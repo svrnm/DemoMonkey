@@ -18,6 +18,7 @@ import { v4 as uuidV4 } from 'uuid'
 import Configuration from './models/Configuration'
 import MatchRule from './models/MatchRule'
 import Badge from './models/Badge'
+import OptionalFeature from './models/OptionalFeature'
 import match from './helpers/match.js'
 // import remoteBackup from './helpers/remoteBackup.js'
 import { logger, connectLogger } from './helpers/logger'
@@ -124,13 +125,11 @@ import { logger, connectLogger } from './helpers/logger'
 
   // New tab created, initialize badge for given tab
   scope.chrome.tabs.onCreated.addListener(function (tab) {
-    // Initialize new tab
-    // console.log(tab)
     badge.updateDemoCounter(0, tab.id)
   })
 
   /*
-   * The following replaces the decelerative content scripts, which require
+   * The following replaces the declarative content scripts, which require
    * high host permissions.
    */
   scope.chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
@@ -194,28 +193,6 @@ import { logger, connectLogger } from './helpers/logger'
     }
   })
 
-  const defaultsForOptionalFeatures = {
-    undo: true,
-    autoReplace: true,
-    autoSave: true,
-    saveOnClose: true,
-    editorAutocomplete: true,
-    inDevTools: true,
-    webRequestHook: false,
-    debugBox: false,
-    withEvalCommand: false,
-    // This is only a soft toggle, since the user can turn it on and off directly in the popup
-    onlyShowAvailableConfigurations: true,
-    keyboardHandlerVim: false,
-    hookIntoAjax: false,
-    syncDarkMode: true,
-    preferDarkMode: false,
-    noWarningForMissingPermissions: false,
-    registerProtocolHandler: false,
-    writeLogs: true,
-    hookIntoKonva: false
-  }
-
   const persistentStates = {
     configurations: [{
       name: 'Example',
@@ -225,7 +202,7 @@ import { logger, connectLogger } from './helpers/logger'
       values: {},
       id: uuidV4()
     }, {
-      name: 'Cities',
+      name: 'templates/Cities',
       content: require('../examples/cities.mnky'),
       test: 'San Francisco\nSeattle\nLondon',
       enabled: false,
@@ -235,7 +212,7 @@ import { logger, connectLogger } from './helpers/logger'
     settings: {
       baseTemplate: require('../examples/baseTemplate.mnky'),
       analyticsSnippet: '',
-      optionalFeatures: defaultsForOptionalFeatures,
+      optionalFeatures: OptionalFeature.getDefaultValues(),
       globalVariables: [
         {
           key: 'adPurple',

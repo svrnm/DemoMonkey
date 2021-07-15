@@ -4,7 +4,7 @@
 [Options]
 ; Introduce a option using @
 ; Use @include to specify a list of urls where these replacements should be applied
-@include[] = /^https?://.*appdynamics\.com/.*$/
+@include[] = /^https?://.*demomonkey\.net/.*$/
 @include[] = /^http://172.28.128.3:8090/.*$/
 @include[] = /^https://github.com/svrnm/demomonkey$
 
@@ -13,11 +13,12 @@
 ; Introduce variables using $
 ; The value after = is used as placeholder
 ; Use // to introduce a description for the variable
-$prospect=AppDynamics//Set the name of your prospect. This will be used to name the application
-$domain=appdynamics.com//Set the main domain of your prospect. This will be used in the User Experience Section
+$prospect=DemoMonkey//Set the name of your prospect.
+$domain=demomonkey.net//Set the main domain of your prospect.
 
 [Imports]
-+Cities
+; Import the replacements for city names from a template
++templates/Cities
 
 [Application]
 ; Write simple replacements like this:
@@ -27,11 +28,12 @@ ECommerce=$prospect Customer Care
 api.shipping.com=api.$domain
 ; Spaces around the = sign are not required, but make the configuration more readable
 Order-Processing = Invoice-Processing
-!/demomonkey/ip = TestApe
 
 [EUM]
 www.ecommerce.com = www.$domain
 ; commands (like regex) are introduced with a ! ...
 !/cart/ip = issue
-; ... so you can use / without quoting ...
-/en/ = /de/
+; read the Help to understand what the following commands are doing
+!querySelector(\#cart > .items-count) = 15
+; Some commands require you to enable additional optional features in "Settings"
+!blockUrl(http://www.demomonkey.net/)

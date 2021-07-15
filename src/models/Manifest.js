@@ -14,10 +14,11 @@
 import React from 'react'
 
 class Manifest {
-  constructor(chrome) {
+  constructor(chrome, commitHash) {
     this.manifestVersion = chrome.runtime.getManifest().version
     this.manifestAuthor = chrome.runtime.getManifest().author
     this.homepageUrl = chrome.runtime.getManifest().homepage_url
+    this.commitHash = commitHash
   }
 
   authorMail() {
@@ -50,6 +51,14 @@ class Manifest {
 
   version() {
     return this.manifestVersion
+  }
+
+  buildFromUrl() {
+    return this.homepageUrl + 'commit/' + this.commitHash
+  }
+
+  buildFromLink() {
+    return <a href={this.buildFromUrl()} target="_blank" rel='noopener noreferrer'>{this.commitHash}</a>
   }
 }
 
