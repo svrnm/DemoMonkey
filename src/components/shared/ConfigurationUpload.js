@@ -14,7 +14,44 @@
 import React from 'react'
 import Json2Ini from '../../models/Json2Ini'
 import PropTypes from 'prop-types'
+import Popup from 'react-popup'
 import JSZip from 'jszip'
+
+class Prompt extends React.Component {
+  static propTypes = {
+    placeholder: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      value: ''
+    }
+
+    this.onChange = (e) => this._onChange(e)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.value !== this.state.value) {
+      this.props.onChange(this.state.value)
+    }
+  }
+
+  _onChange(e) {
+    const value = e.target.value
+
+    this.setState({ value: value })
+  }
+
+  render() {
+    return <React.Fragment>
+      <label>In which folder do you want to upload these configurations? Leave empty to put them on the top level.</label>
+      <input className="text-input" type="text" placeholder={this.props.placeholder} value={this.state.value} onChange={this.onChange} />
+      </React.Fragment>
+  }
+}
 
 class ConfigurationUpload extends React.Component {
   static propTypes = {
@@ -55,25 +92,46 @@ class ConfigurationUpload extends React.Component {
           }
           reader.readAsText(file)
         } else if (extension === 'zip') {
-          JSZip.loadAsync(file).then((zip) => {
-            const zipPromises = []
-            zip.forEach((relativePath, zipEntry) => {
-              const extension = zipEntry.name.split('.').pop()
-              if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
-                zipPromises.push(zipEntry.async('string').then((content) => {
-                  return {
-                    name: zipEntry.name.replace(new RegExp('\\.' + extension + '$'), ''),
-                    content: this.getIni(content, extension),
-                    test: '',
-                    enabled: false,
-                    id: 'new'
-                  }
-                }))
-              }
-            })
-            Promise.all(zipPromises).then(results => {
-              this.props.onUpload(results)
-            })
+          let folderName = ''
+          const promptChange = (value) => {
+            folderName = value
+          }
+
+          Popup.create({
+            title: 'Batch upload into folder.',
+            content: <Prompt onChange={promptChange} placeholder='Please provide a folder name.' />,
+            buttons: {
+              left: ['cancel'],
+              right: [{
+                text: 'Save',
+                key: '⌘+s',
+                className: 'success',
+                action: () => {
+                  console.log(folderName)
+                  Popup.close()
+                  JSZip.loadAsync(file).then((zip) => {
+                    const zipPromises = []
+                    zip.forEach((relativePath, zipEntry) => {
+                      const extension = zipEntry.name.split('.').pop()
+                      if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
+                        zipPromises.push(zipEntry.async('string').then((content) => {
+                          return {
+                            name: (folderName.replace(/\/$/, '') + '/' + zipEntry.name.replace(new RegExp('\\.' + extension + '$'), '')).replace(/^\//, ''),
+                            content: this.getIni(content, extension),
+                            test: '',
+                            enabled: false,
+                            id: 'new'
+                          }
+                        }))
+                      }
+                    })
+                    Promise.all(zipPromises).then(results => {
+                      this.props.onUpload(results)
+                    })
+                  })
+                }
+              }]
+            }
           })
         } else {
           window.alert('Unknown extension: ' + extension + '! Please specify a .mnky or .json file!')
