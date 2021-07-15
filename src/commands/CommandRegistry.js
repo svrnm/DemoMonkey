@@ -172,7 +172,7 @@ export default [
     aliases: [],
     signature: '(${1}) = ${2}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new ReplaceImage(parameters[0], value, parameters[1])
+      return new ReplaceImage(value, parameters)
     }
   },
   {

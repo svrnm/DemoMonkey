@@ -15,8 +15,28 @@ import Command from './Command'
 import UndoElement from './UndoElement'
 
 class ReplaceImage extends Command {
-  constructor(search, replace, withRatio = true) {
+  constructor(replace, parameters) {
     super()
+    let search = ''
+    let withRatio = false
+    if (parameters.length > 1) {
+      // check if the last parameter is 'withRatio'
+      const lastParameter = parameters.pop()
+      if (['false', 'true', '0', '1'].includes(lastParameter.toLowerCase())) {
+        withRatio = lastParameter
+      } else {
+        // Put last parameter back
+        parameters.push(lastParameter)
+      }
+      // it could happen that a data image URL contains a , and the
+      // command builder is doing a split, we revert this here.
+      search = parameters.join(',')
+    } else {
+      search = parameters[0]
+    }
+
+    console.log(search, replace, withRatio)
+
     this.search = search
     this.replace = replace
     this.withRatio = withRatio === '1' || withRatio === 'true'
