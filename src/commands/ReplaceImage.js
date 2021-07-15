@@ -35,8 +35,6 @@ class ReplaceImage extends Command {
       search = parameters[0]
     }
 
-    console.log(search, replace, withRatio)
-
     this.search = search
     this.replace = replace
     this.withRatio = withRatio === '1' || withRatio === 'true'

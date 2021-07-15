@@ -228,10 +228,12 @@ class Monkey {
       configuration.apply(pseudoNode, 'value', 'text')
       if (node.dataset.fullString !== pseudoNode.value) {
         const original = node.textContent
+        const originalFullString = node.dataset.fullString
         const replacement = original.length < pseudoNode.value.length ? '...' + pseudoNode.value.substring(pseudoNode.value.length - original.length - 3) : pseudoNode.value
         node.dataset.fullString = pseudoNode.value
         node.textContent = replacement
         undos.push(new UndoElement(node, 'textContent', original, node.textContent))
+        undos.push(new UndoElement(node.dataset, 'fullString', originalFullString, node.dataset.fullString))
       }
     })
     this.addUndo(undos)
