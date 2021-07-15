@@ -100,26 +100,6 @@ class App extends React.Component {
     })
   }
 
-  downloadAll(event, cb = () => {}) {
-    event.preventDefault()
-    const zip = new JSZip()
-
-    this.props.configurations.forEach((configuration) => {
-      zip.file(configuration.name + '.mnky', configuration.content)
-    })
-
-    zip.generateAsync({ type: 'base64' })
-      .then(function (content) {
-        const link = document.createElement('a')
-        link.href = 'data:application/zip;base64,' + content
-        link.download = 'demomonkey-' + (new Date()).toISOString().split('T')[0] + '.zip'
-        const event = document.createEvent('MouseEvents')
-        event.initEvent('click', true, true)
-        link.dispatchEvent(event)
-        cb()
-      })
-  }
-
   deleteAll() {
     Popup.create({
       title: 'Please confirm',
@@ -227,13 +207,45 @@ class App extends React.Component {
     })
   }
 
+  _prepareForDownload(configuration) {
+    /*
+    if (configuration.values) {
+      const result = configuration.content + '\n\n; --- {VARIABLE VALUES} ---\n' + JSON.stringify(configuration.values).replace(/^/, ';')
+      console.log(result)
+      return result
+    }
+    */
+    return configuration.content
+  }
+
   downloadConfiguration(configuration) {
+    console.log(configuration)
     const link = document.createElement('a')
-    link.href = 'data:text/octet-stream;base64,' + Base64.encode(configuration.content)
+    link.href = 'data:text/octet-stream;base64,' + Base64.encode(this._prepareForDownload(configuration))
     link.download = configuration.name.split('/').pop() + '.mnky'
     const event = document.createEvent('MouseEvents')
     event.initEvent('click', true, true)
     link.dispatchEvent(event)
+  }
+
+  downloadAll(event, cb = () => {}) {
+    event.preventDefault()
+    const zip = new JSZip()
+
+    this.props.configurations.forEach((configuration) => {
+      zip.file(configuration.name + '.mnky', this._prepareForDownload(configuration))
+    })
+
+    zip.generateAsync({ type: 'base64' })
+      .then(function (content) {
+        const link = document.createElement('a')
+        link.href = 'data:application/zip;base64,' + content
+        link.download = 'demomonkey-' + (new Date()).toISOString().split('T')[0] + '.zip'
+        const event = document.createEvent('MouseEvents')
+        event.initEvent('click', true, true)
+        link.dispatchEvent(event)
+        cb()
+      })
   }
 
   deleteConfiguration(configuration) {
