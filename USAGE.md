@@ -43,6 +43,7 @@ into a personalized experience for your audience.**
     - [Hide Applications, Databases, BTs](#hide-applications-databases-bts)
     - [Replace Flowmap Connections](#replace-flowmap-connections)
     - [Replace Flowmap Node Count](#replace-flowmap-node-count)
+    - [Replace EUM Geo Status](#replace-eum-geo-status)
 - [Learn More](#learn-more)
 
 ## Configurations
@@ -643,6 +644,16 @@ Finally, if you have a AWS Lambda or an OpenTelemetry tier, you can set them her
 !replaceNodeCount(LambdaApp) = lambda
 !replaceNodeCount(Service_OT) = otel
 ```
+
+#### Replace EUM Geo Status
+
+If you'd like to turn the lights for your prospects country red or orange on one of the EUM maps, you can do the following:
+
+```ini
+!replaceGeoStatus(Germany) = critical
+```
+
+Please note, that this does not work for all countries consistently.
 
 ## Learn More
 

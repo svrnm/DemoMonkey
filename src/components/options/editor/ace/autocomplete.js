@@ -159,6 +159,12 @@ function autocomplete(getRepository, variables) {
             'ad-pink',
             'ad-red'
           ]).sort().map(value => { return { value, meta: 'color' } }))
+        } else if (fullLine.match(/^!(?:appdynamics.)?replaceNodeCount\(.*\)\s*=\s*/)) {
+          callback(null, [
+            'otel',
+            'lambda',
+            'opentelemetry'
+          ].sort().map(value => { return { value, meta: 'nodeCount' } }))
         } else if (lineToPos.match(/^!replaceImage\($/)) {
           callback(null, [
             'ad-travel-logo',
@@ -169,7 +175,7 @@ function autocomplete(getRepository, variables) {
             'ad-devops-bg-4',
             'ad-devops-bg-5'
           ].sort().map(value => { return { value, meta: 'image' } }))
-        } else if (fullLine.match(/^!(?:appdynamics.)?replaceDrillDownHealth\(.*\)\s*=\s*/)) {
+        } else if (fullLine.match(/^!(?:appdynamics.)?(replaceDrillDownHealth|replaceGeoStatus|replaceInnerNodeHealth|replaceOuterNodeHealth|replaceBusinessTransactionHealth)\(.*\)\s*=\s*/)) {
           callback(null, [
             'normal',
             'warning',

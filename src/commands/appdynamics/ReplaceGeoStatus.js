@@ -34,7 +34,7 @@ class ReplaceGeoStatus extends Command {
   constructor(search, replace) {
     super()
     this.search = search
-    this.replace = (typeof replace === 'string' && ['normal', 'warning', 'critical', 'green', 'orange', 'yellow', 'red'].includes(replace.toLowerCase())) ? 'images/eum/' + ReplaceGeoStatus.images[replace] : null
+    this.replace = (typeof replace === 'string' && ['normal', 'warning', 'critical', 'green', 'orange', 'yellow', 'red'].includes(replace.toLowerCase())) ? 'images/eum/' + ReplaceGeoStatus.images[replace.toLowerCase()] : null
   }
 
   isApplicableForGroup(group) {
