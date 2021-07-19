@@ -146,7 +146,6 @@ class App extends React.Component {
         this.isSaving = true
         this.props.actions.saveConfiguration(configuration.id, configuration).then(() => {
           this.isSaving = false
-          console.log('Saved')
         })
       }
     }
@@ -189,7 +188,6 @@ class App extends React.Component {
   addConfiguration(configuration) {
     this.props.actions.addConfiguration(configuration).then(() => {
       const latest = this.props.configurations[this.props.configurations.length - 1]
-      console.log(latest)
       this.navigateTo('configuration/' + latest.id)
     })
   }
@@ -219,7 +217,6 @@ class App extends React.Component {
   }
 
   downloadConfiguration(configuration) {
-    console.log(configuration)
     const link = document.createElement('a')
     link.href = 'data:text/octet-stream;base64,' + Base64.encode(this._prepareForDownload(configuration))
     link.download = configuration.name.split('/').pop() + '.mnky'
@@ -309,7 +306,6 @@ class App extends React.Component {
   registerProtocolHandler() {
     const url = window.chrome.runtime.getURL('/options.html?s=%s')
     const method = this.props.settings.optionalFeatures.registerProtocolHandler ? 'registerProtocolHandler' : 'unregisterProtocolHandler'
-    console.log(method)
     window.navigator[method](
       'web+mnky',
       url,
@@ -340,6 +336,30 @@ class App extends React.Component {
     this.props.actions.setMonkeyInterval(interval)
   }
 
+  resetDemoMonkey(event) {
+    event.preventDefault()
+
+    Popup.create({
+      title: 'Reset DemoMonkey',
+      content: <span>Do you really want to reset <b>all configurations and all settings</b>?<br />(This window will close.)</span>,
+      buttons: {
+        left: [{
+          text: 'Cancel',
+          action: () => Popup.close()
+        }],
+        right: [{
+          text: 'Reset',
+          className: 'danger',
+          action: () => {
+            window.chrome.storage.local.clear(() => {
+              window.chrome.runtime.reload()
+            })
+          }
+        }]
+      }
+    })
+  }
+
   getCurrentView() {
     if (this.state.withError) {
       return <ErrorBox error={this.state.withError} />
@@ -363,6 +383,7 @@ class App extends React.Component {
             onSetMonkeyInterval={(value) => this.setMonkeyInterval(value)}
             onDownloadAll={(event) => this.downloadAll(event)}
             onDeleteAll={(event) => this.deleteAll(event)}
+            onReset={(event) => this.resetDemoMonkey(event)}
             onRequestExtendedPermissions={(revoke) => this.requestExtendedPermissions(revoke)}
             hasExtendedPermissions={this.hasExtendedPermissions()}
             isDarkMode={this._getDarkMode()}

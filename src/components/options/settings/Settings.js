@@ -40,6 +40,7 @@ class Settings extends React.Component {
     onToggleOptionalFeature: PropTypes.func.isRequired,
     onDownloadAll: PropTypes.func.isRequired,
     onDeleteAll: PropTypes.func.isRequired,
+    onReset: PropTypes.func.isRequired,
     isDarkMode: PropTypes.bool.isRequired,
     hasExtendedPermissions: PropTypes.bool.isRequired,
     onRequestExtendedPermissions: PropTypes.func.isRequired,
@@ -190,6 +191,7 @@ class Settings extends React.Component {
               You can always open the <a href="backup.html">backup page</a> to download your files or manipulate your settings. Please use with caution!
               <button className="save-button" onClick={(event) => this.props.onDownloadAll(event)}>Download all configurations</button>
               <button className="delete-button" onClick={(event) => this.props.onDeleteAll(event)}>Download & Delete all configurations</button>
+              <button className="delete-button" onClick={(event) => this.props.onReset(event)}>Reset DemoMonkey</button>
             </Pane>
           </Tabs>
         </div>
