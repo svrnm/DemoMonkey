@@ -5,8 +5,9 @@
 ; Introduce a option using @
 ; Use @include to specify a list of urls where these replacements should be applied
 @include[] = /^https?://.*demomonkey\.net/.*$/
-@include[] = /^http://172.28.128.3:8090/.*$/
 @include[] = /^https://github.com/svrnm/demomonkey$
+@include[] = /^https?://demo.*\.saas\..*/.*$/
+; Use @exclude to remove urls from the lists of included urls
 
 ; ... or you can create a section for your variables:
 [Variables]

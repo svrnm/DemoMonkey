@@ -2,8 +2,8 @@
 ; If you don't like this base template click on 'Settings' at the left
 ; side and change it to your own needs!
 
-; Script only run on the appdynamics' demo environments by default
-@include[] = /^https?://.*demo.*\.appdynamics\.com(:[0-9]+)?/.*$/
+; Script only run on the demo environments by default
+@include[] = /^https?://demo.*\.saas\..*/.*$/
 
 ; Make the use of appd commands easier by importing the namespace
 @namespace[] = appdynamics
