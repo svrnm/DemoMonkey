@@ -51,7 +51,7 @@ api.payment.com = payment.$customer
 @exclude =
 ```
 
-See [USAGE.md](Usage.md) for a more comprehensive guide.
+See [USAGE.md](USAGE.md) for a more comprehensive guide.
 
 ## Installation
 
