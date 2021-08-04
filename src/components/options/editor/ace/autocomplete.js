@@ -188,7 +188,8 @@ function autocomplete(getRepository, variables) {
             '/^https?://.*.service-now.com/.*$/',
             '/^https?://.*\\.harness\\.io(:[0-9]+)?/.*$/',
             '/^https?://.*\\.rookout\\.com/.*$/',
-            '/^https?://.*\\.app\\.slack\\.com/.*$/'
+            '/^https?://.*\\.app\\.slack\\.com/.*$/',
+            '/^https?://.*\\.seismic\\.com/.*$/'
           ].map(value => { return { value, meta: 'include' } }))
         }
       }

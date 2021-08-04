@@ -17,7 +17,7 @@ import UndoElement from '../commands/UndoElement'
 import { logger } from '../helpers/logger'
 
 class Monkey {
-  constructor(rawConfigurations, scope, globalVariables, withUndo = true, intervalTime = 100, urlManager = false, ajaxManager = false, featureFlags = {}) {
+  constructor(rawConfigurations, scope, globalVariables, withUndo = true, intervalTime = 100, urlManager = false, inlineRuleManager = false, featureFlags = {}) {
     this.scope = scope
     this.globalVariables = globalVariables
     this.undo = []
@@ -38,7 +38,7 @@ class Monkey {
       return [rawConfig.name, config]
     })
     this.urlManager = urlManager === false ? { add: () => {}, remove: () => {}, clear: () => {} } : urlManager
-    this.ajaxManager = ajaxManager === false ? { add: () => {}, run: () => {}, clear: () => {} } : ajaxManager
+    this.inlineRuleManager = inlineRuleManager === false ? { add: () => {}, run: () => {}, clear: () => {} } : inlineRuleManager
     this.observers = []
   }
 
@@ -80,7 +80,7 @@ class Monkey {
   applyOnce(configuration) {
     // Execute the commands for webRequest hooks only once
     this.addUndo(configuration.apply(this.urlManager, 'value', 'url'))
-    this.addUndo(configuration.apply(this.ajaxManager, 'value', 'ajax'))
+    this.addUndo(configuration.apply(this.inlineRuleManager, 'value', 'ajax'))
   }
 
   apply(configuration) {
@@ -268,7 +268,7 @@ class Monkey {
     }
 
     this.urlManager.clear()
-    this.ajaxManager.clear()
+    this.inlineRuleManager.clear()
   }
 
   runAll() {

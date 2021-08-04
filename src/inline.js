@@ -12,11 +12,51 @@
  * limitations under the License.
  */
 import match from './helpers/match'
+import { dom2obj, obj2dom } from './helpers/obj2dom'
 import * as jsonpatch from 'fast-json-patch'
 import JSON5 from 'json5'
 
 (function (scope, config) {
-  const ajaxFilters = []
+  const rules = []
+
+  window.dmRules = rules
+
+  scope.addEventListener('message', function (event) {
+    if (event.source !== window) {
+      return
+    }
+    if (event.data.task) {
+      switch (event.data.task) {
+        case 'add-inline-rule':
+          rules.push(event.data.rule)
+          break
+        case 'clear-inline-rules':
+          rules.length = 0
+          break
+      }
+    }
+  })
+
+  if (config.hookIntoHyperGraph) {
+    const template = scope.document.createElement('template')
+    template.setAttribute('id', 'demo-monkey-hyper-graph')
+    scope.document.body.appendChild(template)
+    setInterval(() => {
+      if (typeof scope.DEV_DATA_HOOK_ORIGINAL_ === 'object') {
+        Object.keys(scope.DEV_DATA_HOOK_ORIGINAL_).forEach(key => {
+          let helperNode = document.getElementById(`demo-monkey-hyper-graph-helper-${key}`)
+          if (helperNode) {
+            scope.updateHyperGraphData[key](dom2obj(helperNode.innerHTML))
+          } else {
+            helperNode = scope.document.createElement('div')
+            helperNode.innerHTML = obj2dom(scope.DEV_DATA_HOOK_ORIGINAL_[key])
+            helperNode.setAttribute('id', `demo-monkey-hyper-graph-helper-${key}`)
+            template.appendChild(helperNode)
+          }
+        })
+      }
+    }, 99)
+  }
 
   if (config.hookIntoAjax) {
     const functions = {
@@ -48,7 +88,7 @@ import JSON5 from 'json5'
       const url = arguments[1]
       this.addEventListener('readystatechange', function (event) {
         if (this.readyState === 4) {
-          const response = ajaxFilters.reduce((r, e) => {
+          const response = rules.filter(e => e[0].includes('AjaxResponse')).reduce((r, e) => {
             try {
               const r2 = functions[e[0]](url, r, e[1])
               return r2

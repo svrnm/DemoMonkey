@@ -15,7 +15,7 @@ import Monkey from './models/Monkey'
 import ModeManager from './models/ModeManager'
 import Settings from './models/Settings'
 import Manifest from './models/Manifest'
-import AjaxManager from './models/AjaxManager'
+import InlineRuleManager from './models/InlineRuleManager'
 import UrlManager from './models/UrlManager'
 import { Store } from 'webext-redux'
 import { logger, connectLogger } from './helpers/logger'
@@ -70,7 +70,8 @@ try {
         const settings = new Settings(store.getState().settings)
 
         const inlineConfig = {
-          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax')
+          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
+          hookIntoHyperGraph: settings.isFeatureEnabled('hookIntoHyperGraph')
         }
 
         const inlineConfigScriptTag = scope.document.createElement('script')
@@ -85,9 +86,9 @@ try {
         // every time the store is updated, which would lead to a loop.
         const urlManager = new UrlManager(scope, isTopFrame())
 
-        const ajaxManager = new AjaxManager(scope, settings.isFeatureEnabled('hookIntoAjax'))
+        const inlineRuleManager = new InlineRuleManager(scope, inlineConfig)
 
-        let $DEMO_MONKEY = new Monkey(store.getState().configurations, scope, settings.globalVariables, settings.isFeatureEnabled('undo'), settings.monkeyInterval, urlManager, ajaxManager, {
+        let $DEMO_MONKEY = new Monkey(store.getState().configurations, scope, settings.globalVariables, settings.isFeatureEnabled('undo'), settings.monkeyInterval, urlManager, inlineRuleManager, {
           withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
           hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
           webRequestHook: settings.isFeatureEnabled('webRequestHook')
@@ -101,7 +102,7 @@ try {
           logger('debug', 'Restart DemoMonkey').write()
           // Update settings
           const settings = new Settings(store.getState().settings)
-          const newMonkey = new Monkey(store.getState().configurations, scope, settings.globalVariables, settings.isFeatureEnabled('undo'), settings.monkeyInterval, urlManager, ajaxManager, {
+          const newMonkey = new Monkey(store.getState().configurations, scope, settings.globalVariables, settings.isFeatureEnabled('undo'), settings.monkeyInterval, urlManager, inlineRuleManager, {
             withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
             hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
             webRequestHook: settings.isFeatureEnabled('webRequestHook')

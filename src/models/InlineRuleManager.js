@@ -11,20 +11,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AjaxManager {
-  constructor(scope, enabled = false) {
+class InlineRuleManager {
+  constructor(scope, config = {
+    hookIntoAjax: false,
+    hookIntoHyperGraph: false
+  }) {
     this.scope = scope
-    this.enabled = enabled
+    this.enabled = config.hookIntoAjax
   }
 
   add (f, c) {
     if (!this.enabled) {
       return
     }
-    console.log('add')
     this.scope.postMessage({
-      task: 'add-ajax-filter',
-      filter: [f, c]
+      task: 'add-inline-rule',
+      rule: [f, c]
     })
   }
 
@@ -32,11 +34,10 @@ class AjaxManager {
     if (!this.enabled) {
       return
     }
-    console.log('clear')
     this.scope.postMessage({
-      task: 'clear-ajax-filters'
+      task: 'clear-inline-rules'
     })
   }
 }
 
-export default AjaxManager
+export default InlineRuleManager

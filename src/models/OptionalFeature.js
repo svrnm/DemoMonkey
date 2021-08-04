@@ -81,6 +81,12 @@ const optionalFeatures = [
     description: 'Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response.'
   },
   {
+    id: 'hookIntoHyperGraph',
+    defaultValue: true,
+    label: 'Hook into HyperGraph.',
+    description: 'Allow DemoMonkey to interact with hyper graph. If you do not know what hyper graph is, ignore it.'
+  },
+  {
     id: 'syncDarkMode',
     defaultValue: true,
     label: 'Sync Dark/Light mode with OS setting.',
