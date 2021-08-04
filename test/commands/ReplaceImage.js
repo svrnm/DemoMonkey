@@ -21,77 +21,77 @@ describe('ReplaceImage', function () {
       const img = {
         src: 'asdf'
       }
-      new ReplaceImage('', '').apply(img, 'src')
-      assert.equal(img.src, 'asdf')
+      new ReplaceImage('', ['']).apply(img, 'src')
+      assert.strictEqual(img.src, 'asdf')
     })
 
     it('should replace src with exact match', function () {
       const img = {
         src: 'http://cdn.example.com/images/test.png'
       }
-      new ReplaceImage('http://cdn.example.com/images/test.png', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'another.png')
+      new ReplaceImage('another.png', ['http://cdn.example.com/images/test.png']).apply(img, 'src')
+      assert.strictEqual(img.src, 'another.png')
     })
 
     it('should replace src with prefix match', function () {
       const img = {
         src: 'http://cdn.example.com/images/test.png'
       }
-      new ReplaceImage('http://cdn.example.com/*', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'another.png')
+      new ReplaceImage('another.png', ['http://cdn.example.com/*']).apply(img, 'src')
+      assert.strictEqual(img.src, 'another.png')
     })
 
     it('should replace src with suffix match', function () {
       const img = {
         src: 'http://cdn.example.com/images/test.png'
       }
-      new ReplaceImage('*/test.png', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'another.png')
+      new ReplaceImage('another.png', ['*/test.png']).apply(img, 'src')
+      assert.strictEqual(img.src, 'another.png')
     })
 
     it('should replace src with "contains" match', function () {
       const img = {
         src: 'http://cdn.example.com/images/test.png'
       }
-      new ReplaceImage('*example.com*', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'another.png')
+      new ReplaceImage('another.png', ['*example.com*']).apply(img, 'src')
+      assert.strictEqual(img.src, 'another.png')
     })
 
     it('should replace src with "not" match', function () {
       const img = {
         src: 'http://cdn.example.net/images/test.png'
       }
-      new ReplaceImage('!http://cdn.example.net/images/test.png', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'http://cdn.example.net/images/test.png')
-      new ReplaceImage('!http://cdn.example.com/images/test.png', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'another.png')
+      new ReplaceImage('another.png', ['!http://cdn.example.net/images/test.png']).apply(img, 'src')
+      assert.strictEqual(img.src, 'http://cdn.example.net/images/test.png')
+      new ReplaceImage('another.png', ['!http://cdn2.example.com/images/test.png']).apply(img, 'src')
+      assert.strictEqual(img.src, 'another.png')
     })
 
     it('should replace src with "contains" and "not" match', function () {
       const img = {
         src: 'http://cdn.example.net/images/test.png'
       }
-      new ReplaceImage('!*example.net*', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'http://cdn.example.net/images/test.png')
-      new ReplaceImage('!*example.com*', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'another.png')
+      new ReplaceImage('another.png', ['!*example.net*']).apply(img, 'src')
+      assert.strictEqual(img.src, 'http://cdn.example.net/images/test.png')
+      new ReplaceImage('another.png', ['!*example.com*']).apply(img, 'src')
+      assert.strictEqual(img.src, 'another.png')
     })
 
     it('should leave target unchanged for a mismatch', function () {
       const img = {
         src: 'http://cdn.example.com/images/test.png'
       }
-      new ReplaceImage('http://cdn.example.net/images/test.png', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'http://cdn.example.com/images/test.png')
+      new ReplaceImage('another.png', ['http://cdn.example.net/images/test.png']).apply(img, 'src')
+      assert.strictEqual(img.src, 'http://cdn.example.com/images/test.png')
 
-      new ReplaceImage('http://cdn.example.net/*', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'http://cdn.example.com/images/test.png')
+      new ReplaceImage('another.png', ['http://cdn.example.net/*']).apply(img, 'src')
+      assert.strictEqual(img.src, 'http://cdn.example.com/images/test.png')
 
-      new ReplaceImage('*/test.gif', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'http://cdn.example.com/images/test.png')
+      new ReplaceImage('another.png', ['*/test.gif']).apply(img, 'src')
+      assert.strictEqual(img.src, 'http://cdn.example.com/images/test.png')
 
-      new ReplaceImage('*example.net*', 'another.png').apply(img, 'src')
-      assert.equal(img.src, 'http://cdn.example.com/images/test.png')
+      new ReplaceImage('another.png', ['*example.net*']).apply(img, 'src')
+      assert.strictEqual(img.src, 'http://cdn.example.com/images/test.png')
     })
   })
 })
