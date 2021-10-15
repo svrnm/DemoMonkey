@@ -25,7 +25,6 @@ class Style extends Command {
 
   apply(node, key = 'value') {
     if (typeof node[key] !== 'undefined' && node[key].trim() === this.search) {
-      node = node.parentElement
       node = this._walk(node, this.nthParent)
       const original = node.style[this.property]
       node.style[this.property] = this.value
