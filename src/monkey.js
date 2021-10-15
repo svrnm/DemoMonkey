@@ -79,6 +79,7 @@ try {
         scope.document.head.append(inlineConfigScriptTag)
 
         const inlineScriptTag = scope.document.createElement('script')
+        inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
         inlineScriptTag.src = scope.chrome.extension.getURL('js/inline.js')
         scope.document.head.append(inlineScriptTag)
 

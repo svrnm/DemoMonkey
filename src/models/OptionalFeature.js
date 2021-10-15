@@ -82,7 +82,7 @@ const optionalFeatures = [
   },
   {
     id: 'hookIntoHyperGraph',
-    defaultValue: true,
+    defaultValue: false,
     label: 'Hook into HyperGraph.',
     description: 'Allow DemoMonkey to interact with hyper graph. If you do not know what hyper graph is, ignore it.'
   },

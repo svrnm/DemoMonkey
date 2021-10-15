@@ -117,6 +117,7 @@ module.exports = env => {
   }
 
   return {
+    devtool: false,
     entry: {
       app: './src/app.js',
       background: './src/background.js',

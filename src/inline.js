@@ -19,8 +19,6 @@ import JSON5 from 'json5'
 (function (scope, config) {
   const rules = []
 
-  window.dmRules = rules
-
   scope.addEventListener('message', function (event) {
     if (event.source !== window) {
       return
@@ -40,9 +38,11 @@ import JSON5 from 'json5'
   if (config.hookIntoHyperGraph) {
     const template = scope.document.createElement('template')
     template.setAttribute('id', 'demo-monkey-hyper-graph')
-    scope.document.body.appendChild(template)
-    setInterval(() => {
+    scope.document.head.appendChild(template)
+    let noHookCounter = 0
+    const updateInterval = setInterval(() => {
       if (typeof scope.DEV_DATA_HOOK_ORIGINAL_ === 'object') {
+        noHookCounter = 0
         Object.keys(scope.DEV_DATA_HOOK_ORIGINAL_).forEach(key => {
           let helperNode = document.getElementById(`demo-monkey-hyper-graph-helper-${key}`)
           if (helperNode) {
@@ -54,11 +54,17 @@ import JSON5 from 'json5'
             template.appendChild(helperNode)
           }
         })
+      } else {
+        noHookCounter++
+        if (noHookCounter === 100) {
+          clearInterval(updateInterval)
+        }
       }
     }, 99)
   }
 
   if (config.hookIntoAjax) {
+    console.log('HOOK INTO AJAX')
     const functions = {
       patchAjaxResponse: (url, response, context) => {
         const link = scope.document.createElement('a')
