@@ -51,7 +51,6 @@ class SearchAndReplace extends Command {
     }
     const original = target[property]
     const replacement = original.replace(this.search, this.replace)
-    console.log(replacement, original)
     if (replacement !== original) {
       target[property] = replacement
       return new UndoElement(target, property, original, replacement)
