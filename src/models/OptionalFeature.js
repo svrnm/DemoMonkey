@@ -78,7 +78,7 @@ const optionalFeatures = [
     id: 'hookIntoAjax',
     defaultValue: false,
     label: 'Hook into Ajax.',
-    description: 'Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response.'
+    description: <span>Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response. Does not support <i>window.fetch</i>.</span>
   },
   {
     id: 'hookIntoHyperGraph',

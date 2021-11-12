@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 import React from 'react'
-import marked from 'marked'
+import { marked } from 'marked'
 import highlight from 'highlight.js'
 
 class Help extends React.Component {
