@@ -17,8 +17,8 @@ into a personalized experience for your audience.**
   * [Authors and more](#authors-and-more)
 * [Variables](#variables)
   * [Global Variables](#global-variables)
-* [Imports: Reuse existing configurations](#imports-reuse-existing-configurations)
   * [Variables with random value](#variables-with-random-value)
+* [Imports: Reuse existing configurations](#imports-reuse-existing-configurations)
 * [Snippets](#snippets)
 * [Generic Commands](#generic-commands)
   * [Run regular expressions](#run-regular-expressions)
@@ -199,6 +199,18 @@ value in the background.
 If you go to `Settings > Global Variables` you can provide variables that are useable in all your configurations.
 Here you also can provide colors via a picker and images via upload which will be base64 encoded for you.
 
+### Variables with random value
+
+Sometimes you don't care about the value of the replacement itself or you want to provide some randomness in the
+replacement, e.g.when providing a name of a person. In this case you can use the special variables of the form
+`${chance.<function>(<attributes>)}`, which provide you access to the methods provided by [Chance](https://chancejs.com/):
+
+```ini
+John Doe = ${chance.name()}
+Berlin = ${chance.city()}
+Your error code is 404 = Your error code is ${chance.integer({min: 400, max: 599})}
+```
+
 ## Imports: Reuse existing configurations
 
 Like variables imports make your configurations reusable. Introduced by a plus sign (`+`) you can load one configuration
@@ -230,18 +242,6 @@ Mountain View = Dubai
 
 Note, that also variables are imported. So if you have a variable $customersHeadquarter in your `CitiesTemplate`
 configuration, you can overwrite this value in the importing configuration.
-
-### Variables with random value
-
-Sometimes you don't care about the value of the replacement itself or you want to provide some randomness in the
-replacement, e.g.when providing a name of a person. In this case you can use the special variables of the form
-`${chance.<function>(<attributes>)}`, which provide you access to the methods provided by [Chance](https://chancejs.com/):
-
-```ini
-John Doe = ${chance.name()}
-Berlin = ${chance.city()}
-Your error code is 404 = Your error code is ${chance.integer({min: 400, max: 599})}
-```
 
 ## Snippets
 
