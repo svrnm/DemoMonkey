@@ -6,45 +6,47 @@ into a personalized experience for your audience.**
 
 **Curious how this works? Read on to learn how you can use DemoMonkey, to tamper your web application to demo almost anything.**
 
-- [Configurations](#configurations)
-- [Options](#options)
-  - [Include and Exclude sites](#include-and-exclude-sites)
-  - [Namespaces](#namespaces)
-  - [Block- and Allowlist tags](#block--and-allowlist-tags)
-  - [Text Attributes](#text-attributes)
-  - [Deprecate configuration](#deprecate-configuration)
-  - [Tags](#tags)
-  - [Authors and more](#authors-and-more)
-- [Variables](#variables)
-  - [Global Variables](#global-variables)
-- [Imports: Reuse existing configurations](#imports-reuse-existing-configurations)
-- [Snippets](#snippets)
-- [Generic Commands](#generic-commands)
-  - [Run regular expressions](#run-regular-expressions)
-  - [Replace with filters](#replace-with-filters)
-  - [Replace Attribute](#replace-attribute)
-  - [Protect text from replacements](#protect-text-from-replacements)
-  - [Hide Elements](#hide-elements)
-  - [Replace Images](#replace-images)
-  - [Recolor images](#recolor-images)
-  - [Block, Delay, Redirect URLs](#block-delay-redirect-urls)
-  - [Conditional Replacements](#conditional-replacements)
-  - [Modify CSS](#modify-css)
-  - [Overwrite HTML](#overwrite-html)
-  - [Replace based on CSS selector](#replace-based-on-css-selector)
-  - [Add Javascript](#add-javascript)
-  - [Replace Neighbor](#replace-neighbor)
-  - [Insert before and after a DOM element](#insert-before-and-after-a-dom-element)
-  - [Replace and patch response of AJAX requests](#replace-and-patch-response-of-ajax-requests)
-  - [Demo Stages](#demo-stages)
-- [Commands in Namespaces](#commands-in-namespaces)
-  - [AppDynamics](#appdynamics)
-    - [Replace Flowmap Icons](#replace-flowmap-icons)
-    - [Hide Applications, Databases, BTs](#hide-applications-databases-bts)
-    - [Replace Flowmap Connections](#replace-flowmap-connections)
-    - [Replace Flowmap Node Count](#replace-flowmap-node-count)
-    - [Replace EUM Geo Status](#replace-eum-geo-status)
-- [Learn More](#learn-more)
+* [Configurations](#configurations)
+* [Options](#options)
+  * [Include and Exclude sites](#include-and-exclude-sites)
+  * [Namespaces](#namespaces)
+  * [Block- and Allowlist tags](#block--and-allowlist-tags)
+  * [Text Attributes](#text-attributes)
+  * [Deprecate configuration](#deprecate-configuration)
+  * [Tags](#tags)
+  * [Authors and more](#authors-and-more)
+* [Variables](#variables)
+  * [Global Variables](#global-variables)
+* [Imports: Reuse existing configurations](#imports-reuse-existing-configurations)
+  * [Variables with random value](#variables-with-random-value)
+* [Snippets](#snippets)
+* [Generic Commands](#generic-commands)
+  * [Run regular expressions](#run-regular-expressions)
+  * [Replace with filters](#replace-with-filters)
+  * [Replace Attribute](#replace-attribute)
+  * [Search and Hash](#search-and-hash)
+  * [Protect text from replacements](#protect-text-from-replacements)
+  * [Hide Elements](#hide-elements)
+  * [Replace Images](#replace-images)
+  * [Recolor images](#recolor-images)
+  * [Block, Delay, Redirect URLs](#block-delay-redirect-urls)
+  * [Conditional Replacements](#conditional-replacements)
+  * [Modify CSS](#modify-css)
+  * [Overwrite HTML](#overwrite-html)
+  * [Replace based on CSS selector](#replace-based-on-css-selector)
+  * [Add Javascript](#add-javascript)
+  * [Replace Neighbor](#replace-neighbor)
+  * [Insert before and after a DOM element](#insert-before-and-after-a-dom-element)
+  * [Replace and patch response of AJAX requests](#replace-and-patch-response-of-ajax-requests)
+  * [Demo Stages](#demo-stages)
+* [Commands in Namespaces](#commands-in-namespaces)
+  * [AppDynamics](#appdynamics)
+    * [Replace Flowmap Icons](#replace-flowmap-icons)
+    * [Hide Applications, Databases, BTs](#hide-applications-databases-bts)
+    * [Replace Flowmap Connections](#replace-flowmap-connections)
+    * [Replace Flowmap Node Count](#replace-flowmap-node-count)
+    * [Replace EUM Geo Status](#replace-eum-geo-status)
+* [Learn More](#learn-more)
 
 ## Configurations
 
@@ -229,6 +231,18 @@ Mountain View = Dubai
 Note, that also variables are imported. So if you have a variable $customersHeadquarter in your `CitiesTemplate`
 configuration, you can overwrite this value in the importing configuration.
 
+### Variables with random value
+
+Sometimes you don't care about the value of the replacement itself or you want to provide some randomness in the
+replacement, e.g.when providing a name of a person. In this case you can use the special variables of the form
+`${chance.<function>(<attributes>)}`, which provide you access to the methods provided by [Chance](https://chancejs.com/):
+
+```ini
+John Doe = ${chance.name()}
+Berlin = ${chance.city()}
+Your error code is 404 = Your error code is ${chance.integer({min: 400, max: 599})}
+```
+
 ## Snippets
 
 By default, you have an optional feature enabled that is called `Autocomplete`. This also allows you to use snippets.
@@ -289,6 +303,17 @@ attribute you can do the following:
 
 ```ini
 !replaceAttribute(http://www.demomonkey.net, href) = https://www.example.com
+```
+
+### Search and Hash
+
+The `!replace` function also provides the capability to use another function instead of a string replacement, i.e. hashing.
+You can either use `!replace(search, locationFilter, cssFilter, attribute, replaceFn) = replace` or one of the following
+aliases:
+
+```ini
+!replaceFunction(DemoMonkey, hash) = SHA256
+!hash(DemoMonkey) = SHA256
 ```
 
 ### Protect text from replacements
@@ -384,20 +409,20 @@ If you want to hook only into certain types of requests, you can provide a type 
 
 The available types are:
 
-- `*`
-- `main_frame`
-- `sub_frame`
-- `stylesheet`
-- `script`
-- `image`
-- `font`
-- `object`
-- `xmlhttprequest`
-- `ping`
-- `csp_report`
-- `media`
-- `websocket`
-- `other`
+* `*`
+* `main_frame`
+* `sub_frame`
+* `stylesheet`
+* `script`
+* `image`
+* `font`
+* `object`
+* `xmlhttprequest`
+* `ping`
+* `csp_report`
+* `media`
+* `websocket`
+* `other`
 
 ### Conditional Replacements
 
@@ -604,7 +629,7 @@ To change the state of a connection on the flowmap to critical or warning, use t
 Note, that the order of the elements is important. The first attribute is the exit node, the second node is the
 downstream entry node.
 
-If you'd like to forece a connection to being set to a certain value, even if no baseline is set, you can set a `force` parameter:
+If you'd like to force a connection to being set to a certain value, even if no baseline is set, you can set a `force` parameter:
 
 ```ini
 !replaceFlowmapConnection(ECommerce-Services, Inventory-Services, 1) = warning
