@@ -264,8 +264,6 @@ class Configuration {
         return carry.concat(variable)
       }, [])
 
-    variables.push(new Variable('==CHANCE=JS==', '', '', global))
-
     if (bindValues) {
       return variables.map((variable) => {
         return variable.bind(this.getValue(variable.owner, variable.name))
@@ -279,6 +277,7 @@ class Configuration {
     if (this.patterns === false) {
       // get all variables upfront
       const variables = this.getVariables()
+      variables.push(new Variable('==CHANCE=JS==', '', '', global))
       const options = this.getOptions()
 
       const commandBuilder = new CommandBuilder(

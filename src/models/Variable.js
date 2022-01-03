@@ -14,6 +14,8 @@
 import chance from 'chance'
 import json5 from 'json5'
 
+const chanceGenerator = chance.Chance()
+
 class Variable {
   constructor(name, placeholder, description, owner = '') {
     this.name = name
@@ -21,7 +23,6 @@ class Variable {
     this.description = description
     this.owner = owner
     this.id = this.owner === '' ? this.name : this.owner + '::' + this.name
-    this.chanceGenerator = chance.Chance()
   }
 
   bind(value) {
@@ -36,7 +37,7 @@ class Variable {
       } catch (e) {
         args = ''
       }
-      return this.chanceGenerator[p1](args)
+      return chanceGenerator[p1](args)
     })
   }
 

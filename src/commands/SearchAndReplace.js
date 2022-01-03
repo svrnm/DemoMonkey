@@ -13,11 +13,26 @@
  */
 import Command from './Command'
 import UndoElement from './UndoElement'
+import CryptoJS from 'crypto-js'
+
+const functions = {
+  replace: (target, search, replace) => {
+    return target.replace(search, replace)
+  },
+  hash: (target, search, replace) => {
+    const algs = ['MD5', 'SHA1', 'SHA256', 'SHA224', 'SHA512', 'SHA384', 'SHA3', 'RIPEMD160']
+    let alg = 'SHA256'
+    if (algs.includes(replace.toUpperCase())) {
+      alg = replace.toUpperCase()
+    }
+    return target.replace(search, CryptoJS[alg](search))
+  }
+}
 
 class SearchAndReplace extends Command {
   // Using '' as locationFilter and location as {} works with _checkLocation
   // since every string includes ''
-  constructor(search, replace, locationFilter = '', cssFilter = '', property = '', location = {}) {
+  constructor(search, replace, locationFilter = '', cssFilter = '', property = '', fn = 'replace', location = {}) {
     super()
     this.search = search
     this.replace = replace
@@ -25,6 +40,14 @@ class SearchAndReplace extends Command {
     this.cssFilter = cssFilter
     this.location = location
     this.property = property
+    this.fn = this._getReplaceFunction(fn)
+  }
+
+  _getReplaceFunction(fn) {
+    if (Object.keys(functions).includes(fn)) {
+      return functions[fn]
+    }
+    return functions.replace
   }
 
   _checkLocation() {
@@ -50,7 +73,7 @@ class SearchAndReplace extends Command {
       return false
     }
     const original = target[property]
-    const replacement = original.replace(this.search, this.replace)
+    const replacement = this.fn(original, this.search, this.replace)
     if (replacement !== original) {
       target[property] = replacement
       return new UndoElement(target, property, original, replacement)
@@ -77,7 +100,7 @@ class SearchAndReplace extends Command {
     }
 
     const original = target[key]
-    const replacement = target[key].replace(this.search, this.replace)
+    const replacement = this.fn(target[key], this.search, this.replace)
     if (replacement !== original) {
       target[key] = replacement
       return new UndoElement(target, key, original, replacement)

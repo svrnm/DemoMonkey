@@ -98,17 +98,33 @@ export default [
   {
     name: 'replace',
     aliases: [],
-    signature: '(${1}, ${2}, ${3}, ${4}) = ${5}',
+    signature: '(${1}, ${2}, ${3}, ${4}, ${5}) = ${6}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new SearchAndReplace(parameters[0], value, parameters[1], parameters[2], parameters[3], location)
+      return new SearchAndReplace(parameters[0], value, parameters[1], parameters[2], parameters[3], parameters[4], location)
     }
   },
   {
     name: 'replaceAttribute',
     aliases: [],
-    signature: '(${1}, ${2}, ${3}, ${4}) = ${5}',
+    signature: '(${1}, ${2}, ${3}, ${4}, ${5}) = ${6}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new SearchAndReplace(parameters[0], value, parameters[2], parameters[3], parameters[1], location)
+      return new SearchAndReplace(parameters[0], value, parameters[2], parameters[3], parameters[1], parameters[4], location)
+    }
+  },
+  {
+    name: 'replaceFunction',
+    aliases: [],
+    signature: '(${1}, ${2}) = ${3}',
+    command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
+      return new SearchAndReplace(parameters[0], value, parameters[2], parameters[3], parameters[4], parameters[1], location)
+    }
+  },
+  {
+    name: 'hash',
+    aliases: [],
+    signature: '(${1}, ${2})',
+    command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
+      return new SearchAndReplace(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], 'hash', location)
     }
   },
   {

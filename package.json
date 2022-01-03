@@ -22,6 +22,7 @@
     "color": "^4.1.0",
     "color-name": "^1.1.4",
     "color-string": "^1.9.0",
+    "crypto-js": "^4.1.1",
     "deep-is": "^0.1.4",
     "deepmerge": "^4.2.2",
     "fast-json-patch": "^3.1.0",
