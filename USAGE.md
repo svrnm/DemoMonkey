@@ -288,7 +288,7 @@ For example, if you have a link `<a href="http://www.demomonkey.net">DemoMonkey<
 attribute you can do the following:
 
 ```ini
-!replaceAttribute(DemoMonkey, href) = https://www.appdynamics.com
+!replaceAttribute(http://www.demomonkey.net, href) = https://www.example.com
 ```
 
 ### Protect text from replacements
