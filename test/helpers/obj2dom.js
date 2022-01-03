@@ -95,7 +95,7 @@ describe('#dom2obj', function () {
   })
 
   it('should convert objects with children', function () {
-    assert.deepStrictEqual(dom2obj('<div data-type="object"><div data-key="a">1</div><div data-key="b">2</div><div data-key="c">3</div></div>'), { a: 1, b: 2, c: 3 })
+    assert.deepStrictEqual(dom2obj('<div data-type="object"><div data-key="a">1</div><div data-key="b">2</div><div data-key="label">3</div></div>'), { a: 1, b: 2, label: '3' })
   })
 
   it('should convert complex structures', function () {

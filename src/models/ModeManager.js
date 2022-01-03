@@ -222,6 +222,7 @@ class ModeManager {
           </div>
           <div class="demo-monkey-debug-box-inner">Runtime (ms): <span id="demo-monkey-last-runtime"></span></div>
           <div class="demo-monkey-debug-box-inner">Inspected: <span id="demo-monkey-elements-count"></span></div>
+          <div class="demo-monkey-debug-box-inner" display="none" id="demo-monkey-ajax-count"></div>
           <div class="demo-monkey-debug-box-inner">Undo Length: <span id="demo-monkey-undo-length"></span></div>
           <button class="demo-monkey-debug-box-inner" id="demo-monkey-editor-toggle">Toggle <i>Right-Click</i> Editor</button>
         </div>
@@ -378,7 +379,10 @@ class ModeManager {
     const e3 = this.scope.document.getElementById('demo-monkey-elements-count')
     if (e3) {
       e3.innerHTML = Object.keys(sum).reduce((acc, key) => {
-        return acc.concat(`${key}: ${sum[key]}`)
+        if (sum[key] > 0) {
+          return acc.concat(`${key}: ${sum[key]}`)
+        }
+        return acc
       }, []).join(', ')
     }
   }

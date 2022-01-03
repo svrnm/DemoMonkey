@@ -39,7 +39,7 @@ function obj2dom(obj) {
   return obj + ''
 }
 
-function _parsed2obj(obj) {
+function _parsed2obj(obj, parentKey = '') {
   if (typeof obj === 'object' && obj.attr && obj.attr['data-type']) {
     const result = obj.attr['data-type'] === 'object' ? {} : []
     if (!Object.prototype.hasOwnProperty.call(obj, 'div')) {
@@ -50,12 +50,15 @@ function _parsed2obj(obj) {
     }
     obj.div.forEach(element => {
       if (Object.prototype.hasOwnProperty.call(element, '#text')) {
-        result[element.attr['data-key']] = _parsed2obj(element['#text'])
+        result[element.attr['data-key']] = _parsed2obj(element['#text'], element.attr['data-key'])
       } else {
-        result[element.attr['data-key']] = _parsed2obj(element.div)
+        result[element.attr['data-key']] = _parsed2obj(element.div, element.attr['data-key'])
       }
     })
     return result
+  }
+  if (['label', 'topLabel'].includes(parentKey)) {
+    return obj + ''
   }
   if (obj === 'undefined') {
     return undefined

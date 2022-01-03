@@ -19,6 +19,16 @@ import JSON5 from 'json5'
 (function (scope, config) {
   const rules = []
 
+  function isDebug() {
+    return scope.document.head && scope.document.head.dataset.demoMonkeyMode === 'debug'
+  }
+
+  function debugLog() {
+    if (isDebug()) {
+      console.log.apply(this, arguments)
+    }
+  }
+
   scope.addEventListener('message', function (event) {
     if (event.source !== window) {
       return
@@ -36,13 +46,18 @@ import JSON5 from 'json5'
   })
 
   if (config.hookIntoHyperGraph) {
+    console.warn('Demo Monkey tries to hook into hyper graph.')
     const template = scope.document.createElement('template')
     template.setAttribute('id', 'demo-monkey-hyper-graph')
     scope.document.head.appendChild(template)
-    let noHookCounter = 0
-    const updateInterval = setInterval(() => {
+    let noHookCounter = 2
+    const intervalLength = 99
+    const hgHook = () => {
       if (typeof scope.DEV_DATA_HOOK_ORIGINAL_ === 'object') {
-        noHookCounter = 0
+        if (noHookCounter > 1) {
+          console.warn('Demo Monkey hooked into hyper graph.')
+        }
+        noHookCounter = 1
         Object.keys(scope.DEV_DATA_HOOK_ORIGINAL_).forEach(key => {
           let helperNode = document.getElementById(`demo-monkey-hyper-graph-helper-${key}`)
           if (helperNode) {
@@ -55,16 +70,21 @@ import JSON5 from 'json5'
           }
         })
       } else {
+        debugLog('[DM] hyper graph not found', noHookCounter)
         noHookCounter++
-        if (noHookCounter === 100) {
-          clearInterval(updateInterval)
-        }
       }
-    }, 99)
+      if (noHookCounter === 50) {
+        console.warn('DemoMonkey could not find hyper graph, hook disabled.')
+      } else {
+        setTimeout(hgHook, intervalLength * noHookCounter)
+      }
+    }
+    setTimeout(hgHook, intervalLength)
   }
 
   if (config.hookIntoAjax) {
-    console.log(rules)
+    console.warn('Demo Monkey hooks into ajax requests. This may break things. Use at your own risk!')
+    let ajaxCounter = 0
     const functions = {
       patchAjaxResponse: (url, response, context) => {
         const link = scope.document.createElement('a')
@@ -103,16 +123,31 @@ import JSON5 from 'json5'
     }
     const openPrototype = XMLHttpRequest.prototype.open
     XMLHttpRequest.prototype.open = function () {
-      console.log('HERE', rules)
       const url = arguments[1]
       this.addEventListener('readystatechange', function (event) {
-        if (this.readyState === 4) {
+        if (this.readyState === 4 && rules.length > 0) {
+          // defineProperty destroys existing response / responseText, so
+          // here we create the result first and make them writeable later.
+          const original = event.target.responseText
+          const result = mutateResponse(url, event.target.responseText)
           Object.defineProperty(this, 'response', { writable: true })
           Object.defineProperty(this, 'responseText', { writable: true })
-          this.response = this.responseText = mutateResponse(url, event.target.responseText)
+          if (isDebug() && original !== result) {
+            ajaxCounter++
+            console.log('[DM] Modified Ajax Response. Original:')
+            console.log(original)
+            console.log('[DM] Modified Ajax Response. Result:')
+            console.log(result)
+            console.log('[DM] Modified Ajax Response. End.')
+            const visualCounter = document.getElementById('demo-monkey-ajax-count')
+            if (visualCounter) {
+              visualCounter.innerHTML = `Ajax Count: ${ajaxCounter}`
+            }
+          }
+          this.response = this.responseText = result
         }
       })
       return openPrototype.apply(this, arguments)
     }
   }
-})(window, window.demoMonkeyConfig || { hookIntoAjax: false, hookIntoCanvas: false })
+})(window, window.demoMonkeyConfig || { hookIntoAjax: false, hookIntoHyperGraph: false })
