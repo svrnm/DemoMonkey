@@ -57,7 +57,8 @@ ace.define('ace/mode/mnky_highlight_rules', ['require', 'exports', 'module', 'ac
         }]
       }, {
         token: ['variable.mnky'],
-        regex: '(\\${?[a-zA-Z0-9]+)}?'
+        // three matchings: variable like ${name}, variable like ${name.method(args)} and like $name
+        regex: '(\\${[^(}]+\\(.*?\\)})|(\\${[^(}]+})|(\\$(?!{)\\S+)'
       }, {
         token: ['constant.library.mnky', 'text', 'punctuation.separator.key-value.mnky'],
         regex: '^(@[^=]+)(\\s*)(=)?'

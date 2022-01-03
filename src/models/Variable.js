@@ -30,7 +30,7 @@ class Variable {
   }
 
   chance(value) {
-    return value.replace(/\${chance.([a-zA-Z0-9_-]*)(?:\((.*)\))?}/, (match, p1, p2) => {
+    return value.replace(/\${chance.([a-zA-Z0-9_-]*)(?:\((.*?)\))?}/, (match, p1, p2) => {
       let args
       try {
         args = json5.parse(p2)
