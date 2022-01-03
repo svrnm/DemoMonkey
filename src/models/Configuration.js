@@ -28,7 +28,6 @@ class Configuration {
     this.enabled = enabled
     this.values = values
     this.featureFlags = featureFlags
-
     this.globalVariables = Array.isArray(globalVariables) ? globalVariables : []
   }
 
@@ -264,6 +263,8 @@ class Configuration {
         }
         return carry.concat(variable)
       }, [])
+
+    variables.push(new Variable('==CHANCE=JS==', '', '', global))
 
     if (bindValues) {
       return variables.map((variable) => {

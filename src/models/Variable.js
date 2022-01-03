@@ -11,6 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import chance from 'chance'
+import json5 from 'json5'
+
 class Variable {
   constructor(name, placeholder, description, owner = '') {
     this.name = name
@@ -18,17 +21,33 @@ class Variable {
     this.description = description
     this.owner = owner
     this.id = this.owner === '' ? this.name : this.owner + '::' + this.name
+    this.chanceGenerator = chance.Chance()
   }
 
   bind(value) {
     return new Variable(this.name, typeof value === 'string' ? value : this.value, this.description, this.owner)
   }
 
+  chance(value) {
+    return value.replace(/\${chance.([a-zA-Z0-9_-]*)(?:\((.*)\))?}/, (match, p1, p2) => {
+      let args
+      try {
+        args = json5.parse(p2)
+      } catch (e) {
+        args = ''
+      }
+      return this.chanceGenerator[p1](args)
+    })
+  }
+
   apply(value) {
-    if (typeof value === 'string') {
-      return value.replace('$' + this.name, this.value).replace('${' + this.name + '}', this.value)
+    if (typeof value !== 'string') {
+      return value
     }
-    return value
+    if (this.name === '==CHANCE=JS==') {
+      return this.chance(value)
+    }
+    return value.replace('$' + this.name, this.value).replace('${' + this.name + '}', this.value)
   }
 }
 

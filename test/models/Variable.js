@@ -49,4 +49,16 @@ describe('Variable', function () {
       assert.strictEqual(v2.id, 'owner::name')
     })
   })
+
+  describe('#chance', function () {
+    it('creates random values with chance.js`', function () {
+      const v1 = new Variable('==CHANCE=JS==', '', '')
+      // eslint-disable-next-line no-template-curly-in-string
+      assert.strictEqual(v1.chance('My magic number is ${chance.integer({min: 7, max: 7})}'), 'My magic number is 7')
+      // eslint-disable-next-line no-template-curly-in-string
+      assert.strictEqual(v1.chance('${chance.character({pool: "b"})}'), 'b')
+      // eslint-disable-next-line no-template-curly-in-string
+      assert(['false', 'null', 'undefined', '0', 'NaN', ''].includes(v1.chance('${chance.falsy()}')))
+    })
+  })
 })
