@@ -277,7 +277,6 @@ class Configuration {
     if (this.patterns === false) {
       // get all variables upfront
       const variables = this.getVariables()
-      variables.push(new Variable('==CHANCE=JS==', '', '', global))
       const options = this.getOptions()
 
       const commandBuilder = new CommandBuilder(
@@ -317,13 +316,8 @@ class Configuration {
             return result.concat(Object.keys(content[key]).reduce(filterConfiguration(content[key]), []))
           }
 
-          const applyVariables = (target) => variables.reduce((value, variable) => {
-            return variable.apply(value)
-          }, target)
-
-          // We apply the variables twice to allow dependencies like: $domain = $name.$tld
-          const lhs = applyVariables(applyVariables(key))
-          const rhs = applyVariables(applyVariables(content[key]))
+          const lhs = Variable.applyList(variables, key)
+          const rhs = Variable.applyList(variables, content[key])
 
           result.push(commandBuilder.build(lhs, rhs))
 

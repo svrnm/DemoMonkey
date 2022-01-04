@@ -11,6 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/*
+eslint-disable no-template-curly-in-string
+*/
+
 import Variable from '../../src/models/Variable'
 import assert from 'assert'
 
@@ -50,17 +55,30 @@ describe('Variable', function () {
     })
   })
 
-  describe('#chance', function () {
-    it('creates random values with chance.js`', function () {
-      const v1 = new Variable('==CHANCE=JS==', '', '')
-      // eslint-disable-next-line no-template-curly-in-string
-      assert.strictEqual(v1.chance(v1.chance('My magic numbers are ${chance.integer({min: 7, max: 7})} and ${chance.integer({min: 17, max: 17})}')), 'My magic numbers are 7 and 17')
-      // eslint-disable-next-line no-template-curly-in-string
-      assert.strictEqual(v1.chance('${chance.character({pool: "b"})}'), 'b')
-      // eslint-disable-next-line no-template-curly-in-string
-      assert(['false', 'null', 'undefined', '0', 'NaN', ''].includes(v1.chance('${chance.falsy()}')))
-      // eslint-disable-next-line no-template-curly-in-string
-      assert.strictEqual(v1.chance('${lots} of $variables and symb$ols} { ${chance.character({pool: ")"})} ) } { } $'), '${lots} of $variables and symb$ols} { ) ) } { } $')
+  describe('#evaluateFunctions', function () {
+    it('evaluate predefined functions in variables`', function () {
+      assert.strictEqual(Variable.evaluateFunctions(Variable.evaluateFunctions('My magic numbers are ${random.integer({min: 7, max: 7})} and ${random.integer({min: 17, max: 17})}')), 'My magic numbers are 7 and 17')
+      assert.strictEqual(Variable.evaluateFunctions('${random.character({pool: "b"})}'), 'b')
+      assert(['false', 'null', 'undefined', '0', 'NaN', ''].includes(Variable.evaluateFunctions('${random.falsy()}')))
+      assert.strictEqual(Variable.evaluateFunctions('${lots} of $variables and symb$ols} { ${random.character({pool: ")"})} ) } { } $'), '${lots} of $variables and symb$ols} { ) ) } { } $')
+    })
+  })
+
+  describe('#applyList', function () {
+    it('should apply a set of variables recursively', function () {
+      const variables = [
+
+        new Variable('c', '${random.integer({min: $b, max: 37})}'),
+        new Variable('b', '37'),
+        new Variable('number', '$b'),
+        new Variable('prefix', 'www', 'description'),
+        new Variable('suffix', 'example', 'description'),
+        new Variable('tld', 'com', 'description'),
+        new Variable('name', '$prefix.$suffix', 'description'),
+        new Variable('domain', '$name.$tld', 'description'),
+        new Variable('path', '${random.integer({min: $number, max: ${random.integer({min: $c, max: 37})} })}')
+      ]
+      assert.strictEqual(Variable.applyList(variables, 'https://$domain/$path/'), 'https://www.example.com/37/')
     })
   })
 })

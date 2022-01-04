@@ -14,7 +14,7 @@
 import chance from 'chance'
 import json5 from 'json5'
 
-const chanceGenerator = chance.Chance()
+const randomGenerator = chance.Chance()
 
 class Variable {
   constructor(name, placeholder, description, owner = '') {
@@ -25,30 +25,54 @@ class Variable {
     this.id = this.owner === '' ? this.name : this.owner + '::' + this.name
   }
 
+  static applyList(variables, str) {
+    let result = str
+    let previous
+    do {
+      do {
+        previous = result
+        result = variables.reduce((value, variable) => {
+          return variable.apply(value)
+        }, previous)
+      } while (result !== previous)
+      result = Variable.evaluateFunctions(result)
+    } while (result !== previous)
+    return result
+  }
+
   bind(value) {
     return new Variable(this.name, typeof value === 'string' ? value : this.value, this.description, this.owner)
   }
 
-  chance(value) {
-    return value.replace(/\${chance.([a-zA-Z0-9_-]*)(?:\((.*?)\))?}/, (match, p1, p2) => {
-      let args
-      try {
-        args = json5.parse(p2)
-      } catch (e) {
-        args = ''
-      }
-      return chanceGenerator[p1](args)
-    })
+  static evaluateFunctions(value) {
+    // We want to process  recursively from back to front, so that inner use is processed later
+    // We split the value first, and go through the string from back to front.
+    const list = value.split('${random.')
+    return list.shift() + list.map(x => '${random.' + x).reverse().reduce((result, current) => {
+      return current.replace(/\${random.([a-zA-Z0-9_-]*)(?:\((.*?)\))?}/, (match, p1, p2) => {
+        let args
+        try {
+          args = json5.parse(p2)
+        } catch (e) {
+          args = ''
+        }
+        if (typeof randomGenerator[p1] === 'function') {
+          try {
+            return randomGenerator[p1](args)
+          } catch (e) {
+            return match
+          }
+        }
+        return match
+      }) + result
+    }, [])
   }
 
   apply(value) {
     if (typeof value !== 'string') {
       return value
     }
-    if (this.name === '==CHANCE=JS==') {
-      return this.chance(value)
-    }
-    return value.replace('$' + this.name, this.value).replace('${' + this.name + '}', this.value)
+    return value.replaceAll('$' + this.name, this.value).replace('${' + this.name + '}', this.value)
   }
 }
 

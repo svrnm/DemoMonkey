@@ -203,12 +203,12 @@ Here you also can provide colors via a picker and images via upload which will b
 
 Sometimes you don't care about the value of the replacement itself or you want to provide some randomness in the
 replacement, e.g.when providing a name of a person. In this case you can use the special variables of the form
-`${chance.<function>(<attributes>)}`, which provide you access to the methods provided by [Chance](https://chancejs.com/):
+`${random.<function>(<attributes>)}`, which provide you access to the methods provided by [Chance](https://chancejs.com/):
 
 ```ini
-John Doe = ${chance.name()}
-Berlin = ${chance.city()}
-Your error code is 404 = Your error code is ${chance.integer({min: 400, max: 599})}
+John Doe = ${random.name()}
+Berlin = ${random.city()}
+Your error code is 404 = Your error code is ${random.integer({min: 400, max: 599})}
 ```
 
 ## Imports: Reuse existing configurations
