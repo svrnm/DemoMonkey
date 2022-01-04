@@ -54,11 +54,13 @@ describe('Variable', function () {
     it('creates random values with chance.js`', function () {
       const v1 = new Variable('==CHANCE=JS==', '', '')
       // eslint-disable-next-line no-template-curly-in-string
-      assert.strictEqual(v1.chance('My magic number is ${chance.integer({min: 7, max: 7})}'), 'My magic number is 7')
+      assert.strictEqual(v1.chance(v1.chance('My magic numbers are ${chance.integer({min: 7, max: 7})} and ${chance.integer({min: 17, max: 17})}')), 'My magic numbers are 7 and 17')
       // eslint-disable-next-line no-template-curly-in-string
       assert.strictEqual(v1.chance('${chance.character({pool: "b"})}'), 'b')
       // eslint-disable-next-line no-template-curly-in-string
       assert(['false', 'null', 'undefined', '0', 'NaN', ''].includes(v1.chance('${chance.falsy()}')))
+      // eslint-disable-next-line no-template-curly-in-string
+      assert.strictEqual(v1.chance('${lots} of $variables and symb$ols} { ${chance.character({pool: ")"})} ) } { } $'), '${lots} of $variables and symb$ols} { ) ) } { } $')
     })
   })
 })
