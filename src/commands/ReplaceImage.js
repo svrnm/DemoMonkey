@@ -54,7 +54,7 @@ class ReplaceImage extends Command {
       return false
     }
 
-    if (this._match(original, search, this.replace)) {
+    if (this._match(original, search, this.replace) || this._match(original, `url("${search}")`, this.replace)) {
       const result = []
       if (this.withRatio && typeof target.width === 'number' && typeof target.height === 'number') {
         const oldWidth = target.width

@@ -103,6 +103,7 @@ class Monkey {
     sum.input += this._applyOnXpathGroup(configuration, '//body//textarea', 'input', 'value')
     sum.image = this._applyOnXpathGroup(configuration, '//body//img', 'image', 'src')
     sum.image += this._applyOnXpathGroup(configuration, '//body//div[contains(@ad-test-id, "dash-image-widget-renderer")]', 'image', 'style.backgroundImage')
+    sum.image += this._applyOnXpathGroup(configuration, '//body//dash-kit-image-widget2/div/ui-kit-card-v1/div/div/div', 'image', 'style.backgroundImage')
     sum.dashboard = this._applyOnXpathGroup(configuration, '//body//div[contains(@class, "ads-dashboard-canvas-pane")]', 'ad-dashboard', 'style')
 
     // Apply the text commands on the title element
