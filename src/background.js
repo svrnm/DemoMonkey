@@ -144,6 +144,10 @@ import { logger, connectLogger } from './helpers/logger'
           runAt: 'document_start',
           allFrames: true
         }, (result) => {
+          if (typeof result === 'undefined') {
+            console.log('Could not inject.')
+            return
+          }
           if (result[0] === true) {
             console.log('Already injected.')
             return

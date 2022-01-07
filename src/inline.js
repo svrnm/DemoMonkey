@@ -23,12 +23,6 @@ import JSON5 from 'json5'
     return scope.document.head && scope.document.head.dataset.demoMonkeyMode === 'debug'
   }
 
-  function debugLog() {
-    if (isDebug()) {
-      console.log.apply(this, arguments)
-    }
-  }
-
   scope.addEventListener('message', function (event) {
     if (event.source !== window) {
       return
@@ -46,7 +40,7 @@ import JSON5 from 'json5'
   })
 
   if (config.hookIntoHyperGraph) {
-    console.warn('Demo Monkey tries to hook into hyper graph.')
+    console.info('Demo Monkey tries to hook into hyper graph.')
     const template = scope.document.createElement('template')
     template.setAttribute('id', 'demo-monkey-hyper-graph')
     scope.document.head.appendChild(template)
@@ -55,7 +49,7 @@ import JSON5 from 'json5'
     const hgHook = () => {
       if (typeof scope.DEV_DATA_HOOK_ORIGINAL_ === 'object') {
         if (noHookCounter > 1) {
-          console.warn('Demo Monkey hooked into hyper graph.')
+          console.info('Demo Monkey hooked into hyper graph.')
         }
         noHookCounter = 1
         Object.keys(scope.DEV_DATA_HOOK_ORIGINAL_).forEach(key => {
@@ -79,11 +73,10 @@ import JSON5 from 'json5'
           }
         })
       } else {
-        debugLog('[DM] hyper graph not found', noHookCounter)
         noHookCounter++
       }
       if (noHookCounter === 50) {
-        console.warn('DemoMonkey could not find hyper graph, hook disabled.')
+        console.info('DemoMonkey could not find hyper graph, hook disabled.')
       } else {
         setTimeout(hgHook, intervalLength * noHookCounter)
       }
@@ -92,7 +85,7 @@ import JSON5 from 'json5'
   }
 
   if (config.hookIntoAjax) {
-    console.warn('Demo Monkey hooks into ajax requests. This may break things. Use at your own risk!')
+    console.info('Demo Monkey hooks into ajax requests. This may break things. Use at your own risk!')
     let ajaxCounter = 0
     const functions = {
       patchAjaxResponse: (url, response, context) => {
