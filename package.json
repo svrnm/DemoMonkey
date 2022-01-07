@@ -19,6 +19,7 @@
     "ace-builds": "^1.4.13",
     "axios": "^0.24.0",
     "chance": "^1.1.8",
+    "change-case": "^4.1.2",
     "color": "^4.1.0",
     "color-name": "^1.1.4",
     "color-string": "^1.9.0",

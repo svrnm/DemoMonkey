@@ -57,10 +57,14 @@ describe('Variable', function () {
 
   describe('#evaluateFunctions', function () {
     it('evaluate predefined functions in variables`', function () {
+      // random
       assert.strictEqual(Variable.evaluateFunctions(Variable.evaluateFunctions('My magic numbers are ${random.integer({min: 7, max: 7})} and ${random.integer({min: 17, max: 17})}')), 'My magic numbers are 7 and 17')
       assert.strictEqual(Variable.evaluateFunctions('${random.character({pool: "b"})}'), 'b')
       assert(['false', 'null', 'undefined', '0', 'NaN', ''].includes(Variable.evaluateFunctions('${random.falsy()}')))
       assert.strictEqual(Variable.evaluateFunctions('${lots} of $variables and symb$ols} { ${random.character({pool: ")"})} ) } { } $'), '${lots} of $variables and symb$ols} { ) ) } { } $')
+      // string
+      assert.strictEqual(Variable.evaluateFunctions('${string.toUpperCase(b)}'), 'B')
+      assert.strictEqual(Variable.evaluateFunctions('${string.slice({string: "${string.headerCase(${string.toUpperCase(this is a test)})}", start: 0, stop: 10 })}'), 'This-Is-A-')
     })
   })
 
@@ -71,14 +75,18 @@ describe('Variable', function () {
         new Variable('c', '${random.integer({min: $b, max: 37})}'),
         new Variable('b', '37'),
         new Variable('number', '$b'),
-        new Variable('prefix', 'www', 'description'),
+        new Variable('prefix', 'WWW', 'description'),
         new Variable('suffix', 'example', 'description'),
         new Variable('tld', 'com', 'description'),
-        new Variable('name', '$prefix.$suffix', 'description'),
+        new Variable('name', '${string.toLowerCase($prefix)}.$suffix', 'description'),
         new Variable('domain', '$name.$tld', 'description'),
+        new Variable('argument', '${string.camelCase(demo monkey test)}', 'description'),
         new Variable('path', '${random.integer({min: $number, max: ${random.integer({min: $c, max: 37})} })}')
       ]
-      assert.strictEqual(Variable.applyList(variables, 'https://$domain/$path/'), 'https://www.example.com/37/')
+      assert.strictEqual(Variable.applyList(variables, 'https://$domain/$path/?id=$argument'), 'https://www.example.com/37/?id=demoMonkeyTest')
+
+      // Test for endless loop.
+      assert.strictEqual(Variable.applyList([new Variable('loop', '$loop.')], '$loop.'), '$loop.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................')
     })
   })
 })

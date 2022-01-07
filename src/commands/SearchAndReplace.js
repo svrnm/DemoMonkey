@@ -19,7 +19,7 @@ const functions = {
   replace: (target, search, replace) => {
     return target.replace(search, replace)
   },
-  hash: (target, search, replace) => {
+  hash: (target, search, replace = '') => {
     const algs = ['MD5', 'SHA1', 'SHA256', 'SHA224', 'SHA512', 'SHA384', 'SHA3', 'RIPEMD160']
     let alg = 'SHA256'
     if (algs.includes(replace.toUpperCase())) {

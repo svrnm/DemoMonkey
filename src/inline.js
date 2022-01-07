@@ -66,7 +66,16 @@ import JSON5 from 'json5'
             helperNode = scope.document.createElement('div')
             helperNode.innerHTML = obj2dom(scope.DEV_DATA_HOOK_ORIGINAL_[key])
             helperNode.setAttribute('id', `demo-monkey-hyper-graph-helper-${key}`)
+            helperNode.setAttribute('class', 'demo-monkey-hyper-graph-helper')
             template.appendChild(helperNode)
+          }
+        })
+        Array.from(document.getElementsByClassName('demo-monkey-hyper-graph-helper')).forEach(node => {
+          // remove demo-monkey-hyper-graph-helper- from id
+          const id = node.id.substring(31)
+          // check if this hypergraph still exists
+          if (!Object.keys(window.DEV_DATA_HOOK_ORIGINAL_).includes(id)) {
+            node.remove()
           }
         })
       } else {

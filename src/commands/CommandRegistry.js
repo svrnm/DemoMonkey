@@ -45,7 +45,7 @@ import extractParameters from '../helpers/extractParameters'
 export default [
   {
     name: 'addScript',
-    signature: '(${1}) = ${3}',
+    signature: '(${1}) = ${2}',
     aliases: [],
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
       return new AddScript(parameters, value)
@@ -62,7 +62,7 @@ export default [
   {
     name: 'patchAjaxResponse',
     aliases: ['patchAjax', 'patchResponse'],
-    signature: '(${1}) = ${3}',
+    signature: '(${1}) = ${2}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
       return new PatchAjaxResponse(parameters[0], value)
     }
