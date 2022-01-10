@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "DemoMonkey",
-  "description": "Tamper your application's UI to demo almost anything",
+  "description": "Custom demo, every demo: Turn your standard demo into a tailored experience for your customers in minutes.",
   "version": "8.0.0",
   "author": "Severin Neumann <severin.neumann@altmuehlnet.de>",
   "homepage_url": "https://github.com/svrnm/DemoMonkey/",
