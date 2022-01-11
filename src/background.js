@@ -140,31 +140,11 @@ import { logger, connectLogger } from './helpers/logger'
     scope.chrome.tabs.get(tabId, (tab) => {
       if (tab.url) {
         scope.chrome.tabs.executeScript(tabId, {
-          code: 'typeof window["demomonkey-F588C641-43BA-4E48-86F4-36100F9765E9"] === "boolean"',
-          runAt: 'document_start',
-          allFrames: true
-        }, (result) => {
-          if (typeof result === 'undefined') {
-            console.log('Could not inject.')
-            return
-          }
-          if (result[0] === true) {
-            console.log('Already injected.')
-            return
-          }
-          scope.chrome.tabs.executeScript(tabId, {
-            file: 'js/monkey.js',
-            allFrames: true,
-            runAt: 'document_start'
-          }, () => {
-            scope.chrome.tabs.executeScript(tabId, {
-              code: 'window["demomonkey-F588C641-43BA-4E48-86F4-36100F9765E9"] = true;',
-              allFrames: true,
-              runAt: 'document_start'
-            }, () => {
-              console.log('Injection completed for', tabId, tab.url)
-            })
-          })
+          file: 'js/monkey.js',
+          allFrames: true,
+          runAt: 'document_start'
+        }, () => {
+          console.log('Injection completed for', tabId, tab.url)
         })
       } else {
         console.log('Did not inject into tab ', tabId, 'Permission denied')
