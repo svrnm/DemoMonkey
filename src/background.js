@@ -139,6 +139,8 @@ try {
         return
       }
 
+      console.log(changeInfo.status)
+
       scope.chrome.tabs.get(tabId, (tab) => {
         if (tab.url) {
           scope.chrome.scripting.executeScript({
@@ -149,7 +151,8 @@ try {
             console.log('Injection completed for', tabId, tab.url)
           })
         } else {
-          console.log('Did not inject into tab ', tabId, 'Permission denied')
+          logger('warn', 'Did not inject into tab ', tabId, 'Permission denied').write()
+          badge.updateDemoCounter('!')
         }
       })
     })
@@ -311,25 +314,24 @@ try {
         }
       })
 
-      /* TODO: MV3 Unfixed
       scope.chrome.contextMenus.create({
-        id: 'dmContextMenu',
+        id: 'dmToggleLiveMode',
         title: 'Toggle Live Mode',
-        contexts: ['browser_action'],
-        onclick: function () {
-          store.dispatch({ type: 'TOGGLE_LIVE_MODE' })
-        }
+        contexts: ['action']
       })
-
       scope.chrome.contextMenus.create({
-        id: 'dmContextMenu',
+        id: 'dmToggleDebugMode',
         title: 'Toggle Debug Mode',
-        contexts: ['browser_action'],
-        onclick: function () {
+        contexts: ['action']
+      })
+      scope.chrome.contextMenus.onClicked.addListener((info, tab) => {
+        const { menuItemId } = info
+        if (menuItemId === 'dmToggleLiveMode') {
+          store.dispatch({ type: 'TOGGLE_LIVE_MODE' })
+        } else if (menuItemId === 'dmToggleDebugMode') {
           store.dispatch({ type: 'TOGGLE_DEBUG_MODE' })
         }
       })
-      */
     }
   })(globalThis)
 } catch (e) {

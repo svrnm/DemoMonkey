@@ -45,7 +45,7 @@ class Badge {
     this.browserAction.getBadgeText({ tabId }, (oldText) => {
       // oldText can be undefined for a new tab, set it to ''
       const text = this._updateText(typeof oldText === 'undefined' ? '' : oldText, count + '')
-      const color = count > 0 ? '#952613' : '#5c832f'
+      const color = (count === '!' || count > 0) ? '#952613' : '#5c832f'
       this.browserAction.setBadgeText({ text, tabId })
       this.browserAction.setBadgeBackgroundColor({
         color,
