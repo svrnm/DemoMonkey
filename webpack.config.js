@@ -18,7 +18,7 @@ const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 const ZipPlugin = require('zip-webpack-plugin')
-const ExtensionReloader = require('webpack-extension-reloader')
+// const ExtensionReloader = require('webpack-extension-reloader')
 
 const manifest = JSON.parse(fs.readFileSync('./manifest.json'))
 
@@ -106,14 +106,14 @@ module.exports = env => {
       path: '..'
     }))
   } else {
-    plugins.push(new ExtensionReloader({
+    /*plugins.push(new ExtensionReloader({
       reloadPage: true, // Force the reload of the page also
       entries: { // The entries used for the content/background scripts or extension pages
         contentScript: 'monkey',
         background: 'background',
         extensionPage: 'app'
       }
-    }))
+    }))*/
   }
 
   return {

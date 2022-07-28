@@ -1,2 +1,4 @@
 scripts/**/*.js
 build/**/*.js
+nodule_modules/**/*.js
+webpack.config.js
