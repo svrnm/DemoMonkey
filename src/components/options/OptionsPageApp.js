@@ -429,7 +429,10 @@ class App extends React.Component {
   hasExtendedPermissions() {
     const permissions = this.state.permissions
     if (Array.isArray(permissions.origins) && permissions.origins.length > 0) {
-      return permissions.origins.includes('http://*/*') && permissions.origins.includes('https://*/*')
+      return (
+        (permissions.origins.includes('http://*/*') && permissions.origins.includes('https://*/*')) ||
+        permissions.origins.includes('<all_urls>')
+      )
     }
     return false
   }
@@ -515,7 +518,7 @@ const OptionsPageApp = connect(
         dispatch({ type: 'SET_MONKEY_INTERVAL', monkeyInterval })
       },
       toggleConfiguration: (id) => {
-        dispatch({ type: 'TOGGLE_CONFIGURATION', id: id })
+        dispatch({ type: 'TOGGLE_CONFIGURATION', id })
       },
       saveConfiguration: (id, configuration) => {
         return dispatch({ type: 'SAVE_CONFIGURATION', id, configuration })

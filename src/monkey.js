@@ -57,7 +57,7 @@ try {
         if (isTopFrame()) {
           scope.chrome.runtime.sendMessage({
             receiver: 'background',
-            count: count
+            count
           })
         }
       }
@@ -74,13 +74,16 @@ try {
           hookIntoHyperGraph: settings.isFeatureEnabled('hookIntoHyperGraph')
         }
 
+        /*
+         TODO: MV3 Unfixed
         const inlineConfigScriptTag = scope.document.createElement('script')
         inlineConfigScriptTag.innerHTML = 'window.demoMonkeyConfig = ' + JSON.stringify(inlineConfig)
         scope.document.head.append(inlineConfigScriptTag)
+        */
 
         const inlineScriptTag = scope.document.createElement('script')
         inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
-        inlineScriptTag.src = scope.chrome.extension.getURL('js/inline.js')
+        inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
         scope.document.head.append(inlineScriptTag)
 
         // We don't use the redux store, since below we restart demo monkey

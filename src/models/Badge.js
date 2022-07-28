@@ -14,6 +14,7 @@
 class Badge {
   constructor(browserAction, timer = -1) {
     this.timer = timer
+    console.log(browserAction)
     this.browserAction = browserAction
     this.tabs = []
   }
@@ -25,7 +26,7 @@ class Badge {
   _updateBadgeText(tabId) {
     this.browserAction.getBadgeText({ tabId }, (text) => {
       text = this._updateText(text)
-      this.browserAction.setBadgeText({ text: text, tabId })
+      this.browserAction.setBadgeText({ text, tabId })
     })
   }
 

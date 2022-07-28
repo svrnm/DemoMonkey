@@ -80,7 +80,7 @@ const store = new Store({
 })
 
 let commitHash = ''
-fetch(window.chrome.extension.getURL('COMMITHASH')).then((r) => {
+fetch(window.chrome.runtime.getURL('COMMITHASH')).then((r) => {
   return r.text()
 }).then(r => {
   commitHash = r
