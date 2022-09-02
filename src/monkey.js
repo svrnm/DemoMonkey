@@ -74,17 +74,25 @@ try {
           hookIntoHyperGraph: settings.isFeatureEnabled('hookIntoHyperGraph')
         }
 
-        /*
-         TODO: MV3 Unfixed
-        const inlineConfigScriptTag = scope.document.createElement('script')
-        inlineConfigScriptTag.innerHTML = 'window.demoMonkeyConfig = ' + JSON.stringify(inlineConfig)
-        scope.document.head.append(inlineConfigScriptTag)
-        */
 
-        const inlineScriptTag = scope.document.createElement('script')
-        inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
-        inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
-        scope.document.head.append(inlineScriptTag)
+
+        if (inlineConfig.hookIntoAjax || inlineConfig.hookIntoHyperGraph) {
+          if (!['miro.com'].includes(scope.location.host)) {
+            /*
+            TODO: MV3 Unfixed
+            const inlineConfigScriptTag = scope.document.createElement('script')
+            inlineConfigScriptTag.innerHTML = 'window.demoMonkeyConfig = ' + JSON.stringify(inlineConfig)
+            scope.document.head.append(inlineConfigScriptTag)
+            */
+
+            const inlineScriptTag = scope.document.createElement('script')
+            inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
+            inlineScriptTag.src = scope.chrome.extension.getURL('js/inline.js')
+            scope.document.head.append(inlineScriptTag)
+          } else {
+            logger('warn', `inline.js not loaded, because ${scope.location.host} may break, see https://github.com/svrnm/DemoMonkey/issues/21`).write()
+          }
+        }
 
         // We don't use the redux store, since below we restart demo monkey
         // every time the store is updated, which would lead to a loop.
