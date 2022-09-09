@@ -14,7 +14,6 @@
 class Badge {
   constructor(browserAction, timer = -1) {
     this.timer = timer
-    console.log(browserAction)
     this.browserAction = browserAction
     this.tabs = []
   }

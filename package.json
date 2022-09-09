@@ -16,6 +16,7 @@
   },
   "description": "Tamper your Web UI to demo almost anything",
   "dependencies": {
+    "@eduardoac-skimlinks/webext-redux": "^3.0.1-release-candidate",
     "ace-builds": "^1.4.13",
     "axios": "^0.24.0",
     "chance": "^1.1.8",
@@ -48,8 +49,7 @@
     "react-toggle-button": "^2.2.0",
     "react-treebeard": "^3.2.4",
     "redux": "^4.1.2",
-    "uuid": "^8.3.2",
-    "webext-redux": "^2.1.9"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",

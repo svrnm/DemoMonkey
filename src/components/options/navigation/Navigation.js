@@ -74,7 +74,7 @@ class Navigation extends React.Component {
         }
         return result
       }, item)
-      tree = merge(tree, sub.children, { arrayMerge: arrayMerge })
+      tree = merge(tree, sub.children, { arrayMerge })
     })
     return { tree, cursor }
   }
@@ -84,7 +84,7 @@ class Navigation extends React.Component {
     const { tree, cursor } = Navigation.buildTree(this.props.items, { active: props.active, search: '', toggled: {} })
     this.state = {
       data: tree,
-      cursor: cursor,
+      cursor,
       active: props.active,
       toggled: {},
       search: ''
@@ -94,7 +94,7 @@ class Navigation extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { tree, cursor } = Navigation.buildTree(nextProps.items, { ...prevState, active: nextProps.active })
-    return { data: tree, cursor: cursor }
+    return { data: tree, cursor }
   }
 
   handleClick(id, isDirectory = false) {
@@ -104,7 +104,7 @@ class Navigation extends React.Component {
   handleSearchUpdate(event) {
     this.setState({ search: event.target.value.toLowerCase() }, function () {
       const { tree, cursor } = Navigation.buildTree(this.props.items, this.state)
-      this.setState({ data: tree, cursor: cursor })
+      this.setState({ data: tree, cursor })
     })
   }
 

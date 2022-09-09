@@ -12,121 +12,40 @@
  * limitations under the License.
  */
 import { createStore } from 'redux'
-import { wrapStore } from 'webext-redux'
+import { wrapStore } from '@eduardoac-skimlinks/webext-redux'
 import reducers from './reducers'
 import { v4 as uuidV4 } from 'uuid'
 import Configuration from './models/Configuration'
-import MatchRule from './models/MatchRule'
 import Badge from './models/Badge'
 import OptionalFeature from './models/OptionalFeature'
-import match from './helpers/match.js'
-// import remoteBackup from './helpers/remoteBackup.js'
+import NetRequestManager from './models/NetRequestManager'
 import { logger, connectLogger } from './helpers/logger'
+import LiveModeAlarm from './models/LiveModeAlarm'
 
 try {
   (function (scope) {
     'use strict'
 
     let enabledHotkeyGroup = -1
-
     const badge = new Badge(scope.chrome.action)
+    const netRequestManager = new NetRequestManager(scope.chrome.declarativeNetRequest, scope.chrome.tabs.query, logger)
+    const liveModeAlarm = new LiveModeAlarm(scope.chrome.alarms, logger, badge, scope.chrome.storage.session)
 
-    let liveModeInterval = -1
-    let liveModeStartTime = -1
+    liveModeAlarm.registerAlarmListener()
 
-    function doLiveMode(liveMode) {
-      if (liveMode && liveModeInterval < 0) {
-        logger('info', 'Live Mode started').write()
-        liveModeStartTime = Date.now()
-        badge.updateTimer('0')
-        liveModeInterval = setInterval(() => {
-          const minutes = Math.floor((Date.now() - liveModeStartTime) / 60000)
-          console.log(minutes)
-          badge.updateTimer(minutes)
-        }, 6000)
-      } else if (!liveMode && liveModeInterval > 0) {
-        const time = (Date.now() - liveModeStartTime)
-        const hours = ('' + Math.floor(time / (3600000))).padStart(2, '0')
-        const minutes = ('' + Math.floor((time % 3600000) / 60000)).padStart(2, '0')
-        const seconds = ('' + Math.floor((time % 60000) / 1000)).padStart(2, '0')
-        logger('info', `Live mode ended after ${hours}:${minutes}:${seconds}`).write()
-        clearInterval(liveModeInterval)
-        badge.clearTimer()
-        liveModeInterval = -1
-      }
-    }
+    scope.chrome.contextMenus.create({
+      id: 'dmToggleLiveMode',
+      title: 'Toggle Live Mode',
+      contexts: ['action']
+    })
+    scope.chrome.contextMenus.create({
+      id: 'dmToggleDebugMode',
+      title: 'Toggle Debug Mode',
+      contexts: ['action']
+    })
 
-    let hookedIntoWebRequests = false
-
-    let hookedUrls = {}
-
-    const hooks = {
-      block: () => { return { cancel: true } },
-      delay: (options) => {
-        let counter = 0
-        for (let start = Date.now(); Date.now() - start < options.delay * 1000;) {
-          counter++
-          if (counter % 10000000 === 0) {
-            console.log('Delay', counter)
-          }
-        }
-        console.log('Done', counter)
-        return {}
-      },
-      replace: (options) => {
-        logger('info', `Redirecting to ${options.replace}`).write()
-        return { redirectUrl: options.replace }
-      }
-    }
-
-    function webRequestHook(details) {
-      return Object.keys(hookedUrls).reduce((acc, id) => {
-        const { url, type, action, options, includeRules, excludeRules } = hookedUrls[id]
-        if (new MatchRule(includeRules, excludeRules).test(details.url) && match(details.url, url) && (type === '*' || type.split(',').map(e => e.trim()).includes(details.type))) {
-          logger('info', `Applying hook ${action} on ${details.url} [${details.type}] (matching ${url})`).write()
-          return Object.assign(acc, hooks[action](options))
-        }
-        return acc
-      }, {})
-    }
-
-    // This place seems to throw the "background.html:1 Unchecked runtime.lastError: This function must be called during a user gesture"
-    function hookIntoWebRequests(feature, running) {
-      if (!hookedIntoWebRequests && feature && running) {
-        console.log('Hooking into web requests')
-        scope.chrome.permissions.request({
-          permissions: ['webRequestBlocking', 'webRequest']
-        }, function (granted) {
-          if (granted) {
-            scope.chrome.webRequest.onBeforeRequest.addListener(
-              webRequestHook,
-              { urls: ['<all_urls>'] },
-              ['blocking']
-            )
-            hookedIntoWebRequests = true
-            console.log('-- hooked')
-          } else {
-            logger('warn', 'Could not grant webRequest permissions')
-          }
-        })
-      } else if (hookedIntoWebRequests && (!feature || !running)) {
-        console.log('Remove hook into web requests')
-        scope.chrome.permissions.remove({
-          permissions: ['webRequestBlocking', 'webRequest']
-        }, function (removed) {
-          if (removed) {
-            scope.chrome.webRequest.onBeforeRequest.removeListener(webRequestHook)
-            hookedIntoWebRequests = false
-            console.log('-- removed')
-          } else {
-            logger('warn', 'Could not remove webRequest permissions')
-          }
-        })
-      }
-    }
-
-    // New tab created, initialize badge for given tab
     scope.chrome.tabs.onCreated.addListener(function (tab) {
+      logger('debug', 'New tab created, initialize badge.').write()
       badge.updateDemoCounter(0, tab.id)
     })
 
@@ -138,20 +57,19 @@ try {
       if (changeInfo.status !== 'loading') {
         return
       }
-
-      console.log(changeInfo.status)
-
       scope.chrome.tabs.get(tabId, (tab) => {
+        logger('debug', 'Trying to inject into', tabId, tab).write()
         if (tab.url) {
+          netRequestManager.updateTab(tabId, tab.url)
           scope.chrome.scripting.executeScript({
             target: { tabId, allFrames: true },
             files: ['js/monkey.js'],
             injectImmediately: true
           }, () => {
-            console.log('Injection completed for', tabId, tab.url)
+            logger('debug', 'Injection completed for', tabId, tab.url).write()
           })
         } else {
-          logger('warn', 'Did not inject into tab ', tabId, 'Permission denied').write()
+          logger('warn', 'Did not inject into tab ', tabId, ': Permission denied').write()
           badge.updateDemoCounter('!')
         }
       })
@@ -171,16 +89,34 @@ try {
           badge.updateDemoCounter(request.count, sender.tab.id)
         }
         if (request.task && request.task === 'addUrl' && typeof request.url === 'object') {
-          hookedUrls[request.url.id] = request.url
+          netRequestManager.add(request.url)
         }
         if (request.task && request.task === 'removeUrl' && typeof request.id === 'string') {
-          delete hookedUrls[request.id]
+          netRequestManager.remove(request.id)
         }
         if (request.task && request.task === 'clearUrls') {
-          hookedUrls = {}
+          netRequestManager.clear()
         }
       }
     })
+
+    // via https://github.com/colbat/webext-redux-event-driven/blob/main/background.js
+    // Since we are in a service worker, this is not persistent
+    // and this will be reset to false, as expected, whenever
+    // the service worker wakes up from idle.
+    let isInitialized = false
+
+    // Listens for incomming connections from content
+    // scripts, or from the popup. This will be triggered
+    // whenever the extension "wakes up" from idle.
+    /*
+    scope.chrome.runtime.onConnect.addListener((port) => {
+      console.log('wake up', port)
+      if (port.name === 'DEMO_MONKEY_STORE') {
+        init()
+      }
+    })
+    */
 
     const persistentStates = {
       configurations: [{
@@ -218,20 +154,24 @@ try {
       monkeyID: uuidV4()
     }
 
-    scope.chrome.storage.local.get(persistentStates, function (state) {
-      // currentView is not persistent but should be defined to avoid
-      // issues rendering the UI.
-      // state.currentView = 'welcome'
-
-      state.connectionState = 'unknown'
-
-      state.settings.liveMode = false
-
-      // We start with an empty log. Maybe in a later release persistance could be an idea..
-      state.log = []
-
-      run(state)
-    })
+    function init() {
+      scope.chrome.storage.local.get(persistentStates, function (state) {
+        if (!isInitialized) {
+          // currentView is not persistent but should be defined to avoid
+          // issues rendering the UI.
+          // state.currentView = 'welcome'
+          state.connectionState = 'unknown'
+          state.settings.liveMode = false
+          // We start with an empty log. Maybe in a later release persistance could be an idea..
+          state.log = []
+          run(state)
+          isInitialized = true
+          console.log('Send message')
+          scope.chrome.runtime.sendMessage({ type: 'STORE_INITIALIZED' })
+        }
+      })
+    }
+    init()
 
     function updateStorage(store) {
       console.log('Updating Storage.')
@@ -244,10 +184,14 @@ try {
         settings,
         monkeyID: store.getState().monkeyID
       })
-      hookIntoWebRequests(settings.optionalFeatures.webRequestHook, configurations.filter(c => c.enabled).length > 0)
+      if (settings.optionalFeatures.webRequestHook && configurations.filter(c => c.enabled).length > 0) {
+        netRequestManager.enable()
+      } else {
+        netRequestManager.disable()
+      }
     }
 
-    function run(state, revisions = {}) {
+    function run(state) {
       console.log('Background Script started')
       const store = createStore(reducers, state)
       wrapStore(store, { portName: 'DEMO_MONKEY_STORE' })
@@ -264,17 +208,22 @@ try {
       // Persist monkey ID. Shouldn't change after first start.
       scope.chrome.storage.local.set({ monkeyID: store.getState().monkeyID })
 
-      hookIntoWebRequests(settings.optionalFeatures.webRequestHook, store.getState().configurations.filter(c => c.enabled).length > 0)
+      if (settings.optionalFeatures.webRequestHook && store.getState().configurations.filter(c => c.enabled).length > 0) {
+        netRequestManager.enable()
+      } else {
+        netRequestManager.disable()
+      }
 
       store.subscribe(function () {
         const lastAction = store.getState().lastAction
-        const settings = store.getState().settings
-        console.log(lastAction.type)
+
+        logger('debug', 'Last action type', lastAction.type).write()
+
         switch (lastAction.type) {
           case 'APPEND_LOG_ENTRIES':
             return
           case 'TOGGLE_LIVE_MODE':
-            doLiveMode(settings.liveMode)
+            liveModeAlarm.toggle()
             break
           default:
             updateStorage(store)
@@ -301,7 +250,8 @@ try {
       }
 
       scope.chrome.commands.onCommand.addListener(function (command) {
-        console.log('Command:', command)
+        logger('debug', 'Command:', command).write()
+
         if (command.startsWith('toggle-hotkey-group')) {
           const group = parseInt(command.split('-').pop())
           toggleHotkeyGroup(group)
@@ -314,16 +264,6 @@ try {
         }
       })
 
-      scope.chrome.contextMenus.create({
-        id: 'dmToggleLiveMode',
-        title: 'Toggle Live Mode',
-        contexts: ['action']
-      })
-      scope.chrome.contextMenus.create({
-        id: 'dmToggleDebugMode',
-        title: 'Toggle Debug Mode',
-        contexts: ['action']
-      })
       scope.chrome.contextMenus.onClicked.addListener((info, tab) => {
         const { menuItemId } = info
         if (menuItemId === 'dmToggleLiveMode') {

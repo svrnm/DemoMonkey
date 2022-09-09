@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "DemoMonkey",
   "description": "Custom demo, every demo: Turn your standard demo into a tailored experience for your customers in minutes.",
-  "version": "8.1.2",
+  "version": "8.1.4",
   "author": "Severin Neumann <severin.neumann@altmuehlnet.de>",
   "homepage_url": "https://github.com/svrnm/DemoMonkey/",
   "content_security_policy": {
@@ -17,7 +17,8 @@
     "resources": [
       "manifest.json",
       "COMMITHASH",
-      "js/inline.js"
+      "js/inline.js",
+      "js/index.js.map"
     ],
     "matches": ["<all_urls>"]
   }],
@@ -34,10 +35,7 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "storage", "unlimitedStorage", "activeTab", "contextMenus", "scripting"
-  ],
-  "optional_permissions": [
-    "webRequest"
+    "storage", "unlimitedStorage", "activeTab", "contextMenus", "scripting", "declarativeNetRequest", "alarms"
   ],
   "optional_host_permissions": [
     "<all_urls>"

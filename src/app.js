@@ -18,7 +18,7 @@ import '../icons/monkey-dev.png'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { Store } from 'webext-redux'
+import { Store } from '@eduardoac-skimlinks/webext-redux'
 import OptionsPageApp from './components/options/OptionsPageApp'
 import PopupPageApp from './components/popup/PopupPageApp'
 import Manifest from './models/Manifest'
@@ -65,6 +65,7 @@ function renderOptionsPageApp(root, store) {
 
 function renderPopupPageApp(root, store, manifest) {
   window.chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+    console.log(tabs)
     const currentUrl = tabs.length > 0 ? tabs[0].url : ''
     ReactDOM.render(
       <Provider store={store}><PopupPageApp currentUrl={currentUrl} manifest={manifest} /></Provider>, root)

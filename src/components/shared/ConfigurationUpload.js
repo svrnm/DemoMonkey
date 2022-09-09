@@ -42,7 +42,7 @@ class Prompt extends React.Component {
   _onChange(e) {
     const value = e.target.value
 
-    this.setState({ value: value })
+    this.setState({ value })
   }
 
   render() {

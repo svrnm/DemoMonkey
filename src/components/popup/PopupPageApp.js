@@ -100,7 +100,7 @@ const PopupPageApp = connect(
         dispatch({ type: 'SET_CURRENT_VIEW', view: key })
       },
       toggleConfiguration: (id) => {
-        dispatch({ type: 'TOGGLE_CONFIGURATION', id: id })
+        dispatch({ type: 'TOGGLE_CONFIGURATION', id })
       },
       toggleDebugMode: () => {
         dispatch({ type: 'TOGGLE_DEBUG_MODE' })

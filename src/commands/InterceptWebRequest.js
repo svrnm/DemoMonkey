@@ -56,7 +56,7 @@ class InterceptWebRequest extends Command {
     })
 
     return {
-      target: target,
+      target,
       apply: () => {
         target.remove(this.id)
         return true
