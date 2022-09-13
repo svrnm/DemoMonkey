@@ -56,7 +56,7 @@ class CodeEditor extends React.Component {
   }
 
   autoSave() {
-    this.props.onAutoSave(event)
+    this.props.onAutoSave()
   }
 
   handleChange(content, event) {

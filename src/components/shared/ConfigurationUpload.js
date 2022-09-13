@@ -14,7 +14,7 @@
 import React from 'react'
 import Json2Ini from '../../models/Json2Ini'
 import PropTypes from 'prop-types'
-import Popup from 'react-popup'
+import Dialog from '@mui/material/Dialog'
 import JSZip from 'jszip'
 
 class Prompt extends React.Component {
@@ -97,7 +97,7 @@ class ConfigurationUpload extends React.Component {
             folderName = value
           }
 
-          Popup.create({
+          Dialog.create({
             title: 'Batch upload into folder.',
             content: <Prompt onChange={promptChange} placeholder='Please provide a folder name.' />,
             buttons: {
@@ -108,7 +108,7 @@ class ConfigurationUpload extends React.Component {
                 className: 'success',
                 action: () => {
                   console.log(folderName)
-                  Popup.close()
+                  Dialog.close()
                   JSZip.loadAsync(file).then((zip) => {
                     const zipPromises = []
                     zip.forEach((relativePath, zipEntry) => {

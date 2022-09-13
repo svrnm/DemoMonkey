@@ -16,7 +16,7 @@ import '../icons/monkey.png'
 import '../icons/monkey-dev.png'
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { Store } from '@eduardoac-skimlinks/webext-redux'
 import OptionsPageApp from './components/options/OptionsPageApp'
@@ -35,14 +35,13 @@ function updateCurrentView(v) {
 
 function renderOptionsPageApp(root, store) {
   window.chrome.permissions.getAll(function (permissions) {
-    ReactDOM.render(
-      <Provider store={store}>
+    root.render(<Provider store={store}>
         <OptionsPageApp
           initialView={window.location.hash.substring(1)}
           onCurrentViewChange={(v) => updateCurrentView(v)}
           permissions={permissions}
         />
-      </Provider>, root)
+      </Provider>)
   })
 
   window.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -67,8 +66,8 @@ function renderPopupPageApp(root, store, manifest) {
   window.chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
     console.log(tabs)
     const currentUrl = tabs.length > 0 ? tabs[0].url : ''
-    ReactDOM.render(
-      <Provider store={store}><PopupPageApp currentUrl={currentUrl} manifest={manifest} /></Provider>, root)
+    root.render(
+      <Provider store={store}><PopupPageApp currentUrl={currentUrl} manifest={manifest} /></Provider>)
     // The following is required to fix https://bugs.chromium.org/p/chromium/issues/detail?id=428044
     window.setTimeout(() => {
       document.body.style.minHeight = (document.body.clientHeight + 1) + 'px'
@@ -91,11 +90,13 @@ fetch(window.chrome.runtime.getURL('COMMITHASH')).then((r) => {
 }).finally(() => {
   store.ready().then(() => {
     document.getElementById('backup-message').remove()
-    const root = document.getElementById('app')
+    const rootElement = document.getElementById('app')
 
     window.store = store
 
-    const app = root.getAttribute('data-app')
+    const app = rootElement.getAttribute('data-app')
+
+    const root = createRoot(rootElement)
 
     if (store.getState().settings.optionalFeatures.writeLogs) {
       connectLogger(store, { source: 'monkey.js' })

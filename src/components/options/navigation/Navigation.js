@@ -14,12 +14,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import NavigationHeader from './NavigationHeader'
-import navigationTheme from './NavigationTheme'
 import ItemHeader from './ItemHeader'
+import navigationTheme from './NavigationTheme'
 import ErrorBox from '../../shared/ErrorBox'
 import merge from 'deepmerge'
 import arrayMerge from '../../../helpers/arrayMerge'
-import { Treebeard, decorators } from 'react-treebeard'
+import TreeView from '@mui/lab/TreeView'
+import TreeItem from '@mui/lab/TreeItem'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 class Navigation extends React.Component {
   static propTypes = {
@@ -89,7 +92,6 @@ class Navigation extends React.Component {
       toggled: {},
       search: ''
     }
-    this.onToggle = this.onToggle.bind(this)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -108,21 +110,11 @@ class Navigation extends React.Component {
     })
   }
 
-  onToggle(node, toggled) {
-    const cursor = this.state.cursor
-    if (cursor) {
-      cursor.active = false
+  onToggle(event, nodeId) {
+    // console.log(event, nodeId)
+    if (typeof nodeId === 'string' && !nodeId.startsWith('/')) {
+      this.handleClick(nodeId)
     }
-    node.active = true
-    if (node.children) {
-      node.toggled = toggled
-      const s = this.state.toggled
-      s[node.id] = toggled
-      this.setState({ toggled: s })
-    } else {
-      this.handleClick(node.id)
-    }
-    this.setState({ cursor: node, active: node.id })
   }
 
   onDelete(event, node) {
@@ -130,15 +122,32 @@ class Navigation extends React.Component {
     this.props.onDelete(node)
   }
 
+  _renderTreeFromData(node) {
+    return <TreeItem key={node.id} nodeId={node.id} label={<ItemHeader node={node} style={navigationTheme.tree.node} onDelete={(event, node) => this.onDelete(event, node)} />}>
+      {Array.isArray(node.children)
+        ? node.children.map((node) => this._renderTreeFromData(node))
+        : null}
+    </TreeItem>
+  }
+
   _safeRenderTree() {
+    // console.log(this.state.data)
     try {
-      return <Treebeard style={navigationTheme} decorators={decorators} data={this.state.data} onToggle={this.onToggle} />
+      return <TreeView
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
+        onNodeToggle={(event, nodeId) => this.onToggle('toggle', nodeId)}
+        onNodeSelect={(event, nodeId) => this.onToggle('select', nodeId)}
+      >
+        {this.state.data.map((item) => this._renderTreeFromData(item))}
+      </TreeView>
     } catch (e) {
       return <ErrorBox error={e} />
     }
   }
 
   render() {
+    /*
     decorators.Header = (props) => {
       return <ItemHeader
         style={props.style}
@@ -146,6 +155,7 @@ class Navigation extends React.Component {
         onDelete={(event, node) => this.onDelete(event, node)}
       />
     }
+    */
 
     return (
       <div>

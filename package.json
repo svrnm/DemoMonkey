@@ -17,6 +17,11 @@
   "description": "Tamper your Web UI to demo almost anything",
   "dependencies": {
     "@eduardoac-skimlinks/webext-redux": "^3.0.1-release-candidate",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/icons-material": "^5.10.3",
+    "@mui/lab": "^5.0.0-alpha.99",
+    "@mui/material": "^5.10.5",
     "ace-builds": "^1.10.1",
     "axios": "^0.27.2",
     "chance": "^1.1.8",
@@ -48,11 +53,6 @@
     "redux": "^4.1.2",
     "sharp": "^0.31.0",
     "uuid": "^9.0.0"
-  },
-  "dependenciesToDrop": {
-    "react-popup": "^0.11.0",
-    "react-treebeard": "^3.2.4",
-    "react-toggle-button": "^2.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.0",

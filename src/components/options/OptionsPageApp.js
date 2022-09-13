@@ -14,7 +14,6 @@
 import React from 'react'
 import Navigation from './navigation/Navigation'
 import { connect } from 'react-redux'
-import Popup from 'react-popup'
 import Help from './Help'
 import Settings from './settings/Settings'
 import Logs from './Logs'
@@ -22,6 +21,7 @@ import Editor from './editor/Editor'
 import Configuration from '../../models/Configuration'
 import PropTypes from 'prop-types'
 import Repository from '../../models/Repository'
+
 import { Base64 } from 'js-base64'
 import ErrorBox from '../shared/ErrorBox'
 import WarningBox from '../shared/WarningBox'
@@ -100,32 +100,15 @@ class App extends React.Component {
     })
   }
 
-  deleteAll() {
-    Popup.create({
-      title: 'Please confirm',
-      content: <span>Do you really want to delete all configurations?</span>,
-      buttons: {
-        left: [{
-          text: 'Cancel',
-          action: () => Popup.close()
-        }],
-        right: [{
-          text: 'Delete',
-          className: 'danger',
-          action: () => {
-            Popup.close()
-            this.downloadAll(() => {
-              this.props.configurations.forEach(config => {
-                this.props.actions.deleteConfiguration(config.id)
-              })
-            })
-          }
-        }]
-      }
+  deleteAll(event) {
+    this.downloadAll(event, () => {
+      this.props.configurations.forEach(config => {
+        this.props.actions.deleteConfiguration(config.id)
+      })
     })
   }
 
-  saveConfigurationUnguarded(configuration) {
+  saveConfiguration(configuration) {
     if (configuration.id === 'new') {
       return this.addConfiguration(configuration)
     } else {
@@ -151,30 +134,8 @@ class App extends React.Component {
     }
   }
 
-  saveConfiguration(configuration) {
-    const configWithSameName = this.props.configurations.find(c => !c.deleted_at && c.name === configuration.name && c.id !== configuration.id)
-    if (configWithSameName) {
-      Popup.create({
-        title: 'Please confirm',
-        content: <span>A configuration with <b>{configuration.name} already exists. Do you really want to use this name</b>?</span>,
-        buttons: {
-          left: [{
-            text: 'Cancel',
-            action: () => Popup.close()
-          }],
-          right: [{
-            text: 'Save',
-            className: 'danger',
-            action: () => {
-              Popup.close()
-              this.saveConfigurationUnguarded(configuration)
-            }
-          }]
-        }
-      })
-    } else {
-      this.saveConfigurationUnguarded(configuration)
-    }
+  hasConfigurationWithSameName(configuration) {
+    return this.props.configurations.some(c => !c.deleted_at && c.name === configuration.name && c.id !== configuration.id)
   }
 
   uploadConfiguration(upload) {
@@ -246,31 +207,13 @@ class App extends React.Component {
   }
 
   deleteConfiguration(configuration) {
-    Popup.create({
-      title: 'Please confirm',
-      content: <span>Do you really want to remove <b>{configuration.name}</b>?</span>,
-      buttons: {
-        left: [{
-          text: 'Cancel',
-          action: () => Popup.close()
-        }],
-        right: [{
-          text: 'Delete',
-          className: 'danger',
-          action: () => {
-            Popup.close()
-            this.navigateTo('help')
-            // Delete all configurations within it if a directory is given
-            logger('info', `Deleting ${configuration.name} (${configuration.nodeType})`).write()
-            if (configuration.nodeType === 'directory') {
-              this.props.actions.deleteConfigurationByPrefix(configuration.id.split('/').reverse().join('/'))
-            } else {
-              this.props.actions.deleteConfiguration(configuration.id)
-            }
-          }
-        }]
-      }
-    })
+    this.navigateTo('help')
+    logger('info', `Deleting ${configuration.name} (${configuration.nodeType})`).write()
+    if (configuration.nodeType === 'directory') {
+      this.props.actions.deleteConfigurationByPrefix(configuration.id.split('/').reverse().join('/'))
+    } else {
+      this.props.actions.deleteConfiguration(configuration.id)
+    }
   }
 
   getRepository() {
@@ -338,25 +281,8 @@ class App extends React.Component {
 
   resetDemoMonkey(event) {
     event.preventDefault()
-
-    Popup.create({
-      title: 'Reset DemoMonkey',
-      content: <span>Do you really want to reset <b>all configurations and all settings</b>?<br />(This window will close.)</span>,
-      buttons: {
-        left: [{
-          text: 'Cancel',
-          action: () => Popup.close()
-        }],
-        right: [{
-          text: 'Reset',
-          className: 'danger',
-          action: () => {
-            window.chrome.storage.local.clear(() => {
-              window.chrome.runtime.reload()
-            })
-          }
-        }]
-      }
+    window.chrome.storage.local.clear(() => {
+      window.chrome.runtime.reload()
     })
   }
 
@@ -404,6 +330,7 @@ class App extends React.Component {
             keyboardHandler={this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null}
             onDownload={(configuration, _) => this.downloadConfiguration(configuration)}
             onSave={(_, configuration) => this.saveConfiguration(configuration)}
+            hasConfigurationWithSameName={(configuration) => this.hasConfigurationWithSameName(configuration)}
             onCopy={(configuration, _) => this.copyConfiguration(configuration)}
             onDelete={(configuration, _) => this.deleteConfiguration(configuration)}
             toggleConfiguration={() => this.props.actions.toggleConfiguration(configuration.id)}
@@ -479,7 +406,6 @@ class App extends React.Component {
     })
 
     return <Page className={`main-grid${withWarning}`} preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode} syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}>
-      <Popup className="popup" btnClass="popup__btn" />
       { withWarning !== ''
         ? <WarningBox onDismiss={() => this.toggleOptionalFeature('noWarningForMissingPermissions')}
           onRequestExtendedPermissions={() => this.requestExtendedPermissions()}

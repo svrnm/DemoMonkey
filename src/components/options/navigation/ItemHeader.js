@@ -14,6 +14,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import Popup from '../../shared/Popup'
 
 class ItemHeader extends React.Component {
   static propTypes = {
@@ -64,6 +65,20 @@ class ItemHeader extends React.Component {
     })
   }
 
+  onBeforeDelete() {
+    this.setState({ showDeletePopup: true })
+  }
+
+  onCancelDelete() {
+    this.setState({ showDeletePopup: false })
+  }
+
+  onDelete(event) {
+    this.setState({ showDeletePopup: false })
+    // this.handleClick(event, 'delete')
+    this.props.onDelete(event, this.props.node)
+  }
+
   render() {
     const style = Object.assign({}, this.props.style)
 
@@ -94,11 +109,12 @@ class ItemHeader extends React.Component {
           }
         </div>
         <div className="configuration-options" style={{ visibility: this.state.optionsVisible ? 'visible' : 'hidden' }}>
-          <button className="delete-configuration" onClick={(event) => this.props.onDelete(event, this.props.node)}>x</button>
+          <button className="delete-configuration" onClick={() => this.onBeforeDelete()}>x</button>
         </div>
         <ul className="context-menu" style={{ display: this.state.contextMenuVisible ? 'block' : 'none', top: this.state.y, left: this.state.x }}>
           <li>
-            <a href="#" onClick={(event) => this.props.onDelete(event, this.props.node)}>Delete</a>
+            <a href="#" onClick={() => this.onBeforeDelete()}>Delete</a>
+            <Popup open={this.state.showDeletePopup} onCancel={(event) => this.onCancelDelete(event)} onConfirm={(event) => this.onDelete(event)} title="Please confirm" text={<span>Do you really want to remove <b>{label}</b>?</span>} />
           </li>
         </ul>
       </div>

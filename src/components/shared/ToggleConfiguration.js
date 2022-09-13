@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 import React from 'react'
-import ToggleButton from 'react-toggle-button'
+import Switch from '@mui/material/Switch'
 import PropTypes from 'prop-types'
 
 class ToggleConfiguration extends React.Component {
@@ -31,7 +31,7 @@ class ToggleConfiguration extends React.Component {
 
   render() {
     return <div className={'toggle-group ' + this.props.className}>
-      <ToggleButton colors={{ active: { base: '#5c832f', hover: '#90c256' } }} value={this.props.configuration.enabled} onToggle={() => { this.toggle(this.props.configuration.id) }}/>
+      <Switch colors={{ active: { base: '#5c832f', hover: '#90c256' } }} value={this.props.configuration.enabled} onToggle={() => { this.toggle(this.props.configuration.id) }}/>
       <label>
         <a href={`/options.html#configuration/${this.props.configuration.id}`} target="_blank" rel="noopener noreferrer">{this.props.configuration.name}</a>
       </label>
