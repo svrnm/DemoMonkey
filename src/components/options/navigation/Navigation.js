@@ -123,7 +123,7 @@ class Navigation extends React.Component {
   }
 
   _renderTreeFromData(node) {
-    return <TreeItem key={node.id} nodeId={node.id} label={<ItemHeader node={node} style={navigationTheme.tree.node} onDelete={(event, node) => this.onDelete(event, node)} />}>
+    return <TreeItem key={node.id} nodeId={node.id} label={<ItemHeader node={node} style={navigationTheme.tree.node.header} onDelete={(event, node) => this.onDelete(event, node)} />}>
       {Array.isArray(node.children)
         ? node.children.map((node) => this._renderTreeFromData(node))
         : null}

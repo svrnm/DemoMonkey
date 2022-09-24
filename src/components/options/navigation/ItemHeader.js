@@ -28,6 +28,7 @@ class ItemHeader extends React.Component {
     this.state = {
       optionsVisible: false,
       contextMenuVisible: false,
+      showDeletePopup: false,
       x: '0px',
       y: '0px'
     }
@@ -35,7 +36,6 @@ class ItemHeader extends React.Component {
       if (this.node && this.node.contains(event.target)) {
         return
       }
-      console.log(e)
       this.setState({
         contextMenuVisible: false,
         x: '0px',

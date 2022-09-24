@@ -31,7 +31,7 @@ class ToggleConfiguration extends React.Component {
 
   render() {
     return <div className={'toggle-group ' + this.props.className}>
-      <Switch colors={{ active: { base: '#5c832f', hover: '#90c256' } }} value={this.props.configuration.enabled} onToggle={() => { this.toggle(this.props.configuration.id) }}/>
+      <Switch colors={{ active: { base: '#5c832f', hover: '#90c256' } }} checked={this.props.configuration.enabled} onChange={() => { this.toggle(this.props.configuration.id) }}/>
       <label>
         <a href={`/options.html#configuration/${this.props.configuration.id}`} target="_blank" rel="noopener noreferrer">{this.props.configuration.name}</a>
       </label>

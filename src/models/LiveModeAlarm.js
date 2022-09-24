@@ -16,23 +16,21 @@ class LiveModeAlarm {
   static ALARM_NAME = 'liveModeAlarm'
   static PERIOD_IN_MINUTES = 1 / 15
 
-  constructor(alarms, logger, badge, storage) {
+  constructor(alarms, logger, badge, onSave) {
     this.alarms = alarms
     this.logger = logger
     this.badge = badge
-    this.storage = storage
+    this.onSave = onSave
+    this.startTime = -1
   }
 
-  _getLiveModeStartTime(cb) {
-    this.storage.get({ liveModeData: { startTime: 0 } }, ({ liveModeData }) => {
-      if (liveModeData.startTime === 0) {
-        const now = Date.now()
-        this.storage.set({ liveModeData: { startTime: now } }, () => {
-          cb(now)
-        })
-      } else {
-        cb(liveModeData.startTime)
-      }
+  load(startTime) {
+    this.startTime = startTime
+  }
+
+  save() {
+    this.onSave({
+      startTime: this.startTime
     })
   }
 
@@ -40,11 +38,9 @@ class LiveModeAlarm {
     this.logger('debug', 'Register Alarm Listener')
     this.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === LiveModeAlarm.ALARM_NAME) {
-        this._getLiveModeStartTime((liveModeStartTime) => {
-          const minutes = Math.floor((Date.now() - liveModeStartTime) / 60000)
-          this.logger('debug', 'Live Mode Minutes', minutes).write()
-          this.badge.updateTimer(minutes)
-        })
+        const minutes = Math.floor((Date.now() - this.startTime) / 60000)
+        this.logger('debug', 'Live Mode Minutes', minutes).write()
+        this.badge.updateTimer(minutes)
       }
     })
   }
@@ -67,22 +63,22 @@ class LiveModeAlarm {
     })
     // Set the badge counter to 0, because the alarm will be triggered
     // only after LiveModeAlarm.PERIOD_IN_MINUTES minutes
+    this.startTime = Date.now()
+    this.save()
     this.badge.updateTimer(0)
   }
 
   _disable() {
     this.alarms.clear(LiveModeAlarm.ALARM_NAME, () => {
-      this._getLiveModeStartTime((liveModeStartTime) => {
-        const time = (Date.now() - liveModeStartTime)
-        const hours = ('' + Math.floor(time / (3600000))).padStart(2, '0')
-        const minutes = ('' + Math.floor((time % 3600000) / 60000)).padStart(2, '0')
-        const seconds = ('' + Math.floor((time % 60000) / 1000)).padStart(2, '0')
+      const time = (Date.now() - this.startTime)
+      const hours = ('' + Math.floor(time / (3600000))).padStart(2, '0')
+      const minutes = ('' + Math.floor((time % 3600000) / 60000)).padStart(2, '0')
+      const seconds = ('' + Math.floor((time % 60000) / 1000)).padStart(2, '0')
 
-        this.logger('info', `Live mode ended after ${hours}:${minutes}:${seconds}`).write()
-
-        this.storage.remove('liveModeData')
-        this.badge.clearTimer()
-      })
+      this.logger('info', `Live mode ended after ${hours}:${minutes}:${seconds}`).write()
+      this.startTime = -1
+      this.save()
+      this.badge.clearTimer()
     })
   }
 }

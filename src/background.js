@@ -27,26 +27,64 @@ try {
     'use strict'
 
     let enabledHotkeyGroup = -1
-    const badge = new Badge(scope.chrome.action)
-    const netRequestManager = new NetRequestManager(scope.chrome.declarativeNetRequest, scope.chrome.tabs.query, logger)
-    const liveModeAlarm = new LiveModeAlarm(scope.chrome.alarms, logger, badge, scope.chrome.storage.session)
+    const badge = new Badge(scope.chrome.action, -1, ({ timer, tabs }) => {
+      scope.chrome.storage.session.set({ badgeData: { timer, tabs } })
+    })
+
+    const netRequestManager = new NetRequestManager(scope.chrome.declarativeNetRequest, scope.chrome.tabs.query, logger, ({ list, tabs, index }) => {
+      scope.chrome.storage.session.set({ netRequestManagerData: { list, tabs, index } })
+    })
+
+    const liveModeAlarm = new LiveModeAlarm(scope.chrome.alarms, logger, badge, ({ startTime }) => {
+      scope.chrome.storage.session.set({ liveModeAlarmData: { startTime } })
+    })
+
+    // recover states
+    scope.chrome.storage.session.get({
+      badgeData: {
+        timer: -1, tabs: []
+      },
+      netRequestManagerData: {
+        list: {},
+        tabs: {},
+        index: 1
+      },
+      liveModeAlarmData: {
+        startTime: -1
+      },
+      hotKeyGroupData: {
+        enabledHotkeyGroup: -1
+      }
+    }, ({ badgeData, netRequestManagerData, liveModeAlarmData, hotKeyGroupData }) => {
+      badge.load(badgeData.tabs, badgeData.timer)
+      netRequestManager.load(netRequestManagerData.list, netRequestManagerData.tabs, netRequestManagerData.index)
+      liveModeAlarm.load(liveModeAlarmData.startTime)
+      enabledHotkeyGroup = hotKeyGroupData.enabledHotkeyGroup
+    })
 
     liveModeAlarm.registerAlarmListener()
 
-    scope.chrome.contextMenus.create({
-      id: 'dmToggleLiveMode',
-      title: 'Toggle Live Mode',
-      contexts: ['action']
-    })
-    scope.chrome.contextMenus.create({
-      id: 'dmToggleDebugMode',
-      title: 'Toggle Debug Mode',
-      contexts: ['action']
+    scope.chrome.runtime.onInstalled.addListener(function () {
+      scope.chrome.contextMenus.create({
+        id: 'dmToggleLiveMode',
+        title: 'Toggle Live Mode',
+        contexts: ['action']
+      })
+      scope.chrome.contextMenus.create({
+        id: 'dmToggleDebugMode',
+        title: 'Toggle Debug Mode',
+        contexts: ['action']
+      })
     })
 
     scope.chrome.tabs.onCreated.addListener(function (tab) {
       logger('debug', 'New tab created, initialize badge.').write()
       badge.updateDemoCounter(0, tab.id)
+    })
+
+    scope.chrome.tabs.onRemoved.addListener(function (tab) {
+      logger('debug', 'Tab closed', tab.id).write()
+      netRequestManager.removeTab(tab.id)
     })
 
     /*
@@ -58,9 +96,10 @@ try {
         return
       }
       scope.chrome.tabs.get(tabId, (tab) => {
-        logger('debug', 'Trying to inject into', tabId, tab).write()
         if (tab.url) {
+          logger('debug', 'Trying to inject for', tabId, tab.url).write()
           netRequestManager.updateTab(tabId, tab.url)
+          logger('debug', 'Saved ...').write()
           scope.chrome.scripting.executeScript({
             target: { tabId, allFrames: true },
             files: ['js/monkey.js'],
@@ -234,6 +273,9 @@ try {
         const toggle = enabledHotkeyGroup !== group
 
         enabledHotkeyGroup = toggle ? group : -1
+
+        // Persist enabled hotkey group.
+        scope.chrome.storage.session.set({ hotKeyGroupData: { enabledHotkeyGroup } })
 
         store.getState().configurations.forEach(function (c) {
           const config = (new Configuration(c.content, null, false, c.values))

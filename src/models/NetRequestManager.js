@@ -27,13 +27,28 @@ import MatchRule from './MatchRule'
  * limitations under the License.
  */
 class NetRequestManager {
-  constructor(declarativeNetRequest, tabsQuery, logger) {
+  constructor(declarativeNetRequest, tabsQuery, logger, onSave) {
     this.declarativeNetRequest = declarativeNetRequest
     this.tabsQuery = tabsQuery
     this.logger = logger
     this.list = {}
     this.tabs = {}
     this.index = 1
+    this.onSave = onSave
+  }
+
+  load(list, tabs, index) {
+    this.list = list
+    this.tabs = tabs
+    this.index = index
+  }
+
+  save() {
+    this.onSave({
+      list: this.list,
+      tabs: this.tabs,
+      index: this.index
+    })
   }
 
   enable() {
@@ -107,6 +122,8 @@ class NetRequestManager {
         removeRuleIds: [rule.id] // noop?
       })
     }
+
+    this.save()
   }
 
   remove(id) {
@@ -119,11 +136,16 @@ class NetRequestManager {
         }
       )
       delete this.list[id]
+      this.save()
     }
   }
 
+  removeTab(tabId) {
+    delete this.tabs[tabId]
+  }
+
   updateTab(tabId, url) {
-    // this.logger('debug', `Tab ${tabId} has new url ${url}, check for updates.`).write()
+    this.logger('debug', `Tab ${tabId} has new url ${url}, check for updates.`).write()
     this.tabs[tabId] = url
     Object.keys(this.list).forEach(id => {
       const { rule, includeRules, excludeRules } = this.list[id]
@@ -147,6 +169,7 @@ class NetRequestManager {
         })
       }
     })
+    this.save()
   }
 
   clear() {
@@ -157,6 +180,7 @@ class NetRequestManager {
         removeRuleIds: rules.map(rule => rule.id)
       })
     })
+    this.save()
   }
 }
 

@@ -64,7 +64,6 @@ function renderOptionsPageApp(root, store) {
 
 function renderPopupPageApp(root, store, manifest) {
   window.chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
-    console.log(tabs)
     const currentUrl = tabs.length > 0 ? tabs[0].url : ''
     root.render(
       <Provider store={store}><PopupPageApp currentUrl={currentUrl} manifest={manifest} /></Provider>)
