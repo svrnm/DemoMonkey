@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 class Badge {
-  constructor(browserAction, timer = -1, onSave) {
+  constructor(browserAction, timer = -1, onSave = () => {}) {
     this.timer = timer
     this.browserAction = browserAction
     this.tabs = []

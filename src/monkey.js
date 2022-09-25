@@ -70,11 +70,10 @@ try {
         const settings = new Settings(store.getState().settings)
 
         const inlineConfig = {
-          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
-          hookIntoHyperGraph: settings.isFeatureEnabled('hookIntoHyperGraph')
+          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax')
         }
 
-        if (inlineConfig.hookIntoAjax || inlineConfig.hookIntoHyperGraph) {
+        if (inlineConfig.hookIntoAjax) {
           if (!['miro.com'].includes(scope.location.host)) {
             /*
             TODO: MV3 Unfixed
@@ -85,6 +84,7 @@ try {
 
             const inlineScriptTag = scope.document.createElement('script')
             inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
+            inlineScriptTag.setAttribute('data-dm-config-hook-into-ajax', inlineConfig.hookIntoAjax)
             inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
             scope.document.head.append(inlineScriptTag)
           } else {

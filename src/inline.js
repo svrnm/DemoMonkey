@@ -12,7 +12,6 @@
  * limitations under the License.
  */
 import match from './helpers/match'
-import { dom2obj, obj2dom } from './helpers/obj2dom'
 import * as jsonpatch from 'fast-json-patch'
 import JSON5 from 'json5'
 
@@ -38,51 +37,6 @@ import JSON5 from 'json5'
       }
     }
   })
-
-  if (config.hookIntoHyperGraph) {
-    console.info('Demo Monkey tries to hook into hyper graph.')
-    const template = scope.document.createElement('template')
-    template.setAttribute('id', 'demo-monkey-hyper-graph')
-    scope.document.head.appendChild(template)
-    let noHookCounter = 2
-    const intervalLength = 99
-    const hgHook = () => {
-      if (typeof scope.DEV_DATA_HOOK_ORIGINAL_ === 'object') {
-        if (noHookCounter > 1) {
-          console.info('Demo Monkey hooked into hyper graph.')
-        }
-        noHookCounter = 1
-        Object.keys(scope.DEV_DATA_HOOK_ORIGINAL_).forEach(key => {
-          let helperNode = document.getElementById(`demo-monkey-hyper-graph-helper-${key}`)
-          if (helperNode) {
-            scope.updateHyperGraphData[key](dom2obj(helperNode.innerHTML))
-          } else {
-            helperNode = scope.document.createElement('div')
-            helperNode.innerHTML = obj2dom(scope.DEV_DATA_HOOK_ORIGINAL_[key])
-            helperNode.setAttribute('id', `demo-monkey-hyper-graph-helper-${key}`)
-            helperNode.setAttribute('class', 'demo-monkey-hyper-graph-helper')
-            template.appendChild(helperNode)
-          }
-        })
-        Array.from(document.getElementsByClassName('demo-monkey-hyper-graph-helper')).forEach(node => {
-          // remove demo-monkey-hyper-graph-helper- from id
-          const id = node.id.substring(31)
-          // check if this hypergraph still exists
-          if (!Object.keys(window.DEV_DATA_HOOK_ORIGINAL_).includes(id)) {
-            node.remove()
-          }
-        })
-      } else {
-        noHookCounter++
-      }
-      if (noHookCounter === 50) {
-        console.info('DemoMonkey could not find hyper graph, hook disabled.')
-      } else {
-        setTimeout(hgHook, intervalLength * noHookCounter)
-      }
-    }
-    setTimeout(hgHook, intervalLength)
-  }
 
   if (config.hookIntoAjax) {
     console.info('Demo Monkey hooks into ajax requests. This may break things. Use at your own risk!')
