@@ -11,30 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import MatchRule from './MatchRule'
-
-/**
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class NetRequestManager {
-  constructor(declarativeNetRequest, tabsQuery, logger, onSave) {
+  constructor(declarativeNetRequest, logger, onSave) {
     this.declarativeNetRequest = declarativeNetRequest
-    this.tabsQuery = tabsQuery
     this.logger = logger
-    this.list = {}
-    this.tabs = {}
-    this.index = 1
-    this.onSave = onSave
   }
 
   load(list, tabs, index) {
@@ -54,13 +34,6 @@ class NetRequestManager {
   enable() {
     this.logger('debug', 'Enable net request manager').write()
     this.clear()
-    this.tabsQuery({}, (tabs) => {
-      tabs.forEach(tab => {
-        if (tab.url) {
-          this.updateTab(tab.id, tab.url)
-        }
-      })
-    })
   }
 
   disable() {
@@ -75,112 +48,97 @@ class NetRequestManager {
     return type.split(',')
   }
 
-  _getTabIds(includeRules, excludeRules) {
-    return Object.keys(this.tabs).reduce((accumulator, id) => {
-      // console.log(includeRules, excludeRules, this.tabs[id])
-      if (new MatchRule(includeRules, excludeRules).test(this.tabs[id])) {
-        accumulator.push(parseInt(id))
-      }
-      return accumulator
-    }, [])
-  }
-
-  add(description) {
-    this.logger('debug', 'Add web hook', description.id).write()
-
-    const id = this.list[description.id] ? this.list[description.id].rule.id : this.index++
-
-    const rule = {
-      id,
-      priority: 1,
-      action: {
-        type: description.action
-      },
-      condition: {
-        resourceTypes: this._getResourceType(description.type),
-        urlFilter: description.url,
-        tabIds: this._getTabIds(description.includeRules, description.excludeRules)
-      }
-    }
-    if (description.action === 'redirect') {
-      rule.action.redirect = {
-        url: description.options.redirect
-      }
-    }
-    // console.log(description, rule)
-
-    this.list[description.id] = {
-      rule,
-      includeRules: description.includeRules,
-      excludeRules: description.excludeRules
-    }
-
-    // tab list must not be empty
-    if (rule.condition.tabIds.length > 0) {
-      this.declarativeNetRequest.updateSessionRules({
-        addRules: [rule],
-        removeRuleIds: [rule.id] // noop?
+  add(description, tabId) {
+    this.declarativeNetRequest.getSessionRules(rules => {
+      const resourceTypes = this._getResourceType(description.type)
+      const existingRule = rules.find(({ action, condition }) => {
+        return action.type === description.action &&
+          condition.resourceTypes.join(',') === resourceTypes.join(',') &&
+          condition.urlFilter === description.url &&
+          (description.action !== 'redirect' || action.redirect.url === description.options.redirect)
       })
-    }
-
-    this.save()
-  }
-
-  remove(id) {
-    if (this.list[id]) {
-      this.logger('debug', 'Remove web hook', id).write()
-      const { rule } = this.list[id]
-      this.declarativeNetRequest.updateDynamicRules(
-        {
-          removeRuleIds: [rule.id]
-        }
-      )
-      delete this.list[id]
-      this.save()
-    }
-  }
-
-  removeTab(tabId) {
-    delete this.tabs[tabId]
-  }
-
-  updateTab(tabId, url) {
-    this.logger('debug', `Tab ${tabId} has new url ${url}, check for updates.`).write()
-    this.tabs[tabId] = url
-    Object.keys(this.list).forEach(id => {
-      const { rule, includeRules, excludeRules } = this.list[id]
-      // console.log(rule, includeRules, excludeRules)
-      // check if new url matches the include/exclude rules
-      if (new MatchRule(includeRules, excludeRules).test(url)) {
-        // URL matches: the tab will be added to the rule
-        if (!rule.condition.tabIds.includes(tabId)) {
-          rule.condition.tabIds.push(tabId)
-          this.declarativeNetRequest.updateSessionRules({
-            addRules: [rule],
-            removeRuleIds: [rule.id]
-          })
-        }
-      } else {
-        // URL does not match: the tab will be removed from the rule
-        rule.condition.tabIds = rule.condition.tabIds.filter(id => id !== tabId)
+      if (existingRule) {
+        this.logger('debug', 'Use existing rule for tab', tabId, 'and rule ', description).write()
+        existingRule.condition.tabIds.push(tabId)
         this.declarativeNetRequest.updateSessionRules({
-          addRules: rule.condition.tabIds.length > 0 ? [rule] : [],
-          removeRuleIds: [rule.id]
+          addRules: [existingRule],
+          removeRuleIds: [existingRule.id] // remove existing rule and then have it re-added
+        })
+      } else {
+        this.logger('debug', 'Add a new rule for tab', tabId, 'and rule ', description).write()
+        const rule = {
+          id: rules.length + 1,
+          priority: 1,
+          action: {
+            type: description.action
+          },
+          condition: {
+            resourceTypes,
+            urlFilter: description.url,
+            tabIds: [tabId]
+          }
+        }
+        if (description.action === 'redirect') {
+          rule.action.redirect = {
+            url: description.options.redirect
+          }
+        }
+        this.declarativeNetRequest.updateSessionRules({
+          addRules: [rule]
         })
       }
     })
-    this.save()
+  }
+
+  remove(description, tabId) {
+    this.declarativeNetRequest.getSessionRules(rules => {
+      const resourceTypes = this._getResourceType(description.type)
+      this.logger('debug', 'Remove web hook from tab', tabId, ':', description).write()
+      const existingRule = rules.find(({ action, condition }) => {
+        return action.type === description.action &&
+          condition.resourceTypes === resourceTypes &&
+          condition.urlFilter === description.url &&
+          (description.action !== 'redirect' || action.redirect.url === description.options.redirect)
+      })
+      if (existingRule) {
+        existingRule.condition.tabIds = existingRule.condition.tabIds.filter(id => id !== tabId)
+        if (existingRule.condition.tabIds.length > 0) {
+          this.declarativeNetRequest.updateSessionRules({
+            addRules: [existingRule],
+            removeRuleIds: [existingRule.id] // remove existing rule and then have it re-added
+          })
+        } else {
+          this.declarativeNetRequest.updateSessionRules({
+            removeRuleIds: [existingRule.id]
+          })
+        }
+      }
+    })
+  }
+
+  removeTab(tabId) {
+    this.declarativeNetRequest.getSessionRules(rules => {
+      const newRules = rules.reduce((result, current) => {
+        current.condition.tabIds = current.condition.tabIds.filter(id => id !== tabId)
+        if (current.condition.tabIds.length > 0) {
+          result.push(current)
+        }
+        return result
+      }, [])
+      this.declarativeNetRequest.updateSessionRules({
+        addRules: newRules,
+        removeRuleIds: rules.map(rule => rule.id)
+      })
+    })
   }
 
   clear() {
     this.logger('debug', 'Clear all web hooks').write()
-    this.list = {}
     this.declarativeNetRequest.getSessionRules(rules => {
       this.declarativeNetRequest.updateSessionRules({
         removeRuleIds: rules.map(rule => rule.id)
       })
     })
-    this.save()
   }
 }
 

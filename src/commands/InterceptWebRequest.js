@@ -46,19 +46,21 @@ class InterceptWebRequest extends Command {
 
   apply(target, key = 'value') {
     target.add({
-      id: this.id,
       url: this.search,
       action: this.action,
       type: this.type,
-      options: this.options,
-      includeRules: this.includeRules,
-      excludeRules: this.excludeRules
+      options: this.options
     })
 
     return {
       target,
       apply: () => {
-        target.remove(this.id)
+        target.remove({
+          url: this.search,
+          action: this.action,
+          type: this.type,
+          options: this.options
+        })
         return true
       }
     }

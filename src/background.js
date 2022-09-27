@@ -31,9 +31,7 @@ try {
       scope.chrome.storage.session.set({ badgeData: { timer, tabs } })
     })
 
-    const netRequestManager = new NetRequestManager(scope.chrome.declarativeNetRequest, scope.chrome.tabs.query, logger, ({ list, tabs, index }) => {
-      scope.chrome.storage.session.set({ netRequestManagerData: { list, tabs, index } })
-    })
+    const netRequestManager = new NetRequestManager(scope.chrome.declarativeNetRequest, logger)
 
     const liveModeAlarm = new LiveModeAlarm(scope.chrome.alarms, logger, badge, ({ startTime }) => {
       scope.chrome.storage.session.set({ liveModeAlarmData: { startTime } })
@@ -44,11 +42,6 @@ try {
       badgeData: {
         timer: -1, tabs: []
       },
-      netRequestManagerData: {
-        list: {},
-        tabs: {},
-        index: 1
-      },
       liveModeAlarmData: {
         startTime: -1
       },
@@ -57,7 +50,6 @@ try {
       }
     }, ({ badgeData, netRequestManagerData, liveModeAlarmData, hotKeyGroupData }) => {
       badge.load(badgeData.tabs, badgeData.timer)
-      netRequestManager.load(netRequestManagerData.list, netRequestManagerData.tabs, netRequestManagerData.index)
       liveModeAlarm.load(liveModeAlarmData.startTime)
       enabledHotkeyGroup = hotKeyGroupData.enabledHotkeyGroup
     })
@@ -82,11 +74,6 @@ try {
       badge.updateDemoCounter(0, tab.id)
     })
 
-    scope.chrome.tabs.onRemoved.addListener(function (tab) {
-      logger('debug', 'Tab closed', tab.id).write()
-      netRequestManager.removeTab(tab.id)
-    })
-
     /*
     * The following replaces the declarative content scripts, which require
     * high host permissions.
@@ -98,8 +85,6 @@ try {
       scope.chrome.tabs.get(tabId, (tab) => {
         if (tab.url) {
           logger('debug', 'Trying to inject for', tabId, tab.url).write()
-          netRequestManager.updateTab(tabId, tab.url)
-          logger('debug', 'Saved ...').write()
           scope.chrome.scripting.executeScript({
             target: { tabId, allFrames: true },
             files: ['js/monkey.js'],
@@ -115,7 +100,13 @@ try {
     })
 
     scope.chrome.tabs.onRemoved.addListener(function (tabId) {
+      logger('debug', 'Tab closed, cleaning up badge & netRequestManager', tabId).write()
       badge.removeTab(tabId)
+      netRequestManager.removeTab(tabId)
+    })
+
+    scope.chrome.tabs.onRemoved.addListener(function (tab) {
+      // TODO: netRequestManager & badge cleanup
     })
 
     scope.chrome.tabs.onActivated.addListener(function (tab) {
@@ -128,11 +119,11 @@ try {
         if (typeof request.count === 'number' && typeof sender.tab === 'object' && typeof sender.tab.id === 'number') {
           badge.updateDemoCounter(request.count, sender.tab.id)
         }
-        if (request.task && request.task === 'addUrl' && typeof request.url === 'object') {
-          netRequestManager.add(request.url)
+        if (request.task && request.task === 'addUrl' && typeof request.description === 'object') {
+          netRequestManager.add(request.description, sender.tab.id)
         }
-        if (request.task && request.task === 'removeUrl' && typeof request.id === 'string') {
-          netRequestManager.remove(request.id)
+        if (request.task && request.task === 'removeUrl' && typeof request.description === 'object') {
+          netRequestManager.remove(request.description, sender.tab.id)
         }
         if (request.task && request.task === 'clearUrls') {
           netRequestManager.clear()
