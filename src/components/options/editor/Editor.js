@@ -15,6 +15,7 @@ import React from 'react'
 import Tabs from '../../shared/Tabs'
 import Pane from '../../shared/Pane'
 import Variable from '../../shared/Variable'
+import Popup from '../../shared/Popup'
 import CodeEditor from './CodeEditor'
 import Configuration from '../../../models/Configuration'
 import PropTypes from 'prop-types'
@@ -41,14 +42,17 @@ class Editor extends React.Component {
     isDarkMode: PropTypes.bool.isRequired,
     featureFlags: PropTypes.objectOf(PropTypes.bool).isRequired,
     activeTab: PropTypes.string,
-    onNavigate: PropTypes.func.isRequired
+    onNavigate: PropTypes.func.isRequired,
+    hasConfigurationWithSameName: PropTypes.func.isRequired
   }
 
   constructor(props) {
     super(props)
     this.state = {
       currentConfiguration: props.currentConfiguration,
-      unsavedChanges: false
+      unsavedChanges: false,
+      showDeletePopup: false,
+      showSavePopup: false
     }
   }
 
@@ -116,8 +120,11 @@ class Editor extends React.Component {
 
     Mousetrap.bind('mod+s', (event) => {
       event.preventDefault()
+      /*
       this.props.onSave(this.props.currentConfiguration, this.state.currentConfiguration)
       this.setState({ unsavedChanges: false })
+      */
+      this.onBeforeSave()
       return false
     })
   }
@@ -208,6 +215,36 @@ class Editor extends React.Component {
     return this.renderConfiguration()
   }
 
+  onBeforeDelete() {
+    this.setState({ showDeletePopup: true })
+  }
+
+  onBeforeSave() {
+    if (!this.props.hasConfigurationWithSameName(this.state.currentConfiguration)) {
+      this.handleClick(null, 'save')
+    } else {
+      this.setState({ showSavePopup: true })
+    }
+  }
+
+  onCancelDelete() {
+    this.setState({ showDeletePopup: false })
+  }
+
+  onCancelSave() {
+    this.setState({ showSavePopup: false })
+  }
+
+  onSave(event) {
+    this.setState({ showSavePopup: false })
+    this.handleClick(event, 'save')
+  }
+
+  onDelete(event) {
+    this.setState({ showDeletePopup: false })
+    this.handleClick(event, 'delete')
+  }
+
   renderConfiguration() {
     const current = this.state.currentConfiguration
     const hiddenIfNew = current.id === 'new' ? { display: 'none' } : {}
@@ -244,10 +281,12 @@ class Editor extends React.Component {
               options={hotkeyOptions}
             />
           </div>
-          <button className={'save-button ' + (this.state.unsavedChanges ? '' : 'disabled')} onClick={(event) => this.handleClick(event, 'save')}>Save</button>
+          <button className={'save-button ' + (this.state.unsavedChanges ? '' : 'disabled')} onClick={() => this.onBeforeSave()}>Save</button>
+          <Popup open={this.state.showSavePopup} onCancel={(event) => this.onCancelSave(event)} onConfirm={(event) => this.onSave(event)} title="Please confirm" text={<span>A configuration with <b>{current.name} already exists. Do you really want to use this name</b>?</span>} />
           <button className="copy-button" style={hiddenIfNew} onClick={(event) => this.handleClick(event, 'copy')}>Duplicate</button>
           <button className="download-button" style={hiddenIfNew} onClick={(event) => this.handleClick(event, 'download')}>Download</button>
-          <button className="delete-button" style={hiddenIfNew} onClick={(event) => this.handleClick(event, 'delete')}>Delete</button>
+          <button className="delete-button" style={hiddenIfNew} onClick={(event) => this.onBeforeDelete()}>Delete</button>
+          <Popup open={this.state.showDeletePopup} onCancel={(event) => this.onCancelDelete(event)} onConfirm={(event) => this.onDelete(event)} title="Please confirm" text={<span>Do you really want to remove <b>{current.name}</b>?</span>} />
         </div>
         <div className={showTemplateWarning}>
           <b>Warning:</b> Without <b>@include</b> or <b>@exclude</b> defined, your configuration can not be enabled.
@@ -260,8 +299,8 @@ class Editor extends React.Component {
               onChange={(content) => this.handleUpdate('content', content)}
               readOnly={current.readOnly === true}
               annotations={(content) => this._buildAnnotations(content)}
-              onVimWrite={() => this.handleClick(null, 'save')}
-              onAutoSave={(event) => autosave ? this.handleClick(event, 'save') : event.preventDefault() }
+              onVimWrite={() => this.onBeforeSave()}
+              onAutoSave={() => { if (autosave) { this.onBeforeSave() } }}
               keyboardHandler={this.props.keyboardHandler}
               editorAutocomplete={this.props.editorAutocomplete}
               isDarkMode={this.props.isDarkMode}

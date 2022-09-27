@@ -53,8 +53,8 @@ describe('UI', function () {
     await driver.findElement(By.linkText('Example')).click()
     await driver.wait(until.elementsLocated(By.css('button.delete-button')))
     await driver.findElement(By.css('button.delete-button')).click()
-    await driver.wait(until.elementsLocated(By.css('button.popup__btn.popup__btn--danger')))
-    await driver.findElement(By.css('button.popup__btn.popup__btn--danger')).click()
+    await driver.wait(until.elementsLocated(By.id('alert-dialog-confirm-button')))
+    await driver.findElement(By.id('alert-dialog-confirm-button')).click()
     const url = await driver.getCurrentUrl()
     expect(url).to.include.string('#help')
     try {

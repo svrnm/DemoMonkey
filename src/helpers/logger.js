@@ -11,13 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 function logger() {
   const timestamp = Date.now()
   const message = [...arguments]
   const level = message.shift()
   const out = console[['error', 'info', 'warn', 'debug', 'log'].includes(level) ? level : 'log']
-  if (window && window.dmLogger) {
-    window.dmLogger({
+  if (globalThis && globalThis.dmLogger) {
+    globalThis.dmLogger({
       level,
       // we need to make sure that errors are converted into objects early,
       // since they are not stringified properly. JSON.stringify(new Error()) => {}
@@ -41,23 +42,23 @@ function logger() {
 }
 
 function connectLogger(store, extras = {}) {
-  window.dmLogEntries = []
+  globalThis.dmLogEntries = []
   // Log messages are written to the store peridocally to avoid lags.
   setInterval(() => {
-    if (window.dmLogEntries.length > 0) {
+    if (globalThis.dmLogEntries.length > 0) {
       store.dispatch({
         type: 'APPEND_LOG_ENTRIES',
-        entries: window.dmLogEntries
+        entries: globalThis.dmLogEntries
       })
-      window.dmLogEntries = []
+      globalThis.dmLogEntries = []
     }
   }, 2000)
-  window.dmLogger = function (entry) {
+  globalThis.dmLogger = function (entry) {
     // We don't write debug messages to the log
     if (entry.level === 'debug') {
       return
     }
-    window.dmLogEntries.push(Object.assign({}, extras, entry))
+    globalThis.dmLogEntries.push(Object.assign({}, extras, entry))
   }
 }
 

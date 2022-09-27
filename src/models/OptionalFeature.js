@@ -54,7 +54,7 @@ const optionalFeatures = [
     id: 'webRequestHook',
     defaultValue: false,
     label: 'Hook into Web Requests.',
-    description: <span>Turn this feature on, if you want to use the commands !delayUrl, !blockUrl and !redirectUrl. <b>This will allow DemoMonkey to intercept, block, or modify requests in-flight</b>. To learn what this means, read about <a target="blank" rel="noopener noreferer" href="https://developer.chrome.com/extensions/webRequest">chrome.webRequest</a></span>
+    description: <span>Turn this feature on, if you want to use the commands !blockUrl and !redirectUrl. <b>This will allow DemoMonkey to block or redirect requests in-flight</b>. To learn what this means, read about <a target="blank" rel="noopener noreferer" href="https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/">chrome.declarativeNetRequest</a></span>
   },
   {
     id: 'debugBox',
@@ -79,12 +79,6 @@ const optionalFeatures = [
     defaultValue: false,
     label: 'Hook into Ajax.',
     description: <span>Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response. Does not support <i>window.fetch</i>.</span>
-  },
-  {
-    id: 'hookIntoHyperGraph',
-    defaultValue: false,
-    label: 'Hook into HyperGraph.',
-    description: 'Allow DemoMonkey to interact with hyper graph. If you do not know what hyper graph is, ignore it.'
   },
   {
     id: 'syncDarkMode',

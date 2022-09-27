@@ -115,7 +115,7 @@ class CommandBuilder {
       command = command.slice(command.lastIndexOf('.') + 1)
     }
 
-    return { extracted: true, command: command, namespace: namespace, parameters: parameters }
+    return { extracted: true, command, namespace, parameters }
   }
 
   _buildCommand(key, value) {

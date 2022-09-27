@@ -40,8 +40,7 @@ const Base = {
     // I didn't find a proper way to allow those permissions.
     const rawManifest = fs.readFileSync('./build/manifest.json', 'utf8')
     const manifest = JSON.parse(rawManifest)
-    manifest.permissions.push('<all_urls>')
-    manifest.permissions.push('webRequest')
+    manifest.host_permissions = ['<all_urls>']
     fs.writeFileSync('./build/manifest.json', JSON.stringify(manifest))
 
     options.addArguments('--load-extension=./build')
@@ -57,38 +56,37 @@ const Base = {
     return driver.quit()
   },
   enableConfig: async function (title = 'Selenium Test') {
-    const button = By.xpath('//*[contains(text(), "' + title + '")]/../preceding-sibling::div')
-    const status = By.xpath('//*[contains(text(), "' + title + '")]/../preceding-sibling::div/input')
+    const button = By.xpath('//*[contains(text(), "' + title + '")]/../../descendant::input')
     await driver.get(this.popupUrl)
     await driver.wait(until.elementsLocated(By.className('toggle-group')))
-    const currentStatus = await driver.findElement(status).getAttribute('value')
-    if (currentStatus === 'false') {
+    const currentStatus = await driver.findElement(button).isSelected()
+    if (currentStatus === false) {
       await driver.findElement(button).click()
     }
-    const result = await driver.findElement(status).getAttribute('value')
-    assert.equal(result, 'true')
+    const result = await driver.findElement(button).isSelected()
+    assert.equal(result, true)
   },
   enableOptionalFeature: async function (title = 'webRequestHook') {
     await driver.get(this.dashboardUrl)
     await driver.wait(until.elementsLocated(By.css("a[href='#settings']")))
     await driver.findElement(By.css("a[href='#settings']")).click()
     await driver.wait(until.elementsLocated(By.className('toggle-group')))
-    const button = By.css(`#toggle-${title} > div`)
-    const status = By.css(`#toggle-${title} > div > input`)
+    const button = By.css(`#toggle-${title} input`)
+    // const status = By.css(`#toggle-${title} > div > input`)
     await driver.findElement(button).click()
-    const text = await driver.findElement(status).getAttribute('value')
-    assert.equal(text, 'true')
+    const checked = await driver.findElement(button).isSelected()
+    assert.equal(checked, true)
   },
   disableOptionalFeature: async function (title = 'webRequestHook') {
     await driver.get(this.dashboardUrl)
     await driver.wait(until.elementsLocated(By.css("a[href='#settings']")))
     await driver.findElement(By.css("a[href='#settings']")).click()
     await driver.wait(until.elementsLocated(By.className('toggle-group')))
-    const button = By.css(`#toggle-${title} > div`)
-    const status = By.css(`#toggle-${title} > div > input`)
+    const button = By.css(`#toggle-${title} input`)
+    // const status = By.css(`#toggle-${title} > div > input`)
     await driver.findElement(button).click()
-    const text = await driver.findElement(status).getAttribute('value')
-    assert.equal(text, 'false')
+    const checked = await driver.findElement(button).isSelected()
+    assert.equal(checked, false)
   },
   createConfig: async function (title = 'Selenium Test', content = 'demomonkey = testape') {
     await driver.get(this.dashboardUrl)

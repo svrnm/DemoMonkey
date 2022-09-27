@@ -217,19 +217,11 @@ export default [
     }
   },
   {
-    name: 'delayUrl',
-    aliases: [],
-    signature: '(${1}) = ${2}',
-    command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new InterceptWebRequest(parameters[0], value, 'delay', parameters[1], includeRules, excludeRules)
-    }
-  },
-  {
     name: 'replaceUrl',
     aliases: ['redirectUrl'],
     signature: '(${1}) = ${2}',
     command: function (value, parameters, location, includeRules, excludeRules, cmdBuilder) {
-      return new InterceptWebRequest(parameters[0], value, 'replace', parameters[1], includeRules, excludeRules)
+      return new InterceptWebRequest(parameters[0], value, 'redirect', parameters[1], includeRules, excludeRules)
     }
   },
   {

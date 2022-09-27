@@ -3,6 +3,7 @@
   "parserOptions": {
     "ecmaVersion": 8,
     "sourceType": "module",
+    "requireConfigFile": false,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "jsx": true

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 import React from 'react'
-import ToggleButton from 'react-toggle-button'
+import Switch from '@mui/material/Switch'
 import PropTypes from 'prop-types'
 import AceEditor from 'react-ace'
 import Tabs from '../../shared/Tabs'
@@ -20,6 +20,7 @@ import Pane from '../../shared/Pane'
 import GlobalVariables from './GlobalVariables'
 import CodeEditor from '../editor/CodeEditor'
 import OptionalFeature from '../../../models/OptionalFeature'
+import Popup from '../../shared/Popup'
 
 import 'ace-builds/src-noconflict/mode-html'
 import 'ace-builds/src-noconflict/theme-xcode'
@@ -54,7 +55,9 @@ class Settings extends React.Component {
       analyticsSnippet: this.props.settings.analyticsSnippet,
       baseTemplate: this.props.settings.baseTemplate,
       monkeyInterval: this.props.settings.monkeyInterval,
-      archiveValue: 30
+      archiveValue: 30,
+      showResetPopup: false,
+      showDeleteAllPopup: false
     }
   }
 
@@ -94,6 +97,32 @@ class Settings extends React.Component {
     this.props.onSetAnalyticsSnippet(this.state.analyticsSnippet)
   }
 
+  onBeforeReset() {
+    this.setState({ showResetPopup: true })
+  }
+
+  onCancelReset() {
+    this.setState({ showResetPopup: false })
+  }
+
+  onReset(event) {
+    this.setState({ showResetPopup: false })
+    this.props.onReset(event)
+  }
+
+  onBeforeDeleteAll() {
+    this.setState({ showDeleteAllPopup: true })
+  }
+
+  onCancelDeleteAll() {
+    this.setState({ showDeleteAllPopup: false })
+  }
+
+  onDeleteAll(event) {
+    this.setState({ showDeleteAllPopup: false })
+    this.props.onDeleteAll(event)
+  }
+
   render() {
     const optionalFeatures = OptionalFeature.getAll({
       styles: {
@@ -113,9 +142,9 @@ class Settings extends React.Component {
               {
                 optionalFeatures.map((feature, index) => {
                   return <div key={index} className="toggle-group" id={`toggle-${feature.id}`} style={feature.style ? feature.style : {}}>
-                    <ToggleButton
-                      onToggle={() => this.props.onToggleOptionalFeature(feature.id)}
-                      value={this.props.settings.optionalFeatures[feature.id]}
+                    <Switch
+                      onChange={() => this.props.onToggleOptionalFeature(feature.id)}
+                      checked={this.props.settings.optionalFeatures[feature.id]}
                     />
                     <label>
                       <b>{feature.label}</b> {feature.description}
@@ -125,26 +154,26 @@ class Settings extends React.Component {
               }
             </Pane>
             <Pane label="Base Template" name="baseTemplate">
-                <label htmlFor="template">
-                  <p>
-                    This base template will be used for new configurations you create. It will auto-save while you edit it.
-                  </p>
-                  <p>
-                    <button className="save-button" onClick={() => this.saveBaseTemplate()}>Save</button>
-                    <span style={{ display: this.props.settings.baseTemplate === this.state.baseTemplate ? 'none' : 'inline' }} className="unsaved-warning">(Unsaved Changes)</span>
-                  </p>
-                </label>
-                <CodeEditor value={this.state.baseTemplate}
-                  onChange={(content) => this.updateBaseTemplate(content)}
-                  annotations={(content) => {}}
-                  getRepository={this.props.getRepository}
-                  variables={[]}
-                  onVimWrite={() => this.handleClick(null, 'save')}
-                  onAutoSave={(event) => this.props.settings.optionalFeatures.autoSave ? this.saveBaseTemplate() : event.preventDefault() }
-                  keyboardHandler={this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null}
-                  editorAutocomplete={this.props.settings.optionalFeatures.editorAutocomplete}
-                  isDarkMode={this.props.isDarkMode}
-                />
+              <label htmlFor="template">
+                <p>
+                  This base template will be used for new configurations you create. It will auto-save while you edit it.
+                </p>
+                <p>
+                  <button className="save-button" onClick={() => this.saveBaseTemplate()}>Save</button>
+                  <span style={{ display: this.props.settings.baseTemplate === this.state.baseTemplate ? 'none' : 'inline' }} className="unsaved-warning">(Unsaved Changes)</span>
+                </p>
+              </label>
+              <CodeEditor value={this.state.baseTemplate}
+                onChange={(content) => this.updateBaseTemplate(content)}
+                annotations={(content) => { }}
+                getRepository={this.props.getRepository}
+                variables={[]}
+                onVimWrite={() => this.handleClick(null, 'save')}
+                onAutoSave={(event) => this.props.settings.optionalFeatures.autoSave ? this.saveBaseTemplate() : event.preventDefault()}
+                keyboardHandler={this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null}
+                editorAutocomplete={this.props.settings.optionalFeatures.editorAutocomplete}
+                isDarkMode={this.props.isDarkMode}
+              />
             </Pane>
             <Pane label="Global Variables" name="globalVariables">
               <GlobalVariables globalVariables={this.props.settings.globalVariables} onSaveGlobalVariables={this.props.onSaveGlobalVariables} isDarkMode={this.props.isDarkMode} />
@@ -166,13 +195,13 @@ class Settings extends React.Component {
                   height="400px"
                   width="100%"
                   minLines={20}
-                  theme={ this.props.isDarkMode ? 'merbivore' : 'xcode' }
+                  theme={this.props.isDarkMode ? 'merbivore' : 'xcode'}
                   mode="html"
                   value={this.state.analyticsSnippet}
                   name="template"
                   onChange={(content) => this.updateAnalyticsSnippet(content)}
                   editorProps={{ $blockScrolling: true }}
-                  />
+                />
               </div>
             </Pane>
             <Pane label="More" name="more">
@@ -184,14 +213,28 @@ class Settings extends React.Component {
               <h2>Permissions</h2>
               For DemoMonkey to work optimal you have to grant permissions to access all websites.
               <div className="toggle-group" id="toggle-beta_configSync">
-                <ToggleButton onToggle={() => this.props.onRequestExtendedPermissions(this.props.hasExtendedPermissions)} value={this.props.hasExtendedPermissions}/><label><b>Allow access on all sites.</b> Allow DemoMonkey to read and change data on all sites you visit.</label>
+                <Switch onChange={() => this.props.onRequestExtendedPermissions(this.props.hasExtendedPermissions)} checked={this.props.hasExtendedPermissions} /><label><b>Allow access on all sites.</b> Allow DemoMonkey to read and change data on all sites you visit.</label>
               </div>
               If you can not revoke permissions from here, go to the extensions page, choose Demo Monkey, click on <i>Details</i> and there set <i>Site Access</i> to <i>On click</i>
               <h2>Backup</h2>
               You can always open the <a href="backup.html">backup page</a> to download your files or manipulate your settings. Please use with caution!
               <button className="save-button" onClick={(event) => this.props.onDownloadAll(event)}>Download all configurations</button>
-              <button className="delete-button" onClick={(event) => this.props.onDeleteAll(event)}>Download & Delete all configurations</button>
-              <button className="delete-button" onClick={(event) => this.props.onReset(event)}>Reset DemoMonkey</button>
+              <button className="delete-button" onClick={(event) => this.onBeforeDeleteAll(event)}>Download & Delete all configurations</button>
+              <Popup
+                title="Please Confirm"
+                text={<span>Do you really want to delete all configurations?</span>}
+                open={this.state.showDeleteAllPopup}
+                onCancel={(event) => this.onCancelDeleteAll(event)}
+                onConfirm={(event) => this.onDeleteAll(event)}
+              />
+              <button className="delete-button" onClick={(event) => this.onBeforeReset(event)}>Reset DemoMonkey</button>
+              <Popup
+                title="Reset DemoMonkey"
+                text={<span>Do you really want to reset <b>all configurations and all settings</b>?<br />(This window will close.)</span>}
+                open={this.state.showResetPopup}
+                onCancel={(event) => this.onCancelReset(event)}
+                onConfirm={(event) => this.onReset(event)}
+              />
             </Pane>
           </Tabs>
         </div>

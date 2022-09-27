@@ -12,20 +12,34 @@
  * limitations under the License.
  */
 class Badge {
-  constructor(browserAction, timer = -1) {
+  constructor(browserAction, timer = -1, onSave = () => {}) {
     this.timer = timer
     this.browserAction = browserAction
     this.tabs = []
+    this.onSave = onSave
+  }
+
+  save() {
+    this.onSave({
+      timer: this.timer,
+      tabs: this.tabs
+    })
+  }
+
+  load(tabs, timer) {
+    this.tabs.push(...tabs)
+    this.timer = timer > 99 ? 99 : timer
   }
 
   removeTab(tabId) {
     this.tabs = this.tabs.filter(id => id !== tabId)
+    this.save()
   }
 
   _updateBadgeText(tabId) {
     this.browserAction.getBadgeText({ tabId }, (text) => {
       text = this._updateText(text)
-      this.browserAction.setBadgeText({ text: text, tabId })
+      this.browserAction.setBadgeText({ text, tabId })
     })
   }
 
@@ -39,12 +53,13 @@ class Badge {
   updateDemoCounter(count, tabId) {
     if (!this.tabs.includes(tabId)) {
       this.tabs.push(tabId)
+      this.save()
     }
 
     this.browserAction.getBadgeText({ tabId }, (oldText) => {
       // oldText can be undefined for a new tab, set it to ''
       const text = this._updateText(typeof oldText === 'undefined' ? '' : oldText, count + '')
-      const color = count > 0 ? '#952613' : '#5c832f'
+      const color = (count === '!' || count > 0) ? '#952613' : '#5c832f'
       this.browserAction.setBadgeText({ text, tabId })
       this.browserAction.setBadgeBackgroundColor({
         color,
@@ -53,12 +68,13 @@ class Badge {
     })
   }
 
-  clearTimer(tabId) {
+  clearTimer() {
     this.timer = -1
+    this.save()
     this.tabs.forEach(tabId => this._updateBadgeText(tabId))
   }
 
-  updateTimer(timer, tabId) {
+  updateTimer(timer) {
     this.timer = timer > 99 ? 99 : timer
     this.tabs.forEach(tabId => this._updateBadgeText(tabId))
   }

@@ -17,22 +17,22 @@ class UrlManager {
     this.enabled = enabled
   }
 
-  add (url) {
+  add (description) {
     if (this.enabled) {
       this.scope.chrome.runtime.sendMessage({
         receiver: 'background',
         task: 'addUrl',
-        url
+        description
       })
     }
   }
 
-  remove (id) {
+  remove (description) {
     if (this.enabled) {
       this.scope.chrome.runtime.sendMessage({
         receiver: 'background',
         task: 'removeUrl',
-        id
+        description
       })
     }
   }

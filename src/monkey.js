@@ -17,7 +17,7 @@ import Settings from './models/Settings'
 import Manifest from './models/Manifest'
 import InlineRuleManager from './models/InlineRuleManager'
 import UrlManager from './models/UrlManager'
-import { Store } from 'webext-redux'
+import { Store } from '@eduardoac-skimlinks/webext-redux'
 import { logger, connectLogger } from './helpers/logger'
 
 // Firefox does not display errors in the console, so we catch them ourselves and print them to console.
@@ -57,7 +57,7 @@ try {
         if (isTopFrame()) {
           scope.chrome.runtime.sendMessage({
             receiver: 'background',
-            count: count
+            count
           })
         }
       }
@@ -70,19 +70,15 @@ try {
         const settings = new Settings(store.getState().settings)
 
         const inlineConfig = {
-          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
-          hookIntoHyperGraph: settings.isFeatureEnabled('hookIntoHyperGraph')
+          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax')
         }
 
-        if (inlineConfig.hookIntoAjax || inlineConfig.hookIntoHyperGraph) {
+        if (inlineConfig.hookIntoAjax) {
           if (!['miro.com'].includes(scope.location.host)) {
-            const inlineConfigScriptTag = scope.document.createElement('script')
-            inlineConfigScriptTag.innerHTML = 'window.demoMonkeyConfig = ' + JSON.stringify(inlineConfig)
-            scope.document.head.append(inlineConfigScriptTag)
-
             const inlineScriptTag = scope.document.createElement('script')
             inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
-            inlineScriptTag.src = scope.chrome.extension.getURL('js/inline.js')
+            inlineScriptTag.setAttribute('data-dm-config-hook-into-ajax', inlineConfig.hookIntoAjax)
+            inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
             scope.document.head.append(inlineScriptTag)
           } else {
             logger('warn', `inline.js not loaded, because ${scope.location.host} may break, see https://github.com/svrnm/DemoMonkey/issues/21`).write()
