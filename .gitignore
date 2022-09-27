@@ -6,7 +6,6 @@ build-release
 *.pem
 *.crx
 DemoMonkey-*.zip
-package-lock.json
 .nyc_output
 .vscode
 .eslintcache
