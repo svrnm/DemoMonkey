@@ -33,7 +33,10 @@ class ReplaceAjaxResponse extends Command {
   }
 
   apply(target, key) {
-    target.add('patchAjaxResponse', { urlPattern: this.urlPattern, patch: this.patch })
+    target.add('patchAjaxResponse', {
+      urlPattern: this.urlPattern,
+      patch: this.patch
+    })
     return false
   }
 }

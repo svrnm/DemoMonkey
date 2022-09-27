@@ -12,15 +12,18 @@
  * limitations under the License.
  */
 class InlineRuleManager {
-  constructor(scope, config = {
-    hookIntoAjax: false,
-    hookIntoHyperGraph: false
-  }) {
+  constructor(
+    scope,
+    config = {
+      hookIntoAjax: false,
+      hookIntoHyperGraph: false
+    }
+  ) {
     this.scope = scope
     this.enabled = config.hookIntoAjax
   }
 
-  add (f, c) {
+  add(f, c) {
     if (!this.enabled) {
       return
     }

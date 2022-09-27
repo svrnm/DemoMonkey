@@ -22,8 +22,11 @@ class Tabs extends React.Component {
   }
 
   _getSelected() {
-    this.tabNames = this.props.children.map(child => child.props.name)
-    return this.props.activeTab && this.tabNames.indexOf(this.props.activeTab) > -1 ? this.tabNames.indexOf(this.props.activeTab) : 0
+    this.tabNames = this.props.children.map((child) => child.props.name)
+    return this.props.activeTab &&
+      this.tabNames.indexOf(this.props.activeTab) > -1
+      ? this.tabNames.indexOf(this.props.activeTab)
+      : 0
   }
 
   _renderContent() {
@@ -46,12 +49,22 @@ class Tabs extends React.Component {
         return null
       }
       if (child.props.link) {
-        return <li key={index} style={child.props.style}><a className="link" href="#" onClick={child.props.link}>{child.props.label}</a></li>
+        return (
+          <li key={index} style={child.props.style}>
+            <a className="link" href="#" onClick={child.props.link}>
+              {child.props.label}
+            </a>
+          </li>
+        )
       } else {
-        const activeClass = (this._getSelected() === index ? 'active' : '')
+        const activeClass = this._getSelected() === index ? 'active' : ''
         return (
           <li key={index} id={child.props.id} style={child.props.style}>
-            <a href="#" className={activeClass} onClick={this.handleClick.bind(this, index)}>
+            <a
+              href="#"
+              className={activeClass}
+              onClick={this.handleClick.bind(this, index)}
+            >
               {child.props.label}
             </a>
           </li>

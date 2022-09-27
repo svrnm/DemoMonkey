@@ -26,15 +26,23 @@ class Protect extends Command {
   }
 
   _checkLocation() {
-    return typeof this.location === 'object' &&
+    return (
+      typeof this.location === 'object' &&
       this.location.toString().includes(this.locationFilter)
+    )
   }
 
   _checkCss(target) {
     if (this.cssFilter === '') {
       return true
     }
-    return typeof target !== 'object' || target.parentNode === null || typeof target.parentNode !== 'object' || typeof target.parentNode.matches !== 'function' || target.parentNode.matches(this.cssFilter)
+    return (
+      typeof target !== 'object' ||
+      target.parentNode === null ||
+      typeof target.parentNode !== 'object' ||
+      typeof target.parentNode.matches !== 'function' ||
+      target.parentNode.matches(this.cssFilter)
+    )
   }
 
   apply(target, key = 'value') {
@@ -48,7 +56,7 @@ class Protect extends Command {
 
     const original = target[key].trim()
     if (this._match(original, this.search)) {
-      target[key] = target[key].split('').join(String.fromCharCode(0x200B))
+      target[key] = target[key].split('').join(String.fromCharCode(0x200b))
       return new UndoElement(target, key, original, target[key])
     }
 

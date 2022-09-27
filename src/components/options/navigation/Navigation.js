@@ -44,8 +44,12 @@ class Navigation extends React.Component {
     if (state.search !== '') {
       const words = state.search.split(' ')
       find = (item) => {
-        return words.some(word => {
-          return item.name.toLowerCase().indexOf(word) !== -1 || item.tags.includes(word) || (word === 'enabled' && item.enabled)
+        return words.some((word) => {
+          return (
+            item.name.toLowerCase().indexOf(word) !== -1 ||
+            item.tags.includes(word) ||
+            (word === 'enabled' && item.enabled)
+          )
         })
       }
     }
@@ -84,7 +88,11 @@ class Navigation extends React.Component {
 
   constructor(props) {
     super(props)
-    const { tree, cursor } = Navigation.buildTree(this.props.items, { active: props.active, search: '', toggled: {} })
+    const { tree, cursor } = Navigation.buildTree(this.props.items, {
+      active: props.active,
+      search: '',
+      toggled: {}
+    })
     this.state = {
       data: tree,
       cursor,
@@ -95,7 +103,10 @@ class Navigation extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { tree, cursor } = Navigation.buildTree(nextProps.items, { ...prevState, active: nextProps.active })
+    const { tree, cursor } = Navigation.buildTree(nextProps.items, {
+      ...prevState,
+      active: nextProps.active
+    })
     return { data: tree, cursor }
   }
 
@@ -105,7 +116,10 @@ class Navigation extends React.Component {
 
   handleSearchUpdate(event) {
     this.setState({ search: event.target.value.toLowerCase() }, function () {
-      const { tree, cursor } = Navigation.buildTree(this.props.items, this.state)
+      const { tree, cursor } = Navigation.buildTree(
+        this.props.items,
+        this.state
+      )
       this.setState({ data: tree, cursor })
     })
   }
@@ -123,24 +137,38 @@ class Navigation extends React.Component {
   }
 
   _renderTreeFromData(node) {
-    return <TreeItem key={node.id} nodeId={node.id} label={<ItemHeader node={node} style={navigationTheme.tree.node.header} onDelete={(event, node) => this.onDelete(event, node)} />}>
-      {Array.isArray(node.children)
-        ? node.children.map((node) => this._renderTreeFromData(node))
-        : null}
-    </TreeItem>
+    return (
+      <TreeItem
+        key={node.id}
+        nodeId={node.id}
+        label={
+          <ItemHeader
+            node={node}
+            style={navigationTheme.tree.node.header}
+            onDelete={(event, node) => this.onDelete(event, node)}
+          />
+        }
+      >
+        {Array.isArray(node.children)
+          ? node.children.map((node) => this._renderTreeFromData(node))
+          : null}
+      </TreeItem>
+    )
   }
 
   _safeRenderTree() {
     // console.log(this.state.data)
     try {
-      return <TreeView
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-        onNodeToggle={(event, nodeId) => this.onToggle('toggle', nodeId)}
-        onNodeSelect={(event, nodeId) => this.onToggle('select', nodeId)}
-      >
-        {this.state.data.map((item) => this._renderTreeFromData(item))}
-      </TreeView>
+      return (
+        <TreeView
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+          onNodeToggle={(event, nodeId) => this.onToggle('toggle', nodeId)}
+          onNodeSelect={(event, nodeId) => this.onToggle('select', nodeId)}
+        >
+          {this.state.data.map((item) => this._renderTreeFromData(item))}
+        </TreeView>
+      )
     } catch (e) {
       return <ErrorBox error={e} />
     }
@@ -166,11 +194,15 @@ class Navigation extends React.Component {
             onNavigate={this.props.onNavigate}
             showLogs={this.props.showLogs}
           />
-          <input type="text" onChange={(event) => this.handleSearchUpdate(event)} value={this.state.search} placeholder="Search..." className="searchBox" />
+          <input
+            type="text"
+            onChange={(event) => this.handleSearchUpdate(event)}
+            value={this.state.search}
+            placeholder="Search..."
+            className="searchBox"
+          />
         </div>
-        <div className="tree items">
-          {this._safeRenderTree()}
-        </div>
+        <div className="tree items">{this._safeRenderTree()}</div>
       </div>
     )
   }

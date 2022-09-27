@@ -17,12 +17,12 @@ function extractParameters(params) {
   let index = 0
   parameters.push('')
   let open = ''
-  params.split('').forEach(letter => {
-    if (open !== '\'' && letter === '"') {
+  params.split('').forEach((letter) => {
+    if (open !== "'" && letter === '"') {
       open = open === '"' ? '' : letter
     }
-    if (open !== '"' && letter === '\'') {
-      open = open === '\'' ? '' : letter
+    if (open !== '"' && letter === "'") {
+      open = open === "'" ? '' : letter
     }
     if (open === '' && letter === ',') {
       index++
@@ -31,7 +31,7 @@ function extractParameters(params) {
     }
     parameters[index] += letter
   })
-  return parameters.map(e => e.trim().replace(/"(.*)"|'(.*)'/, '$1$2')) // .filter(e => e !== '')
+  return parameters.map((e) => e.trim().replace(/"(.*)"|'(.*)'/, '$1$2')) // .filter(e => e !== '')
 }
 
 export default extractParameters

@@ -45,7 +45,10 @@ class ReplaceImage extends Command {
   }
 
   apply(target, key = 'value') {
-    const original = key === 'style.backgroundImage' ? target.style.backgroundImage : target[key]
+    const original =
+      key === 'style.backgroundImage'
+        ? target.style.backgroundImage
+        : target[key]
 
     const search = this._lookupImage(this.search)
 
@@ -54,9 +57,16 @@ class ReplaceImage extends Command {
       return false
     }
 
-    if (this._match(original, search, this.replace) || this._match(original, `url("${search}")`, this.replace)) {
+    if (
+      this._match(original, search, this.replace) ||
+      this._match(original, `url("${search}")`, this.replace)
+    ) {
       const result = []
-      if (this.withRatio && typeof target.width === 'number' && typeof target.height === 'number') {
+      if (
+        this.withRatio &&
+        typeof target.width === 'number' &&
+        typeof target.height === 'number'
+      ) {
         const oldWidth = target.width
         const oldHeight = target.height
         const undoPlaceholder = new UndoElement()
@@ -65,12 +75,22 @@ class ReplaceImage extends Command {
           const heightFactor = this.naturalHeight / oldHeight
           if (this.naturalWidth > this.naturalHeight) {
             const originalHeight = this.style.height
-            this.style.height = (oldHeight * heightFactor / widthFactor) + 'px'
-            undoPlaceholder.update(this, 'style.height', originalHeight, this.style.height)
+            this.style.height = (oldHeight * heightFactor) / widthFactor + 'px'
+            undoPlaceholder.update(
+              this,
+              'style.height',
+              originalHeight,
+              this.style.height
+            )
           } else {
             const originalWidth = this.style.width
-            this.style.width = (oldWidth * widthFactor / heightFactor) + 'px'
-            undoPlaceholder.update(this, 'style.height', originalWidth, this.style.width)
+            this.style.width = (oldWidth * widthFactor) / heightFactor + 'px'
+            undoPlaceholder.update(
+              this,
+              'style.height',
+              originalWidth,
+              this.style.width
+            )
           }
           this.removeEventListener('load', el)
         }
@@ -80,8 +100,12 @@ class ReplaceImage extends Command {
 
       if (key === 'style.backgroundImage') {
         target.style.backgroundImage = `url("${this.replace}")`
-        console.log(new UndoElement(target, key, original, `url("${this.replace}")`))
-        result.push(new UndoElement(target, key, original, `url("${this.replace}")`))
+        console.log(
+          new UndoElement(target, key, original, `url("${this.replace}")`)
+        )
+        result.push(
+          new UndoElement(target, key, original, `url("${this.replace}")`)
+        )
       } else {
         target[key] = this.replace
         result.push(new UndoElement(target, key, original, this.replace))

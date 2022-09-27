@@ -27,7 +27,11 @@ class ProtocolHandler {
 
       let url = new URL(s)
       if (url.protocol !== this.protocol) {
-        reject(new Error(`Presented url '${url}' does not start with expected protocol ${this.protocol}`))
+        reject(
+          new Error(
+            `Presented url '${url}' does not start with expected protocol ${this.protocol}`
+          )
+        )
       }
 
       // Right now new URL with custom protocol puts everything into the pathname, so we fix this early
@@ -60,36 +64,42 @@ class ProtocolHandler {
   }
 
   _handleDefault(url, resolve, reject) {
-    axios({ url }).then(response => {
-      if (response.status === 200 && typeof response.data === 'string') {
-        resolve(this._buildConfiguration(`Shared/${url.href}`, response.data))
-      }
-    }).catch(error => {
-      error.message = `Could not handle ${url}, error was: ${error.message}`
-      reject(error)
-    })
+    axios({ url })
+      .then((response) => {
+        if (response.status === 200 && typeof response.data === 'string') {
+          resolve(this._buildConfiguration(`Shared/${url.href}`, response.data))
+        }
+      })
+      .catch((error) => {
+        error.message = `Could not handle ${url}, error was: ${error.message}`
+        reject(error)
+      })
   }
 
   _handleGist(id, resolve, reject) {
     const url = `https://gist.github.com/${id}/`
     axios({
       url
-    }).then(response => {
-      if (response.status === 200) {
-        const url = response.request.responseURL + '/raw'
-        axios({
-          url
-        }).then(response => {
-          resolve(this._buildConfiguration(`Shared/${id}`, response.data))
-        }).catch(error => {
-          error.message = `Could not handle ${url}, error was: ${error.message}`
-          reject(error)
-        })
-      }
-    }).catch(error => {
-      error.message = `Could not handle ${url}, error was: ${error.message}`
-      reject(error)
     })
+      .then((response) => {
+        if (response.status === 200) {
+          const url = response.request.responseURL + '/raw'
+          axios({
+            url
+          })
+            .then((response) => {
+              resolve(this._buildConfiguration(`Shared/${id}`, response.data))
+            })
+            .catch((error) => {
+              error.message = `Could not handle ${url}, error was: ${error.message}`
+              reject(error)
+            })
+        }
+      })
+      .catch((error) => {
+        error.message = `Could not handle ${url}, error was: ${error.message}`
+        reject(error)
+      })
   }
 }
 

@@ -25,10 +25,29 @@ class InterceptWebRequest extends Command {
     this.options = {}
 
     if (this.action === 'block') {
-      this.id = this.search + '-block' + '-type-' + this.type + '-includes-' + this.includeRules.join('--') + '-excludes-' + this.excludeRules.join('--')
+      this.id =
+        this.search +
+        '-block' +
+        '-type-' +
+        this.type +
+        '-includes-' +
+        this.includeRules.join('--') +
+        '-excludes-' +
+        this.excludeRules.join('--')
     } else {
       this.options[this.action] = value
-      this.id = this.search + '-' + this.action + '-' + value + '-type-' + this.type + '-includes-' + this.includeRules.join('--') + '-excludes-' + this.excludeRules.join('--')
+      this.id =
+        this.search +
+        '-' +
+        this.action +
+        '-' +
+        value +
+        '-type-' +
+        this.type +
+        '-includes-' +
+        this.includeRules.join('--') +
+        '-excludes-' +
+        this.excludeRules.join('--')
     }
   }
 

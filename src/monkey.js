@@ -23,9 +23,8 @@ import { logger, connectLogger } from './helpers/logger'
 // Firefox does not display errors in the console, so we catch them ourselves and print them to console.
 try {
   if (!window.demoMonkeyLoaded) {
-    window.demoMonkeyLoaded = true;
-
-    (function (scope) {
+    window.demoMonkeyLoaded = true
+    ;(function (scope) {
       'use strict'
 
       // For firefox content scripts chrome is not attached to "window", so we fix this here.
@@ -34,7 +33,11 @@ try {
         scope.chrome = chrome
       }
 
-      scope.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+      scope.chrome.runtime.onMessage.addListener(function (
+        request,
+        sender,
+        sendResponse
+      ) {
         if (request.active) {
           scope['demomonkey-active-tab'] = true
         }
@@ -77,11 +80,17 @@ try {
           if (!['miro.com'].includes(scope.location.host)) {
             const inlineScriptTag = scope.document.createElement('script')
             inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
-            inlineScriptTag.setAttribute('data-dm-config-hook-into-ajax', inlineConfig.hookIntoAjax)
+            inlineScriptTag.setAttribute(
+              'data-dm-config-hook-into-ajax',
+              inlineConfig.hookIntoAjax
+            )
             inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
             scope.document.head.append(inlineScriptTag)
           } else {
-            logger('warn', `inline.js not loaded, because ${scope.location.host} may break, see https://github.com/svrnm/DemoMonkey/issues/21`).write()
+            logger(
+              'warn',
+              `inline.js not loaded, because ${scope.location.host} may break, see https://github.com/svrnm/DemoMonkey/issues/21`
+            ).write()
           }
         }
 
@@ -91,35 +100,72 @@ try {
 
         const inlineRuleManager = new InlineRuleManager(scope, inlineConfig)
 
-        let $DEMO_MONKEY = new Monkey(store.getState().configurations, scope, settings.globalVariables, settings.isFeatureEnabled('undo'), settings.monkeyInterval, urlManager, inlineRuleManager, {
-          withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
-          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
-          webRequestHook: settings.isFeatureEnabled('webRequestHook')
-        })
+        let $DEMO_MONKEY = new Monkey(
+          store.getState().configurations,
+          scope,
+          settings.globalVariables,
+          settings.isFeatureEnabled('undo'),
+          settings.monkeyInterval,
+          urlManager,
+          inlineRuleManager,
+          {
+            withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
+            hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
+            webRequestHook: settings.isFeatureEnabled('webRequestHook')
+          }
+        )
         onStart($DEMO_MONKEY.start())
-        logger('debug', 'DemoMonkey enabled. Tampering the content. Interval: ', settings.monkeyInterval).write()
+        logger(
+          'debug',
+          'DemoMonkey enabled. Tampering the content. Interval: ',
+          settings.monkeyInterval
+        ).write()
 
-        const modeManager = new ModeManager(scope, $DEMO_MONKEY, new Manifest(scope.chrome), settings.isDebugEnabled(), settings.isFeatureEnabled('debugBox'), settings.isLiveModeEnabled(), settings.analyticsSnippet)
+        const modeManager = new ModeManager(
+          scope,
+          $DEMO_MONKEY,
+          new Manifest(scope.chrome),
+          settings.isDebugEnabled(),
+          settings.isFeatureEnabled('debugBox'),
+          settings.isLiveModeEnabled(),
+          settings.analyticsSnippet
+        )
 
         function restart() {
           logger('debug', 'Restart DemoMonkey').write()
           // Update settings
           const settings = new Settings(store.getState().settings)
-          const newMonkey = new Monkey(store.getState().configurations, scope, settings.globalVariables, settings.isFeatureEnabled('undo'), settings.monkeyInterval, urlManager, inlineRuleManager, {
-            withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
-            hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
-            webRequestHook: settings.isFeatureEnabled('webRequestHook')
-          })
+          const newMonkey = new Monkey(
+            store.getState().configurations,
+            scope,
+            settings.globalVariables,
+            settings.isFeatureEnabled('undo'),
+            settings.monkeyInterval,
+            urlManager,
+            inlineRuleManager,
+            {
+              withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
+              hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
+              webRequestHook: settings.isFeatureEnabled('webRequestHook')
+            }
+          )
           $DEMO_MONKEY.stop()
           onStart(newMonkey.start())
           $DEMO_MONKEY = newMonkey
-          modeManager.reload($DEMO_MONKEY, settings.isDebugEnabled(), settings.isFeatureEnabled('debugBox'), settings.isLiveModeEnabled())
+          modeManager.reload(
+            $DEMO_MONKEY,
+            settings.isDebugEnabled(),
+            settings.isFeatureEnabled('debugBox'),
+            settings.isLiveModeEnabled()
+          )
         }
 
         store.subscribe(function () {
           const lastAction = store.getState().lastAction
           // updating the current view does not require any updates
-          if (['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)) {
+          if (
+            ['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)
+          ) {
             return
           }
           if (settings.isFeatureEnabled('autoReplace')) {
@@ -131,16 +177,28 @@ try {
           modeManager.start()
         })
 
-        scope.document.addEventListener('demomonkey-inline-editing', function (e) {
-          let { search, replacement, command } = JSON.parse(e.detail)
-          const configs = (store.getState().configurations.filter(config => config.enabled))
-          const configuration = configs.length > 0 ? configs[0] : store.getState().configurations[0]
-          if (command) {
-            search = `!${command}(${search})`
+        scope.document.addEventListener(
+          'demomonkey-inline-editing',
+          function (e) {
+            let { search, replacement, command } = JSON.parse(e.detail)
+            const configs = store
+              .getState()
+              .configurations.filter((config) => config.enabled)
+            const configuration =
+              configs.length > 0
+                ? configs[0]
+                : store.getState().configurations[0]
+            if (command) {
+              search = `!${command}(${search})`
+            }
+            configuration.content += '\n' + search + ' = ' + replacement
+            store.dispatch({
+              type: 'SAVE_CONFIGURATION',
+              id: configuration.id,
+              configuration
+            })
           }
-          configuration.content += '\n' + search + ' = ' + replacement
-          store.dispatch({ type: 'SAVE_CONFIGURATION', id: configuration.id, configuration })
-        })
+        )
       })
     })(window)
   }

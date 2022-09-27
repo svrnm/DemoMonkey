@@ -6,47 +6,47 @@ into a personalized experience for your audience.**
 
 **Curious how this works? Read on to learn how you can use DemoMonkey, to tamper your web application to demo almost anything.**
 
-* [Configurations](#configurations)
-* [Options](#options)
-  * [Include and Exclude sites](#include-and-exclude-sites)
-  * [Namespaces](#namespaces)
-  * [Block- and Allowlist tags](#block--and-allowlist-tags)
-  * [Text Attributes](#text-attributes)
-  * [Deprecate configuration](#deprecate-configuration)
-  * [Tags](#tags)
-  * [Authors and more](#authors-and-more)
-* [Variables](#variables)
-  * [Global Variables](#global-variables)
-  * [Variables with random value](#variables-with-random-value)
-* [Imports: Reuse existing configurations](#imports-reuse-existing-configurations)
-* [Snippets](#snippets)
-* [Generic Commands](#generic-commands)
-  * [Run regular expressions](#run-regular-expressions)
-  * [Replace with filters](#replace-with-filters)
-  * [Replace Attribute](#replace-attribute)
-  * [Search and Hash](#search-and-hash)
-  * [Protect text from replacements](#protect-text-from-replacements)
-  * [Hide Elements](#hide-elements)
-  * [Replace Images](#replace-images)
-  * [Recolor images](#recolor-images)
-  * [Block, Delay, Redirect URLs](#block-delay-redirect-urls)
-  * [Conditional Replacements](#conditional-replacements)
-  * [Modify CSS](#modify-css)
-  * [Overwrite HTML](#overwrite-html)
-  * [Replace based on CSS selector](#replace-based-on-css-selector)
-  * [Add Javascript](#add-javascript)
-  * [Replace Neighbor](#replace-neighbor)
-  * [Insert before and after a DOM element](#insert-before-and-after-a-dom-element)
-  * [Replace and patch response of AJAX requests](#replace-and-patch-response-of-ajax-requests)
-  * [Demo Stages](#demo-stages)
-* [Commands in Namespaces](#commands-in-namespaces)
-  * [AppDynamics](#appdynamics)
-    * [Replace Flowmap Icons](#replace-flowmap-icons)
-    * [Hide Applications, Databases, BTs](#hide-applications-databases-bts)
-    * [Replace Flowmap Connections](#replace-flowmap-connections)
-    * [Replace Flowmap Node Count](#replace-flowmap-node-count)
-    * [Replace EUM Geo Status](#replace-eum-geo-status)
-* [Learn More](#learn-more)
+- [Configurations](#configurations)
+- [Options](#options)
+  - [Include and Exclude sites](#include-and-exclude-sites)
+  - [Namespaces](#namespaces)
+  - [Block- and Allowlist tags](#block--and-allowlist-tags)
+  - [Text Attributes](#text-attributes)
+  - [Deprecate configuration](#deprecate-configuration)
+  - [Tags](#tags)
+  - [Authors and more](#authors-and-more)
+- [Variables](#variables)
+  - [Global Variables](#global-variables)
+  - [Variables with random value](#variables-with-random-value)
+- [Imports: Reuse existing configurations](#imports-reuse-existing-configurations)
+- [Snippets](#snippets)
+- [Generic Commands](#generic-commands)
+  - [Run regular expressions](#run-regular-expressions)
+  - [Replace with filters](#replace-with-filters)
+  - [Replace Attribute](#replace-attribute)
+  - [Search and Hash](#search-and-hash)
+  - [Protect text from replacements](#protect-text-from-replacements)
+  - [Hide Elements](#hide-elements)
+  - [Replace Images](#replace-images)
+  - [Recolor images](#recolor-images)
+  - [Block, Delay, Redirect URLs](#block-delay-redirect-urls)
+  - [Conditional Replacements](#conditional-replacements)
+  - [Modify CSS](#modify-css)
+  - [Overwrite HTML](#overwrite-html)
+  - [Replace based on CSS selector](#replace-based-on-css-selector)
+  - [Add Javascript](#add-javascript)
+  - [Replace Neighbor](#replace-neighbor)
+  - [Insert before and after a DOM element](#insert-before-and-after-a-dom-element)
+  - [Replace and patch response of AJAX requests](#replace-and-patch-response-of-ajax-requests)
+  - [Demo Stages](#demo-stages)
+- [Commands in Namespaces](#commands-in-namespaces)
+  - [AppDynamics](#appdynamics)
+    - [Replace Flowmap Icons](#replace-flowmap-icons)
+    - [Hide Applications, Databases, BTs](#hide-applications-databases-bts)
+    - [Replace Flowmap Connections](#replace-flowmap-connections)
+    - [Replace Flowmap Node Count](#replace-flowmap-node-count)
+    - [Replace EUM Geo Status](#replace-eum-geo-status)
+- [Learn More](#learn-more)
 
 ## Configurations
 
@@ -105,7 +105,7 @@ This protects you from having a monkey on every website:
 ; The configuration only works on sites that include demomonkey
 @include[] = /demomonkey/
 ; The configuration does not work on demomonkey.net
-@exclude[] = /demomonkey.net/ 
+@exclude[] = /demomonkey.net/
 ```
 
 If your configuration is a template or snippet (see below), you can disable the warning that an **@include** or **@exclude**
@@ -409,20 +409,20 @@ If you want to hook only into certain types of requests, you can provide a type 
 
 The available types are:
 
-* `*`
-* `main_frame`
-* `sub_frame`
-* `stylesheet`
-* `script`
-* `image`
-* `font`
-* `object`
-* `xmlhttprequest`
-* `ping`
-* `csp_report`
-* `media`
-* `websocket`
-* `other`
+- `*`
+- `main_frame`
+- `sub_frame`
+- `stylesheet`
+- `script`
+- `image`
+- `font`
+- `object`
+- `xmlhttprequest`
+- `ping`
+- `csp_report`
+- `media`
+- `websocket`
+- `other`
 
 ### Conditional Replacements
 
@@ -553,7 +553,7 @@ and turn on `Hook into Ajax`. Now you can replace a response or you can apply a 
 ```ini
 ; replace the whole response with the given replacement
 !replaceAjaxResponse(/v1/items) = '[{"name": "Demo"}, {"name": "Monkey"}]'
-; apply a search and replace on the response, 
+; apply a search and replace on the response,
 ; here every occurrence of "Example" is replaced with "DemoMonkey"
 !replaceAjaxResponse(/v1/items, Example) = DemoMonkey
 ; apply a json patch on the given response

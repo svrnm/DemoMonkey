@@ -25,7 +25,15 @@ class AddFlowmapNode extends Command {
     wmb: ['WMB_AGENT', 'WMB Agent']
   }
 
-  constructor(name, type = 'java', nodeCount = 1, cpm = 50, art = 100, x = 400, y = 400) {
+  constructor(
+    name,
+    type = 'java',
+    nodeCount = 1,
+    cpm = 50,
+    art = 100,
+    x = 400,
+    y = 400
+  ) {
     super()
     this.name = name
     this.nodeCount = nodeCount
@@ -52,189 +60,196 @@ class AddFlowmapNode extends Command {
   }
 
   apply(target, key) {
-    const id = Math.floor(Math.random() * (73741824) + 1000000000)
+    const id = Math.floor(Math.random() * 73741824 + 1000000000)
 
     const [agentType, componentType] = AddFlowmapNode.types[this.type]
 
-    const patch = [{
-      op: 'add',
-      path: '/nodes/-',
-      value: {
-        id: 'Type:APPLICATION_COMPONENT, id:' + id,
-        flowMapNodeType: 'MAIN_DASHBOARD_NODE',
-        name: this.name,
-        viewPermission: true,
-        preferenceValue: {
-          position: this.position,
-          uid: 'Type:APPLICATION_COMPONENT, id:' + id,
-          hidden: false,
-          groupable: false
-        },
-        nodeDegree: 0,
-        $$edges: null,
-        x: 0,
-        y: 0,
-        idNum: id,
-        entityType: 'APPLICATION_COMPONENT',
-        agentType,
-        componentType,
-        productType: agentType,
-        platform: null,
-        language: null,
-        backendType: null,
-        doNotResolve: false,
-        nodeCount: this.nodeCount,
-        componentCount: 0,
-        startComponent: false,
-        percentTimeDistribution: 0,
-        requestedEntity: false,
-        dbBackendInfo: null,
-        onSnapshotFlow: false,
-        requestSegmentDataItems: null,
-        eumSnapshotData: null,
-        crossApplicationSnapshots: null,
-        dbMonSnapshotCorrelationData: null,
-        exitEntities: null,
-        exitPointCall: null,
-        stats: {
-          averageResponseTime: {
-            metricValue: this.art,
-            metricId: 32308651
+    const patch = [
+      {
+        op: 'add',
+        path: '/nodes/-',
+        value: {
+          id: 'Type:APPLICATION_COMPONENT, id:' + id,
+          flowMapNodeType: 'MAIN_DASHBOARD_NODE',
+          name: this.name,
+          viewPermission: true,
+          preferenceValue: {
+            position: this.position,
+            uid: 'Type:APPLICATION_COMPONENT, id:' + id,
+            hidden: false,
+            groupable: false
           },
-          callsPerMinute: {
-            metricValue: this.cpm,
-            metricId: 32308652
-          },
-          errorsPerMinute: {
-            metricValue: -1,
-            metricId: -1
-          },
-          numberOfErrors: {
-            metricValue: 0,
-            metricId: -1
-          },
-          numberOfCalls: {
-            metricValue: 2998,
-            metricId: -1
-          },
-          transactionStats: null,
-          asyncTransactionStats: null
-        },
-        baselineStats: {
-          averageResponseTime: {
-            metricId: 32308651,
-            value: 0.0,
-            standardDeviation: 0.0,
-            metricValue: null
-          },
-          endToEndLatencyTime: {
-            metricId: 0,
-            value: 0.0,
-            standardDeviation: 0.0,
-            metricValue: null
-          },
-          callsPerMinute: {
-            metricId: 32308652,
-            value: 0.0,
-            standardDeviation: 0.0,
-            metricValue: null
-          },
-          errorsPerMinute: {
-            metricId: 32308654,
-            value: 0.0,
-            standardDeviation: 0.0,
-            metricValue: null
-          },
-          numberOfErrors: {
-            metricId: -1,
-            value: 0.0,
-            standardDeviation: 0.0,
-            metricValue: {
-              value: 0,
-              min: 0,
-              max: 0,
-              current: 0,
-              sum: 0,
-              count: 0,
-              useRange: false,
-              groupCount: 0,
-              standardDeviation: 0.0,
-              occurances: 0
-            }
-          },
-          numberOfCalls: {
-            metricId: -1,
-            value: 0.0,
-            standardDeviation: 0.0,
-            metricValue: {
-              value: 0,
-              min: 0,
-              max: 0,
-              current: 0,
-              sum: 0,
-              count: 0,
-              useRange: false,
-              groupCount: 0,
-              standardDeviation: 0.0,
-              occurances: 0
-            }
-          },
-          artDefined: false
-        },
-        componentHealthStats: {
-          normalNodes: 0,
-          warningNodes: 0,
-          criticalNodes: 1,
-          unknownNodes: 0
-        },
-        healthState: null,
-        componentThreadStats: [{
-          name: 'ThreadSpawn',
+          nodeDegree: 0,
+          $$edges: null,
+          x: 0,
+          y: 0,
+          idNum: id,
+          entityType: 'APPLICATION_COMPONENT',
+          agentType,
+          componentType,
+          productType: agentType,
+          platform: null,
+          language: null,
+          backendType: null,
+          doNotResolve: false,
+          nodeCount: this.nodeCount,
+          componentCount: 0,
+          startComponent: false,
+          percentTimeDistribution: 0,
+          requestedEntity: false,
+          dbBackendInfo: null,
+          onSnapshotFlow: false,
+          requestSegmentDataItems: null,
+          eumSnapshotData: null,
+          crossApplicationSnapshots: null,
+          dbMonSnapshotCorrelationData: null,
+          exitEntities: null,
+          exitPointCall: null,
           stats: {
             averageResponseTime: {
-              metricValue: 0,
-              metricId: 32309015
+              metricValue: this.art,
+              metricId: 32308651
             },
             callsPerMinute: {
-              metricValue: 29,
-              metricId: 32309017
+              metricValue: this.cpm,
+              metricId: 32308652
             },
             errorsPerMinute: {
               metricValue: -1,
               metricId: -1
             },
             numberOfErrors: {
-              metricValue: -1,
+              metricValue: 0,
               metricId: -1
             },
             numberOfCalls: {
-              metricValue: 1746,
+              metricValue: 2998,
               metricId: -1
             },
             transactionStats: null,
             asyncTransactionStats: null
-          }
-        }],
-        hasTransactionStats: false,
-        incidentSummary: null,
-        transactionSummary: null,
-        overallState: null,
-        isAgentUp: false,
-        netVizGraphNode: null,
-        nodeGroup: false,
-        $$groupItems: null,
-        isExternalEntity: false,
-        remoteUrl: null,
-        accountName: null,
-        externalProtocol: null,
-        remoteEntityId: 0,
-        remoteSegmentReferenceItems: null,
-        externalEntity: false,
-        agentUp: false
+          },
+          baselineStats: {
+            averageResponseTime: {
+              metricId: 32308651,
+              value: 0.0,
+              standardDeviation: 0.0,
+              metricValue: null
+            },
+            endToEndLatencyTime: {
+              metricId: 0,
+              value: 0.0,
+              standardDeviation: 0.0,
+              metricValue: null
+            },
+            callsPerMinute: {
+              metricId: 32308652,
+              value: 0.0,
+              standardDeviation: 0.0,
+              metricValue: null
+            },
+            errorsPerMinute: {
+              metricId: 32308654,
+              value: 0.0,
+              standardDeviation: 0.0,
+              metricValue: null
+            },
+            numberOfErrors: {
+              metricId: -1,
+              value: 0.0,
+              standardDeviation: 0.0,
+              metricValue: {
+                value: 0,
+                min: 0,
+                max: 0,
+                current: 0,
+                sum: 0,
+                count: 0,
+                useRange: false,
+                groupCount: 0,
+                standardDeviation: 0.0,
+                occurances: 0
+              }
+            },
+            numberOfCalls: {
+              metricId: -1,
+              value: 0.0,
+              standardDeviation: 0.0,
+              metricValue: {
+                value: 0,
+                min: 0,
+                max: 0,
+                current: 0,
+                sum: 0,
+                count: 0,
+                useRange: false,
+                groupCount: 0,
+                standardDeviation: 0.0,
+                occurances: 0
+              }
+            },
+            artDefined: false
+          },
+          componentHealthStats: {
+            normalNodes: 0,
+            warningNodes: 0,
+            criticalNodes: 1,
+            unknownNodes: 0
+          },
+          healthState: null,
+          componentThreadStats: [
+            {
+              name: 'ThreadSpawn',
+              stats: {
+                averageResponseTime: {
+                  metricValue: 0,
+                  metricId: 32309015
+                },
+                callsPerMinute: {
+                  metricValue: 29,
+                  metricId: 32309017
+                },
+                errorsPerMinute: {
+                  metricValue: -1,
+                  metricId: -1
+                },
+                numberOfErrors: {
+                  metricValue: -1,
+                  metricId: -1
+                },
+                numberOfCalls: {
+                  metricValue: 1746,
+                  metricId: -1
+                },
+                transactionStats: null,
+                asyncTransactionStats: null
+              }
+            }
+          ],
+          hasTransactionStats: false,
+          incidentSummary: null,
+          transactionSummary: null,
+          overallState: null,
+          isAgentUp: false,
+          netVizGraphNode: null,
+          nodeGroup: false,
+          $$groupItems: null,
+          isExternalEntity: false,
+          remoteUrl: null,
+          accountName: null,
+          externalProtocol: null,
+          remoteEntityId: 0,
+          remoteSegmentReferenceItems: null,
+          externalEntity: false,
+          agentUp: false
+        }
       }
-    }]
+    ]
 
-    target.add('patchAjaxResponse', { urlPattern: '*/applicationFlowMapUiService/*', patch })
+    target.add('patchAjaxResponse', {
+      urlPattern: '*/applicationFlowMapUiService/*',
+      patch
+    })
 
     /*
     const [agentType, componentType] = AddFlowmapNode.types[this.type]

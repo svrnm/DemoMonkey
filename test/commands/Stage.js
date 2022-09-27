@@ -35,25 +35,25 @@ describe('Stage', function () {
         title: ''
       }
 
-      stages.forEach(stage => stage.apply(document, 'key'))
+      stages.forEach((stage) => stage.apply(document, 'key'))
 
       assert(document['demomonkey-current-stage'], 'Start')
 
       document.location = new URL('http://test/step2.html')
 
-      stages.forEach(stage => stage.apply(document, 'key'))
+      stages.forEach((stage) => stage.apply(document, 'key'))
 
       assert(document['demomonkey-current-stage'], 'Step2')
 
       document.location = new URL('http://test/step3.html')
 
-      stages.forEach(stage => stage.apply(document, 'key'))
+      stages.forEach((stage) => stage.apply(document, 'key'))
 
       assert(document['demomonkey-current-stage'], 'Step3')
 
       document.location = new URL('http://test/step4.html')
 
-      stages.forEach(stage => stage.apply(document, 'key'))
+      stages.forEach((stage) => stage.apply(document, 'key'))
 
       assert(document['demomonkey-current-stage'], 'Step3')
     })

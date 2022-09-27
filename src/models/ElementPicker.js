@@ -37,7 +37,10 @@ class ElementPicker {
       background: 'rgba(153, 235, 255, 0.5)', // transparent light blue
       borderWidth: 5,
       transition: 'all 150ms ease', // set to "" (empty string) to disable
-      ignoreElements: [document.body, document.getElementById('demo-monkey-editor-toggle')],
+      ignoreElements: [
+        document.body,
+        document.getElementById('demo-monkey-editor-toggle')
+      ],
       action: {},
       matches: () => true
     }
@@ -53,12 +56,21 @@ class ElementPicker {
       this._previousEvent = e
       let target = e.target
       // console.log("TCL: ElementPicker -> this._moveHoverBox -> target", target)
-      if (this.matches(target) && this.ignoreElements.indexOf(target) === -1 && target.matches(this.selectors) &&
-        this.container.contains(target) || target === this.hoverBox) { // is NOT ignored elements
+      if (
+        (this.matches(target) &&
+          this.ignoreElements.indexOf(target) === -1 &&
+          target.matches(this.selectors) &&
+          this.container.contains(target)) ||
+        target === this.hoverBox
+      ) {
+        // is NOT ignored elements
         // console.log("TCL: target", target);
         if (target === this.hoverBox) {
           // the truly hovered element behind the added hover box
-          const hoveredElement = document.elementsFromPoint(e.clientX, e.clientY)[1]
+          const hoveredElement = document.elementsFromPoint(
+            e.clientX,
+            e.clientY
+          )[1]
           // console.log("screenX: " + e.screenX);
           // console.log("screenY: " + e.screenY);
           // console.log("TCL: hoveredElement", hoveredElement);
@@ -78,8 +90,10 @@ class ElementPicker {
         this.hoverBox.style.width = targetWidth + this.borderWidth * 2 + 'px'
         this.hoverBox.style.height = targetHeight + this.borderWidth * 2 + 'px'
         // need scrollX and scrollY to account for scrolling
-        this.hoverBox.style.top = targetOffset.top + window.scrollY - this.borderWidth + 'px'
-        this.hoverBox.style.left = targetOffset.left + window.scrollX - this.borderWidth + 'px'
+        this.hoverBox.style.top =
+          targetOffset.top + window.scrollY - this.borderWidth + 'px'
+        this.hoverBox.style.left =
+          targetOffset.left + window.scrollX - this.borderWidth + 'px'
         if (this._triggered && this.action.callback) {
           this.action.callback(target, this._triggerEvent, e)
           this._triggered = false
@@ -161,10 +175,15 @@ class ElementPicker {
 
   set action(value) {
     if (value instanceof Object) {
-      if (typeof value.trigger === 'string' &&
-        typeof value.callback === 'function') {
+      if (
+        typeof value.trigger === 'string' &&
+        typeof value.callback === 'function'
+      ) {
         if (this._triggerListener) {
-          document.removeEventListener(this.action.trigger, this._triggerListener)
+          document.removeEventListener(
+            this.action.trigger,
+            this._triggerListener
+          )
           this._triggered = false
         }
         this._action = value
@@ -175,8 +194,11 @@ class ElementPicker {
           this._redetectMouseMove()
         }
         document.addEventListener(this.action.trigger, this._triggerListener)
-      } else if (value.trigger !== undefined || value.callback !== undefined) { // allow empty action object
-        throw new Error('action must include two keys: trigger (String) and callback (function)!')
+      } else if (value.trigger !== undefined || value.callback !== undefined) {
+        // allow empty action object
+        throw new Error(
+          'action must include two keys: trigger (String) and callback (function)!'
+        )
       }
     } else {
       throw new Error('action must be an object!')

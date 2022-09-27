@@ -35,19 +35,32 @@ function updateCurrentView(v) {
 
 function renderOptionsPageApp(root, store) {
   window.chrome.permissions.getAll(function (permissions) {
-    root.render(<Provider store={store}>
+    root.render(
+      <Provider store={store}>
         <OptionsPageApp
           initialView={window.location.hash.substring(1)}
           onCurrentViewChange={(v) => updateCurrentView(v)}
           permissions={permissions}
         />
-      </Provider>)
+      </Provider>
+    )
   })
 
-  window.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.receiver && request.receiver === 'dashboard' && typeof request.logMessage !== 'undefined') {
+  window.chrome.runtime.onMessage.addListener(function (
+    request,
+    sender,
+    sendResponse
+  ) {
+    if (
+      request.receiver &&
+      request.receiver === 'dashboard' &&
+      typeof request.logMessage !== 'undefined'
+    ) {
       console.log('Message received', request.logMessage)
-      const msg = typeof request.logMessage === 'string' ? request.logMessage : JSON.stringify(request.logMessage)
+      const msg =
+        typeof request.logMessage === 'string'
+          ? request.logMessage
+          : JSON.stringify(request.logMessage)
       const mbox = document.getElementById('message-box')
       mbox.className = 'fade-to-visible'
       mbox.innerHTML = '(' + new Date().toLocaleTimeString() + ') ' + msg
@@ -63,15 +76,21 @@ function renderOptionsPageApp(root, store) {
 }
 
 function renderPopupPageApp(root, store, manifest) {
-  window.chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
-    const currentUrl = tabs.length > 0 ? tabs[0].url : ''
-    root.render(
-      <Provider store={store}><PopupPageApp currentUrl={currentUrl} manifest={manifest} /></Provider>)
-    // The following is required to fix https://bugs.chromium.org/p/chromium/issues/detail?id=428044
-    window.setTimeout(() => {
-      document.body.style.minHeight = (document.body.clientHeight + 1) + 'px'
-    }, 200)
-  })
+  window.chrome.tabs.query(
+    { active: true, lastFocusedWindow: true },
+    function (tabs) {
+      const currentUrl = tabs.length > 0 ? tabs[0].url : ''
+      root.render(
+        <Provider store={store}>
+          <PopupPageApp currentUrl={currentUrl} manifest={manifest} />
+        </Provider>
+      )
+      // The following is required to fix https://bugs.chromium.org/p/chromium/issues/detail?id=428044
+      window.setTimeout(() => {
+        document.body.style.minHeight = document.body.clientHeight + 1 + 'px'
+      }, 200)
+    }
+  )
 }
 
 const store = new Store({
@@ -79,55 +98,76 @@ const store = new Store({
 })
 
 let commitHash = ''
-fetch(window.chrome.runtime.getURL('COMMITHASH')).then((r) => {
-  return r.text()
-}).then(r => {
-  commitHash = r
-}).catch((e) => {
-  // Could not fetch COMMITHASH, that should never happen, but we have a safeguard here.
-  console.log(e)
-}).finally(() => {
-  store.ready().then(() => {
-    document.getElementById('backup-message').remove()
-    const rootElement = document.getElementById('app')
+fetch(window.chrome.runtime.getURL('COMMITHASH'))
+  .then((r) => {
+    return r.text()
+  })
+  .then((r) => {
+    commitHash = r
+  })
+  .catch((e) => {
+    // Could not fetch COMMITHASH, that should never happen, but we have a safeguard here.
+    console.log(e)
+  })
+  .finally(() => {
+    store.ready().then(() => {
+      document.getElementById('backup-message').remove()
+      const rootElement = document.getElementById('app')
 
-    window.store = store
+      window.store = store
 
-    const app = rootElement.getAttribute('data-app')
+      const app = rootElement.getAttribute('data-app')
 
-    const root = createRoot(rootElement)
+      const root = createRoot(rootElement)
 
-    if (store.getState().settings.optionalFeatures.writeLogs) {
-      connectLogger(store, { source: 'monkey.js' })
-    }
+      if (store.getState().settings.optionalFeatures.writeLogs) {
+        connectLogger(store, { source: 'monkey.js' })
+      }
 
-    // updateCurrentPage()
+      // updateCurrentPage()
 
-    const manifest = new Manifest(window.chrome, commitHash)
+      const manifest = new Manifest(window.chrome, commitHash)
 
-    logger('debug', `DemoMonkey ${manifest.version()}`).write()
+      logger('debug', `DemoMonkey ${manifest.version()}`).write()
 
-    const protocolHandler = new ProtocolHandler('web+mnky:')
-    protocolHandler.handle(window.location.search).catch(error => {
-      logger('error', error).write()
-      window.history.replaceState({}, document.title, window.location.pathname + window.location.hash)
-    }).then((configuration) => {
-      if (configuration) {
-        const configurations = store.getState().configurations
-        store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
-          const latest = configurations[configurations.length - 1]
-          store.dispatch({ type: 'SET_CURRENT_VIEW', view: `configuration/${latest.id}` })
+      const protocolHandler = new ProtocolHandler('web+mnky:')
+      protocolHandler
+        .handle(window.location.search)
+        .catch((error) => {
+          logger('error', error).write()
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname + window.location.hash
+          )
         })
-        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash)
-      }
-    }).finally(() => {
-      switch (app) {
-        case 'OptionsPageApp':
-          renderOptionsPageApp(root, store)
-          break
-        default:
-          renderPopupPageApp(root, store, manifest)
-      }
+        .then((configuration) => {
+          if (configuration) {
+            const configurations = store.getState().configurations
+            store
+              .dispatch({ type: 'ADD_CONFIGURATION', configuration })
+              .then(() => {
+                const latest = configurations[configurations.length - 1]
+                store.dispatch({
+                  type: 'SET_CURRENT_VIEW',
+                  view: `configuration/${latest.id}`
+                })
+              })
+            window.history.replaceState(
+              {},
+              document.title,
+              window.location.pathname + window.location.hash
+            )
+          }
+        })
+        .finally(() => {
+          switch (app) {
+            case 'OptionsPageApp':
+              renderOptionsPageApp(root, store)
+              break
+            default:
+              renderPopupPageApp(root, store, manifest)
+          }
+        })
     })
   })
-})

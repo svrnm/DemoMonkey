@@ -22,7 +22,7 @@ const ZipPlugin = require('zip-webpack-plugin')
 
 const manifest = JSON.parse(fs.readFileSync('./manifest.json'))
 
-module.exports = env => {
+module.exports = (env) => {
   let outputDirectory = 'build'
   let isRelease = false
   let releaseSuffix = 'local'
@@ -75,11 +75,16 @@ module.exports = env => {
         {
           from: 'manifest.json',
           to: '.',
-          transform: content => {
+          transform: (content) => {
             if (releaseSuffix === 'dev-channel') {
-              return Buffer.from(content.toString()
-                .replace(/"name": "([^"]*)"/g, '"name": "$1 (dev-channel)"')
-                .replace(/"(default_icon|16|48|128)": "([^_]*)([^"]*)"/g, '"$1": "$2-dev$3"')
+              return Buffer.from(
+                content
+                  .toString()
+                  .replace(/"name": "([^"]*)"/g, '"name": "$1 (dev-channel)"')
+                  .replace(
+                    /"(default_icon|16|48|128)": "([^_]*)([^"]*)"/g,
+                    '"$1": "$2-dev$3"'
+                  )
               )
             }
             return content
@@ -101,10 +106,12 @@ module.exports = env => {
   ]
 
   if (isRelease) {
-    plugins.push(new ZipPlugin({
-      filename: `DemoMonkey-${manifest.version}-${releaseSuffix}.zip`,
-      path: '..'
-    }))
+    plugins.push(
+      new ZipPlugin({
+        filename: `DemoMonkey-${manifest.version}-${releaseSuffix}.zip`,
+        path: '..'
+      })
+    )
   } else {
     /*plugins.push(new ExtensionReloader({
       reloadPage: true, // Force the reload of the page also
@@ -176,11 +183,7 @@ module.exports = env => {
         },
         {
           test: /\.less$/i,
-          use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader',
-            'less-loader'
-          ]
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
         },
         {
           test: /\.md$/,

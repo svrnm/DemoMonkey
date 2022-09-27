@@ -77,7 +77,9 @@ class GlobalVariables extends React.Component {
   }
 
   deleteVariable(index) {
-    const globalVariables = this.state.globalVariables.filter((v, i) => i !== index)
+    const globalVariables = this.state.globalVariables.filter(
+      (v, i) => i !== index
+    )
 
     this.setState({
       hasUnsavedChanges: true,
@@ -88,7 +90,8 @@ class GlobalVariables extends React.Component {
   updateVariable(index, key, value) {
     const { globalVariables } = this.state
     globalVariables[index] = {
-      key, value
+      key,
+      value
     }
     this.setState({
       hasUnsavedChanges: true,
@@ -97,7 +100,9 @@ class GlobalVariables extends React.Component {
   }
 
   save() {
-    const globalVariables = this.state.globalVariables.filter((v) => v.key !== '')
+    const globalVariables = this.state.globalVariables.filter(
+      (v) => v.key !== ''
+    )
     this.props.onSaveGlobalVariables(globalVariables)
     this.setState({
       hasUnsavedChanges: false
@@ -105,22 +110,50 @@ class GlobalVariables extends React.Component {
   }
 
   render() {
-    const variables = this.state.globalVariables.filter(v => v != null).map(v => new Variable(v.key, v.value))
+    const variables = this.state.globalVariables
+      .filter((v) => v != null)
+      .map((v) => new Variable(v.key, v.value))
 
     const unsaved = this.state.hasUnsavedChanges ? 'inline' : 'none'
 
-    return (<div>
-      <p>
-        Global variables defined here can be used in all your configurations. You can store images and colors as variables to simplify the process of replacing them.
-      </p>
-      {variables.length > 0 ? '' : <div className="no-variables">No variables defined</div>}
-      {variables.map((variable, index) => {
-        return (<VariableEditor key={index} onUpdate={(name, value) => this.updateVariable(index, name, value)} onDelete={() => this.deleteVariable(index)} variable={variable} isGlobal={true} isDarkMode={this.props.isDarkMode} />)
-      })}
-      <button className="save-button" onClick={() => this.addVariable()}>Add Variable</button>
-      <button className="save-button" onClick={() => this.save()}>Save</button>
-      <span style={{ display: unsaved }} className="unsaved-warning">(Unsaved Changes)</span>
-    </div>
+    return (
+      <div>
+        <p>
+          Global variables defined here can be used in all your configurations.
+          You can store images and colors as variables to simplify the process
+          of replacing them.
+        </p>
+        {variables.length > 0
+          ? (
+              ''
+            )
+          : (
+          <div className="no-variables">No variables defined</div>
+            )}
+        {variables.map((variable, index) => {
+          return (
+            <VariableEditor
+              key={index}
+              onUpdate={(name, value) =>
+                this.updateVariable(index, name, value)
+              }
+              onDelete={() => this.deleteVariable(index)}
+              variable={variable}
+              isGlobal={true}
+              isDarkMode={this.props.isDarkMode}
+            />
+          )
+        })}
+        <button className="save-button" onClick={() => this.addVariable()}>
+          Add Variable
+        </button>
+        <button className="save-button" onClick={() => this.save()}>
+          Save
+        </button>
+        <span style={{ display: unsaved }} className="unsaved-warning">
+          (Unsaved Changes)
+        </span>
+      </div>
     )
   }
 }

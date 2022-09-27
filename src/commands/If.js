@@ -28,13 +28,19 @@ class Group extends Command {
 
   /* Copy From OverwriteHTML, move to Command in a later stage */
   _checkLocation() {
-    return typeof this.location === 'object' &&
+    return (
+      typeof this.location === 'object' &&
       this.location.toString().includes(this.locationFilter)
+    )
   }
 
   /* This code is also an improvement for SearchAndReplace, might need to update */
   _checkCss(target) {
-    if (this.cssFilter === '' || typeof target !== 'object' || typeof target.nodeType !== 'number') {
+    if (
+      this.cssFilter === '' ||
+      typeof target !== 'object' ||
+      typeof target.nodeType !== 'number'
+    ) {
       return true
     }
 

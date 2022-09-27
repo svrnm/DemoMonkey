@@ -19,10 +19,17 @@ import MatchRule from './MatchRule'
 import { logger } from '../helpers/logger'
 
 class Configuration {
-  constructor(iniFile, repository, enabled = true, values = {}, featureFlags = {}, globalVariables = []) {
+  constructor(
+    iniFile,
+    repository,
+    enabled = true,
+    values = {},
+    featureFlags = {},
+    globalVariables = []
+  ) {
     this.repository = repository
     this.rawContent = iniFile
-    this.content = iniFile ? (new Ini(iniFile, repository)).parse() : []
+    this.content = iniFile ? new Ini(iniFile, repository).parse() : []
     this.patterns = false
     this.options = false
     this.enabled = enabled
@@ -40,7 +47,10 @@ class Configuration {
   }
 
   isRestricted() {
-    return typeof this.getOptions().include !== 'undefined' || typeof this.getOptions().exclude !== 'undefined'
+    return (
+      typeof this.getOptions().include !== 'undefined' ||
+      typeof this.getOptions().exclude !== 'undefined'
+    )
   }
 
   updateValues(values) {
@@ -69,7 +79,14 @@ class Configuration {
     const ta = this.getOptions().textAttributes
     const d = ['placeholder']
     // the chain after ta makes sure that lists are split by comma and spaces are removed.
-    const result = !Array.isArray(ta) ? d : ta.map(e => e.split(',')).flat().map(e => e.trim()).filter(e => e !== '').concat(d)
+    const result = !Array.isArray(ta)
+      ? d
+      : ta
+        .map((e) => e.split(','))
+        .flat()
+        .map((e) => e.trim())
+        .filter((e) => e !== '')
+        .concat(d)
     return result
   }
 
@@ -87,15 +104,23 @@ class Configuration {
 
     blocklist.push('style', 'script')
 
-    blocklist = blocklist.filter(x => !allowlist.includes(x))
+    blocklist = blocklist.filter((x) => !allowlist.includes(x))
 
     switch (node.nodeType) {
       // TEXT_NODE
       case 3:
-        return typeof node.parentNode !== 'undefined' && node.parentNode !== null && blocklist.map(tag => tag.toLowerCase()).includes(node.parentNode.nodeName.toLowerCase())
+        return (
+          typeof node.parentNode !== 'undefined' &&
+          node.parentNode !== null &&
+          blocklist
+            .map((tag) => tag.toLowerCase())
+            .includes(node.parentNode.nodeName.toLowerCase())
+        )
       // ELEMENT_NODE
       case 1:
-        return blocklist.map(tag => tag.toLowerCase()).includes(node.nodeName.toLowerCase())
+        return blocklist
+          .map((tag) => tag.toLowerCase())
+          .includes(node.nodeName.toLowerCase())
     }
 
     return false
@@ -125,7 +150,11 @@ class Configuration {
         logger('error', e).write()
         command.updateErrorCounter()
         if (command.isFaulty()) {
-          logger('warn', 'Command is marked as faulty and will be disabled', command.toString()).write()
+          logger(
+            'warn',
+            'Command is marked as faulty and will be disabled',
+            command.toString()
+          ).write()
         }
         return carry
       }
@@ -135,7 +164,7 @@ class Configuration {
       }
 
       if (Array.isArray(undo)) {
-        undo.forEach(e => {
+        undo.forEach((e) => {
           if (e instanceof UndoElement) {
             e.setSource(command)
           }
@@ -166,8 +195,15 @@ class Configuration {
 
             const option = key.substring(1)
 
-            if (content[key] !== true || option === 'template' || option === 'deprecated') {
-              if (Object.prototype.hasOwnProperty.call(result, option) && Array.isArray(result[option])) {
+            if (
+              content[key] !== true ||
+              option === 'template' ||
+              option === 'deprecated'
+            ) {
+              if (
+                Object.prototype.hasOwnProperty.call(result, option) &&
+                Array.isArray(result[option])
+              ) {
                 result[option] = result[option].concat(value)
               } else {
                 result[option] = value
@@ -177,12 +213,18 @@ class Configuration {
           }
 
           if (typeof content[key] === 'object' && content[key] !== null) {
-            return Object.keys(content[key]).reduce(filterOption(content[key], key), result)
+            return Object.keys(content[key]).reduce(
+              filterOption(content[key], key),
+              result
+            )
           }
           return result
         }
       }
-      this.options = Object.keys(this.content).reduce(filterOption(this.content, ''), {})
+      this.options = Object.keys(this.content).reduce(
+        filterOption(this.content, ''),
+        {}
+      )
     }
     return this.options
   }
@@ -200,7 +242,12 @@ class Configuration {
         }
 
         if (typeof content[key] === 'object' && content[key] !== null) {
-          return result.concat(Object.keys(content[key]).reduce(filterImport(content[key], depth++), []))
+          return result.concat(
+            Object.keys(content[key]).reduce(
+              filterImport(content[key], depth++),
+              []
+            )
+          )
         }
 
         return result
@@ -224,28 +271,37 @@ class Configuration {
         // $ is not a legal variable name
         if (key.charAt(0) === '$' && key.length > 1) {
           // By default ini.parse sets "true" as the value
-          const t = (content[key] === true || typeof content[key] !== 'string')
-            ? ['', '']
-            : ((value) => {
-                const ar = value.split(/([^:])\/\//)
-                if (ar.length > 1) {
-                  const comment = ar.pop()
-                  return [ar.join(''), comment]
-                }
-                // add an empty comment
-                return ar.concat('')
-              })(content[key])
-          result.push(new Variable(key.substring(1), t[0], t[1] ? t[1] : '', owner))
+          const t =
+            content[key] === true || typeof content[key] !== 'string'
+              ? ['', '']
+              : ((value) => {
+                  const ar = value.split(/([^:])\/\//)
+                  if (ar.length > 1) {
+                    const comment = ar.pop()
+                    return [ar.join(''), comment]
+                  }
+                  // add an empty comment
+                  return ar.concat('')
+                })(content[key])
+          result.push(
+            new Variable(key.substring(1), t[0], t[1] ? t[1] : '', owner)
+          )
           localNames.push(key.substring(1))
           return result
         }
 
         if (typeof this.repository === 'object' && key.charAt(0) === '+') {
-          return result.concat(this.repository.findByName(key.substring(1)).getVariables(key.substring(1), false))
+          return result.concat(
+            this.repository
+              .findByName(key.substring(1))
+              .getVariables(key.substring(1), false)
+          )
         }
 
         if (typeof content[key] === 'object' && content[key] !== null) {
-          return result.concat(Object.keys(content[key]).reduce(filterVariable(content[key]), []))
+          return result.concat(
+            Object.keys(content[key]).reduce(filterVariable(content[key]), [])
+          )
         }
 
         return result
@@ -254,10 +310,17 @@ class Configuration {
 
     // Variables are replaced longest first, to have a consistent behaviour for #35
     // Also, "local variables" are shadowing variables of imports
-    const variables = Object.keys(this.content).reduce(filterVariable(this.content), this.globalVariables.map(v => new Variable(v.key, v.value, '', 'global')))
+    const variables = Object.keys(this.content)
+      .reduce(
+        filterVariable(this.content),
+        this.globalVariables.map(
+          (v) => new Variable(v.key, v.value, '', 'global')
+        )
+      )
       .sort((a, b) => {
         return b.name.length - a.name.length
-      }).reduce((carry, variable) => {
+      })
+      .reduce((carry, variable) => {
         if (localNames.includes(variable.name) && variable.owner !== owner) {
           return carry
         }
@@ -292,7 +355,10 @@ class Configuration {
           // skip all variables
           // '$' is not a variable, so we also check for the length of the variable.
           // '@' is not an option, so we also check for the length of the option
-          if ((key.charAt(0) === '$' && key.length > 1) || (key.charAt(0) === '@' && key.length > 1)) {
+          if (
+            (key.charAt(0) === '$' && key.length > 1) ||
+            (key.charAt(0) === '@' && key.length > 1)
+          ) {
             return result
           }
 
@@ -304,7 +370,12 @@ class Configuration {
               }
               return carry
             }, {})
-            return result.concat(this.repository.findByName(configName).updateValues(Object.assign(this.values, valuesFromVariables))._getConfiguration())
+            return result.concat(
+              this.repository
+                .findByName(configName)
+                .updateValues(Object.assign(this.values, valuesFromVariables))
+                ._getConfiguration()
+            )
           }
 
           // skip for non-commands
@@ -313,7 +384,12 @@ class Configuration {
           }
 
           if (typeof content[key] === 'object' && content[key] !== null) {
-            return result.concat(Object.keys(content[key]).reduce(filterConfiguration(content[key]), []))
+            return result.concat(
+              Object.keys(content[key]).reduce(
+                filterConfiguration(content[key]),
+                []
+              )
+            )
           }
 
           const lhs = Variable.applyList(variables, key)
@@ -325,7 +401,10 @@ class Configuration {
         }
       }
 
-      this.patterns = Object.keys(this.content).reduce(filterConfiguration(this.content), [])
+      this.patterns = Object.keys(this.content).reduce(
+        filterConfiguration(this.content),
+        []
+      )
     }
 
     return this.patterns

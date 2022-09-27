@@ -63,7 +63,12 @@ class Variable {
   }
 
   bind(value) {
-    return new Variable(this.name, typeof value === 'string' ? value : this.value, this.description, this.owner)
+    return new Variable(
+      this.name,
+      typeof value === 'string' ? value : this.value,
+      this.description,
+      this.owner
+    )
   }
 
   static evaluateFunctions(value) {
@@ -73,43 +78,57 @@ class Variable {
     // We want to process  recursively from back to front, so that inner use is processed later
     // We split the value first, and go through the string from back to front.
     const list = value.split(/\${(random|string)\./)
-    return list.shift() + list.reverse().reduce((result, current, index) => {
-      // We go from back to front, so the methods & arguments come before the namespace
-      if (index % 2 === 0 || !['random', 'string'].includes(current)) {
-        return (current + result)
-      }
-      return result.replace(/([a-zA-Z0-9_-]*)(?:\((.*?)\))?}/, (match, p1, p2) => {
-        let args
-        try {
-          args = json5.parse(p2)
-        } catch (e) {
-          // Treat argument as string
-          args = p2 + ''
+    return (
+      list.shift() +
+      list.reverse().reduce((result, current, index) => {
+        // We go from back to front, so the methods & arguments come before the namespace
+        if (index % 2 === 0 || !['random', 'string'].includes(current)) {
+          return current + result
         }
-        if (current === 'random' && typeof randomGenerator[p1] === 'function') {
-          try {
-            return randomGenerator[p1](args)
-          } catch (e) {
+        return result.replace(
+          /([a-zA-Z0-9_-]*)(?:\((.*?)\))?}/,
+          (match, p1, p2) => {
+            let args
+            try {
+              args = json5.parse(p2)
+            } catch (e) {
+              // Treat argument as string
+              args = p2 + ''
+            }
+            if (
+              current === 'random' &&
+              typeof randomGenerator[p1] === 'function'
+            ) {
+              try {
+                return randomGenerator[p1](args)
+              } catch (e) {
+                return match
+              }
+            } else if (
+              current === 'string' &&
+              typeof stringFunctions[p1] === 'function'
+            ) {
+              try {
+                return stringFunctions[p1](args)
+              } catch (e) {
+                console.log(e)
+                return match
+              }
+            }
             return match
           }
-        } else if (current === 'string' && typeof stringFunctions[p1] === 'function') {
-          try {
-            return stringFunctions[p1](args)
-          } catch (e) {
-            console.log(e)
-            return match
-          }
-        }
-        return match
-      })
-    }, [])
+        )
+      }, [])
+    )
   }
 
   apply(value) {
     if (typeof value !== 'string') {
       return value
     }
-    return value.replaceAll('$' + this.name, this.value).replace('${' + this.name + '}', this.value)
+    return value
+      .replaceAll('$' + this.name, this.value)
+      .replace('${' + this.name + '}', this.value)
   }
 }
 

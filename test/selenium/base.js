@@ -45,7 +45,10 @@ const Base = {
 
     options.addArguments('--load-extension=./build')
 
-    driver = new selenium.Builder().forBrowser('chrome').setChromeOptions(options).build()
+    driver = new selenium.Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(options)
+      .build()
     driver.getWindowHandle().then(function () {
       // Revert the manifest file, important!
       fs.writeFileSync('./build/manifest.json', rawManifest)
@@ -56,7 +59,9 @@ const Base = {
     return driver.quit()
   },
   enableConfig: async function (title = 'Selenium Test') {
-    const button = By.xpath('//*[contains(text(), "' + title + '")]/../../descendant::input')
+    const button = By.xpath(
+      '//*[contains(text(), "' + title + '")]/../../descendant::input'
+    )
     await driver.get(this.popupUrl)
     await driver.wait(until.elementsLocated(By.className('toggle-group')))
     const currentStatus = await driver.findElement(button).isSelected()
@@ -88,19 +93,36 @@ const Base = {
     const checked = await driver.findElement(button).isSelected()
     assert.equal(checked, false)
   },
-  createConfig: async function (title = 'Selenium Test', content = 'demomonkey = testape') {
+  createConfig: async function (
+    title = 'Selenium Test',
+    content = 'demomonkey = testape'
+  ) {
     await driver.get(this.dashboardUrl)
     await driver.findElement(By.css("a[href='#configuration/new']")).click()
     await driver.findElement(By.id('configuration-title')).sendKeys(title)
-    await driver.findElement(By.css('li#current-configuration-editor a')).click()
-    const currentContent = await driver.findElement(By.id('contentarea')).getText()
-    await driver.findElement(By.css('#contentarea > textarea')).sendKeys(new Array(currentContent.length + 1).join('\b'))
+    await driver
+      .findElement(By.css('li#current-configuration-editor a'))
+      .click()
+    const currentContent = await driver
+      .findElement(By.id('contentarea'))
+      .getText()
+    await driver
+      .findElement(By.css('#contentarea > textarea'))
+      .sendKeys(new Array(currentContent.length + 1).join('\b'))
     // Slow down the input, since sometimes not all chars are send
-    await driver.findElement(By.css('#contentarea > textarea')).sendKeys(';;;;\n')
-    await driver.findElement(By.css('#contentarea > textarea')).sendKeys(content)
-    await driver.findElement(By.css('#contentarea > textarea')).sendKeys('\n;;;;')
+    await driver
+      .findElement(By.css('#contentarea > textarea'))
+      .sendKeys(';;;;\n')
+    await driver
+      .findElement(By.css('#contentarea > textarea'))
+      .sendKeys(content)
+    await driver
+      .findElement(By.css('#contentarea > textarea'))
+      .sendKeys('\n;;;;')
     await driver.findElement(By.className('save-button')).click()
-    const testTitle = await driver.findElement(By.css('.navigation .items')).getText()
+    const testTitle = await driver
+      .findElement(By.css('.navigation .items'))
+      .getText()
     expect(testTitle).to.have.string(title)
     const testContent = await driver.findElement(By.id('contentarea')).getText()
     expect(testContent).to.have.string(content)

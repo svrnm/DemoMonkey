@@ -43,7 +43,10 @@ class DropDownMenu extends Component {
   }
 
   handleClick(event) {
-    if (this.buttonNode.contains(event.target) || this.menuNode.contains(event.target)) {
+    if (
+      this.buttonNode.contains(event.target) ||
+      this.menuNode.contains(event.target)
+    ) {
       return
     }
     this.setState({ visible: false })
@@ -54,14 +57,30 @@ class DropDownMenu extends Component {
       display: this.state.visible ? 'inline-block' : 'none'
     }
 
-    return <Fragment>
-      <button ref={node => { this.buttonNode = node }} className={this.props.buttonClassName} onClick={(e) => this._toggle(e)}>{this.props.label}</button>
-      <ul ref={node => { this.menuNode = node }} className={this.props.menuClassName} style={menuStyle}>
-        {this.props.children.map((child, index) => {
-          return <li key={index}>{child}</li>
-        }) }
-      </ul>
-    </Fragment>
+    return (
+      <Fragment>
+        <button
+          ref={(node) => {
+            this.buttonNode = node
+          }}
+          className={this.props.buttonClassName}
+          onClick={(e) => this._toggle(e)}
+        >
+          {this.props.label}
+        </button>
+        <ul
+          ref={(node) => {
+            this.menuNode = node
+          }}
+          className={this.props.menuClassName}
+          style={menuStyle}
+        >
+          {this.props.children.map((child, index) => {
+            return <li key={index}>{child}</li>
+          })}
+        </ul>
+      </Fragment>
+    )
   }
 }
 

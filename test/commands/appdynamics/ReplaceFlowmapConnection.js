@@ -25,9 +25,7 @@ global.document = {
   getElementById: function (id) {
     return {
       parentElement: {
-        childNodes: [
-          element
-        ]
+        childNodes: [element]
       }
     }
   }
@@ -73,15 +71,27 @@ const node = {
 describe('ReplaceFlowmapConnection', function () {
   describe('#apply', function () {
     it('ignores unknown replacements', function () {
-      new ReplaceFlowmapConnection('Inventory-Service', 'ECommerce-Service', 'Green').apply(node, 'data')
+      new ReplaceFlowmapConnection(
+        'Inventory-Service',
+        'ECommerce-Service',
+        'Green'
+      ).apply(node, 'data')
       assert.equal(element.className.baseVal, 'adsNormalNodeColor')
     })
     it('replaces the icon of a tier on the flowmap', function () {
-      new ReplaceFlowmapConnection('Inventory-Service', 'ECommerce-Service', 'Critical').apply(node, 'data')
+      new ReplaceFlowmapConnection(
+        'Inventory-Service',
+        'ECommerce-Service',
+        'Critical'
+      ).apply(node, 'data')
       assert.equal(element.className.baseVal, 'adsCriticalNodeColor')
     })
     it('replaces the icon of a tier on the flowmap (case insensitive)', function () {
-      new ReplaceFlowmapConnection('Inventory-Service', 'ECommerce-Service', 'warning').apply(node, 'data')
+      new ReplaceFlowmapConnection(
+        'Inventory-Service',
+        'ECommerce-Service',
+        'warning'
+      ).apply(node, 'data')
       assert.equal(element.className.baseVal, 'adsWarningNodeColor')
     })
   })

@@ -20,7 +20,16 @@ const functions = {
     return target.replace(search, replace)
   },
   hash: (target, search, replace = '') => {
-    const algs = ['MD5', 'SHA1', 'SHA256', 'SHA224', 'SHA512', 'SHA384', 'SHA3', 'RIPEMD160']
+    const algs = [
+      'MD5',
+      'SHA1',
+      'SHA256',
+      'SHA224',
+      'SHA512',
+      'SHA384',
+      'SHA3',
+      'RIPEMD160'
+    ]
     let alg = 'SHA256'
     if (algs.includes(replace.toUpperCase())) {
       alg = replace.toUpperCase()
@@ -32,7 +41,15 @@ const functions = {
 class SearchAndReplace extends Command {
   // Using '' as locationFilter and location as {} works with _checkLocation
   // since every string includes ''
-  constructor(search, replace, locationFilter = '', cssFilter = '', property = '', fn = 'replace', location = {}) {
+  constructor(
+    search,
+    replace,
+    locationFilter = '',
+    cssFilter = '',
+    property = '',
+    fn = 'replace',
+    location = {}
+  ) {
     super()
     this.search = search
     this.replace = replace
@@ -51,21 +68,33 @@ class SearchAndReplace extends Command {
   }
 
   _checkLocation() {
-    return typeof this.location === 'object' &&
+    return (
+      typeof this.location === 'object' &&
       this.location.toString().includes(this.locationFilter)
+    )
   }
 
   _checkCss(target) {
     if (this.cssFilter === '') {
       return true
     }
-    return typeof target !== 'object' || target.parentNode === null || typeof target.parentNode !== 'object' || typeof target.parentNode.matches !== 'function' || target.parentNode.matches(this.cssFilter)
+    return (
+      typeof target !== 'object' ||
+      target.parentNode === null ||
+      typeof target.parentNode !== 'object' ||
+      typeof target.parentNode.matches !== 'function' ||
+      target.parentNode.matches(this.cssFilter)
+    )
   }
 
   _replaceByProperty(target) {
     target = this._walk(target, 1)
     let property = this.property
-    if (property.startsWith('data-') && typeof target.dataset === 'object' && target.dataset !== null) {
+    if (
+      property.startsWith('data-') &&
+      typeof target.dataset === 'object' &&
+      target.dataset !== null
+    ) {
       target = target.dataset
       property = property.substr(5)
     }
@@ -90,7 +119,11 @@ class SearchAndReplace extends Command {
       return this._replaceByProperty(target)
     }
 
-    if (key.startsWith('data-') && typeof target.dataset === 'object' && target.dataset !== null) {
+    if (
+      key.startsWith('data-') &&
+      typeof target.dataset === 'object' &&
+      target.dataset !== null
+    ) {
       target = target.dataset
       key = key.substr(5)
     }

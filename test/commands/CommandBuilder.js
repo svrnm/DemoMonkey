@@ -27,96 +27,127 @@ const expect = chai.expect
 describe('Command', function () {
   describe('#_extractForCustomCommand', function () {
     it('should return extracted: false for an empty input', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand(''), ({ extracted: false }))
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand(''), {
+        extracted: false
+      })
     })
 
     it('should return a command without namespace for a simple string', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('cmd'), ({
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('cmd'), {
         extracted: true,
         command: 'cmd',
         namespace: '',
         parameters: []
-      }))
+      })
     })
 
     it('should return a command with namespace for a string with a dot', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd'), ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'ns',
-        parameters: []
-      }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('ns.cmd'),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'ns',
+          parameters: []
+        }
+      )
     })
 
     it('extracts the command from the string after the last dot', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('this.is.a.long.ns.cmd'), ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'this.is.a.long.ns',
-        parameters: []
-      }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('this.is.a.long.ns.cmd'),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'this.is.a.long.ns',
+          parameters: []
+        }
+      )
     })
 
     it('extracts a command until the first open (', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd()'), ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'ns',
-        parameters: ['']
-      }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('ns.cmd()'),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'ns',
+          parameters: ['']
+        }
+      )
     })
 
     it('should return extracted: false for an command with no closing )', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd('), ({ extracted: false }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('ns.cmd('),
+        { extracted: false }
+      )
     })
 
     it('extracts everything after the first ( as parameters', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd(asdf)'), ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'ns',
-        parameters: ['asdf']
-      }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('ns.cmd(asdf)'),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'ns',
+          parameters: ['asdf']
+        }
+      )
     })
 
     it('supports quoting for the parameter', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd("asdf")'), ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'ns',
-        parameters: ['asdf']
-      }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('ns.cmd("asdf")'),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'ns',
+          parameters: ['asdf']
+        }
+      )
     })
 
     it('extracts and , seperated parameter lists', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd(a,s,d,f)'), ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'ns',
-        parameters: ['a', 's', 'd', 'f']
-      }))
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd(a, s,  d ,f)'), ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'ns',
-        parameters: ['a', 's', 'd', 'f']
-      }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('ns.cmd(a,s,d,f)'),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'ns',
+          parameters: ['a', 's', 'd', 'f']
+        }
+      )
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand('ns.cmd(a, s,  d ,f)'),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'ns',
+          parameters: ['a', 's', 'd', 'f']
+        }
+      )
     })
 
     it('supports quoting for parameter lists', function () {
-      assert.deepEqual(new CommandBuilder()._extractForCustomCommand(
-        'ns.cmd("a,\'s",\' "d \',f,  g, (h), "i\')'),
-      ({
-        extracted: true,
-        command: 'cmd',
-        namespace: 'ns',
-        parameters: ['a,\'s', ' "d ', 'f', 'g', '(h)', '"i\'']
-      }))
+      assert.deepEqual(
+        new CommandBuilder()._extractForCustomCommand(
+          'ns.cmd("a,\'s",\' "d \',f,  g, (h), "i\')'
+        ),
+        {
+          extracted: true,
+          command: 'cmd',
+          namespace: 'ns',
+          parameters: ["a,'s", ' "d ', 'f', 'g', '(h)', '"i\'']
+        }
+      )
     })
   })
   describe('#build', function () {
     it('should create a SearchAndReplace for simple strings', function () {
-      expect(new CommandBuilder().build('a', 'b')).to.be.an.instanceof(SearchAndReplace)
+      expect(new CommandBuilder().build('a', 'b')).to.be.an.instanceof(
+        SearchAndReplace
+      )
     })
 
     it('should create a SearchAndReplace for regular expression command', function () {
@@ -158,32 +189,40 @@ describe('Command', function () {
     })
 
     it('should create a SearchAndReplace for a quoted ! at position 0', function () {
-      expect(new CommandBuilder().build('\\!a', 'b')).to.be.an.instanceof(SearchAndReplace)
+      expect(new CommandBuilder().build('\\!a', 'b')).to.be.an.instanceof(
+        SearchAndReplace
+      )
     })
 
     it('should create a Hide command for !hide("ASDF")', function () {
-      expect(new CommandBuilder().build('!hide("ASDF")')).to.be.an.instanceof(Hide)
+      expect(new CommandBuilder().build('!hide("ASDF")')).to.be.an.instanceof(
+        Hide
+      )
     })
 
-    it('should create a ReplaceFlowmapIcon command for !appdynamics.replaceFlowmapIcon(Inventory-Service)',
-      function () {
-        expect(new CommandBuilder().build('!appdynamics.replaceFlowmapIcon(Inventory-Service)', 'php.png')).to
-          .be.an.instanceof(ReplaceFlowmapIcon)
-      })
+    it('should create a ReplaceFlowmapIcon command for !appdynamics.replaceFlowmapIcon(Inventory-Service)', function () {
+      expect(
+        new CommandBuilder().build(
+          '!appdynamics.replaceFlowmapIcon(Inventory-Service)',
+          'php.png'
+        )
+      ).to.be.an.instanceof(ReplaceFlowmapIcon)
+    })
 
-    it(
-      'should create a ReplaceFlowmapIcon command for !replaceFlowmapIcon(Inventory-Service) and namespaces [appdynamics]',
-      function () {
-        expect(new CommandBuilder(['appdynamics']).build('!replaceFlowmapIcon(Inventory-Service)', 'php.png'))
-          .to.be.an.instanceof(ReplaceFlowmapIcon)
-      })
+    it('should create a ReplaceFlowmapIcon command for !replaceFlowmapIcon(Inventory-Service) and namespaces [appdynamics]', function () {
+      expect(
+        new CommandBuilder(['appdynamics']).build(
+          '!replaceFlowmapIcon(Inventory-Service)',
+          'php.png'
+        )
+      ).to.be.an.instanceof(ReplaceFlowmapIcon)
+    })
 
-    it(
-      'should create a Group command for !hideApplication("ASDF") and namespaces [appdynamics]',
-      function () {
-        expect(new CommandBuilder(['appdynamics']).build('!hideApplication("ASDF")'))
-          .to.be.an.instanceof(Group)
-      })
+    it('should create a Group command for !hideApplication("ASDF") and namespaces [appdynamics]', function () {
+      expect(
+        new CommandBuilder(['appdynamics']).build('!hideApplication("ASDF")')
+      ).to.be.an.instanceof(Group)
+    })
 
     it('should create a (effect-less) Command for an unknown command', function () {
       const command = new CommandBuilder().build('!unknown', 'b')
@@ -191,7 +230,10 @@ describe('Command', function () {
     })
 
     it('should create a group of commands for !replaceFlowmapNode and namespaces [appdynamics]', function () {
-      const command = new CommandBuilder(['appdynamics']).build('!replaceFlowmapNode(service1)', 'new-name,php,5,critical,critical')
+      const command = new CommandBuilder(['appdynamics']).build(
+        '!replaceFlowmapNode(service1)',
+        'new-name,php,5,critical,critical'
+      )
       expect(command).to.be.an.instanceof(Group)
       expect(command.helpers[0]).to.be.an.instanceof(ReplaceFlowmapIcon)
       expect(command.helpers[1]).to.be.an.instanceof(Group)
@@ -201,7 +243,10 @@ describe('Command', function () {
     })
 
     it('should create an If command with child for !if', function () {
-      const command = new CommandBuilder(['appdynamics']).build('!if(test, .test, !replaceFlowmapIcon(service1))', 'service2')
+      const command = new CommandBuilder(['appdynamics']).build(
+        '!if(test, .test, !replaceFlowmapIcon(service1))',
+        'service2'
+      )
       expect(command).to.be.an.instanceof(If)
       expect(command.thenCmd).to.be.an.instanceof(ReplaceFlowmapIcon)
     })

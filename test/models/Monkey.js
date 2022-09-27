@@ -19,10 +19,7 @@ const assert = require('assert')
 let intervalId = 0
 let timeoutId = 0
 
-const tspans = [
-  { textContent: 'test this' },
-  { textContent: 'tspans' }
-]
+const tspans = [{ textContent: 'test this' }, { textContent: 'tspans' }]
 
 const node = {
   data: 'monkey-demo',
@@ -38,9 +35,7 @@ const scope = {
   chrome: {
     runtime: {
       getManifest: function () {
-        return {
-
-        }
+        return {}
       }
     }
   },
@@ -70,24 +65,29 @@ const scope = {
     title: 'demomonkeydemo',
     querySelectorAll: function (selector) {
       if (selector === 'svg text title') {
-        return [{
-          parentElement: {
-            textContent: '',
-            querySelectorAll(selector) {
-              if (selector === 'tspan') {
-                return tspans
+        return [
+          {
+            parentElement: {
+              textContent: '',
+              querySelectorAll(selector) {
+                if (selector === 'tspan') {
+                  return tspans
+                }
+                return []
               }
-              return []
             }
           }
-        }]
+        ]
       }
       return []
     },
     evaluate: function (xpath) {
       return {
         snapshotItem: function (i) {
-          if (xpath === '//body//text()[ normalize-space(.) != ""]' && i === 0) {
+          if (
+            xpath === '//body//text()[ normalize-space(.) != ""]' &&
+            i === 0
+          ) {
             return node
           }
           return null
@@ -125,34 +125,45 @@ describe('Monkey', function () {
   describe('#runAll', function () {
     it('should return an array of interval ids', function () {
       intervalId = 0
-      let monkey = new Monkey([{
-        content: '@include = ',
-        name: 'a',
-        enabled: true
-      }, {
-        content: '@include = ',
-        name: 'b',
-        enabled: true
-      }, {
-        content: '@include = ',
-        name: 'c',
-        enabled: false
-      }], scope)
-      assert.deepEqual([
-        0, 1
-      ], monkey.runAll(''))
+      let monkey = new Monkey(
+        [
+          {
+            content: '@include = ',
+            name: 'a',
+            enabled: true
+          },
+          {
+            content: '@include = ',
+            name: 'b',
+            enabled: true
+          },
+          {
+            content: '@include = ',
+            name: 'c',
+            enabled: false
+          }
+        ],
+        scope
+      )
+      assert.deepEqual([0, 1], monkey.runAll(''))
 
       // Check also for matching excludes and includes
       intervalId = 0
-      monkey = new Monkey([{
-        content: '@exclude = monkey-demo',
-        name: 'a',
-        enabled: true
-      }, {
-        content: '@include = monkey-demo',
-        name: 'b',
-        enabled: true
-      }], scope)
+      monkey = new Monkey(
+        [
+          {
+            content: '@exclude = monkey-demo',
+            name: 'a',
+            enabled: true
+          },
+          {
+            content: '@include = monkey-demo',
+            name: 'b',
+            enabled: true
+          }
+        ],
+        scope
+      )
       assert.deepEqual([0], monkey.runAll(''))
     })
   })
@@ -161,26 +172,37 @@ describe('Monkey', function () {
       intervalId = 0
       scope.document.title = 'demomonkeydemo'
       node.data = 'monkey-demo'
-      const monkey = new Monkey([{
-        content: '@include = ',
-        name: 'a',
-        enabled: true
-      }, {
-        content: '@include = ',
-        name: 'b',
-        enabled: true
-      }], scope)
+      const monkey = new Monkey(
+        [
+          {
+            content: '@include = ',
+            name: 'a',
+            enabled: true
+          },
+          {
+            content: '@include = ',
+            name: 'b',
+            enabled: true
+          }
+        ],
+        scope
+      )
       monkey.start()
       assert.equal(2, intervalId)
       monkey.stop()
       assert.equal(0, intervalId)
     })
     it('should undo all replacements', function () {
-      const monkey = new Monkey([{
-        content: 'monkey = ape\n@include = ',
-        name: 'a',
-        enabled: true
-      }], scope)
+      const monkey = new Monkey(
+        [
+          {
+            content: 'monkey = ape\n@include = ',
+            name: 'a',
+            enabled: true
+          }
+        ],
+        scope
+      )
 
       monkey.start()
       assert.equal(node.data, 'ape-demo')
@@ -191,11 +213,18 @@ describe('Monkey', function () {
       assert.equal(scope.document.title, 'demomonkeydemo')
     })
     it('should not undo all replacements with undo disabled', function () {
-      const monkey = new Monkey([{
-        content: 'monkey = ape\n@include = ',
-        name: 'a',
-        enabled: true
-      }], scope, [], false)
+      const monkey = new Monkey(
+        [
+          {
+            content: 'monkey = ape\n@include = ',
+            name: 'a',
+            enabled: true
+          }
+        ],
+        scope,
+        [],
+        false
+      )
 
       monkey.start()
       assert.equal(node.data, 'ape-demo')

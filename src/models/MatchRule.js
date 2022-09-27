@@ -19,7 +19,7 @@ class MatchRule {
 
   _testString(pattern, str) {
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
-      return (new RegExp(pattern.substr(1, pattern.length - 2))).test(str)
+      return new RegExp(pattern.substr(1, pattern.length - 2)).test(str)
     }
     return str.includes(pattern)
   }
@@ -35,9 +35,11 @@ class MatchRule {
   }
 
   test(str) {
-    const included = this.includes.length < 1 || this._reducer(this.includes, str)
+    const included =
+      this.includes.length < 1 || this._reducer(this.includes, str)
 
-    const excluded = this.excludes.length > 0 && this._reducer(this.excludes, str)
+    const excluded =
+      this.excludes.length > 0 && this._reducer(this.excludes, str)
 
     return included && !excluded
   }

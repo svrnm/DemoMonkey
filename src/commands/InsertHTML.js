@@ -19,7 +19,14 @@ class InsertHTML extends Command {
   // Using '' as locationFilter and location as {} works with _checkLocation
   // since every string includes ''
   // cssFilter is not yet implemented
-  constructor(position, search, insert, nthParent = 1, locationFilter = '', location = {}) {
+  constructor(
+    position,
+    search,
+    insert,
+    nthParent = 1,
+    locationFilter = '',
+    location = {}
+  ) {
     super()
     this.nthParent = nthParent
     this.position = position
@@ -31,8 +38,10 @@ class InsertHTML extends Command {
   }
 
   _checkLocation() {
-    return typeof this.location === 'object' &&
+    return (
+      typeof this.location === 'object' &&
       this.location.toString().includes(this.locationFilter)
+    )
   }
 
   _addMarker(string) {
@@ -45,12 +54,25 @@ class InsertHTML extends Command {
     }
 
     // Check if we can find search in the current node
-    if (this.input !== '' && typeof target[key] !== 'undefined' && this._match(target[key].trim(), this.search, null) && this._checkLocation()) {
+    if (
+      this.input !== '' &&
+      typeof target[key] !== 'undefined' &&
+      this._match(target[key].trim(), this.search, null) &&
+      this._checkLocation()
+    ) {
       const parentElement = this._walk(target, this.nthParent)
       if (parentElement && !parentElement.innerHTML.includes(this.marker)) {
         const original = parentElement.innerHTML
-        parentElement.insertAdjacentHTML(this.position, this._addMarker(this.insert))
-        return new UndoElement(parentElement, 'innerHTML', original, parentElement.innerHTML)
+        parentElement.insertAdjacentHTML(
+          this.position,
+          this._addMarker(this.insert)
+        )
+        return new UndoElement(
+          parentElement,
+          'innerHTML',
+          original,
+          parentElement.innerHTML
+        )
       }
     }
     return false

@@ -35,12 +35,18 @@ describe('UI', function () {
 
   it('has a popup menu', async () => {
     await base.getDriver().get(base.popupUrl)
-    const dataApp = await base.getDriver().findElement(By.id('app')).getAttribute('data-app')
+    const dataApp = await base
+      .getDriver()
+      .findElement(By.id('app'))
+      .getAttribute('data-app')
     assert.equal(dataApp, 'PopupPageApp')
   })
 
   it('allows to create new configurations', function () {
-    return base.createConfig('Selenium Test', 'demomonkey = testape\n@include = /.*/')
+    return base.createConfig(
+      'Selenium Test',
+      'demomonkey = testape\n@include = /.*/'
+    )
   })
 
   it('allows to enable configurations', function () {
@@ -53,7 +59,9 @@ describe('UI', function () {
     await driver.findElement(By.linkText('Example')).click()
     await driver.wait(until.elementsLocated(By.css('button.delete-button')))
     await driver.findElement(By.css('button.delete-button')).click()
-    await driver.wait(until.elementsLocated(By.id('alert-dialog-confirm-button')))
+    await driver.wait(
+      until.elementsLocated(By.id('alert-dialog-confirm-button'))
+    )
     await driver.findElement(By.id('alert-dialog-confirm-button')).click()
     const url = await driver.getCurrentUrl()
     expect(url).to.include.string('#help')

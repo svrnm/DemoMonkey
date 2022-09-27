@@ -88,33 +88,84 @@ class ItemHeader extends React.Component {
 
     const updatedAt = moment(this.props.node.updated_at)
 
-    const label = this.props.node.name === '%' ? (<i>Snippets</i>) : this.props.node.name
+    const label =
+      this.props.node.name === '%' ? <i>Snippets</i> : this.props.node.name
 
     return (
-      <div style={base} onMouseEnter={(e) => this.handleHover(true)} onMouseLeave={(e) => this.handleHover(false)} onContextMenu={(e) => this.handleMenu(e)} className={this.props.node.readOnly === true ? 'navigation-item read-only-item' : 'navigation-item'} ref={node => { this.node = node }}>
+      <div
+        style={base}
+        onMouseEnter={(e) => this.handleHover(true)}
+        onMouseLeave={(e) => this.handleHover(false)}
+        onContextMenu={(e) => this.handleMenu(e)}
+        className={
+          this.props.node.readOnly === true
+            ? 'navigation-item read-only-item'
+            : 'navigation-item'
+        }
+        ref={(node) => {
+          this.node = node
+        }}
+      >
         <div style={style.title}>
           {/* the onclick event is disabled since the interaction is managed by the navigation */}
-          <a href={'#configuration/' + this.props.node.id} onClick={(event) => event.preventDefault()}>{label}</a>
+          <a
+            href={'#configuration/' + this.props.node.id}
+            onClick={(event) => event.preventDefault()}
+          >
+            {label}
+          </a>
         </div>
         <div className="configuration-updated-at" style={style.timestamp}>
-          {
-            this.props.node.enabled
-              ? <span style={{ color: 'red' }}>enabled</span>
-              : (this.props.node.updated_at
-                  ? <time dateTime={updatedAt.format()} title={updatedAt.format()}>
-                  {updatedAt.fromNow(true)}
-                </time>
-                  : ''
+          {this.props.node.enabled
+            ? (
+            <span style={{ color: 'red' }}>enabled</span>
+              )
+            : this.props.node.updated_at
+              ? (
+            <time dateTime={updatedAt.format()} title={updatedAt.format()}>
+              {updatedAt.fromNow(true)}
+            </time>
                 )
-          }
+              : (
+                  ''
+                )}
         </div>
-        <div className="configuration-options" style={{ visibility: this.state.optionsVisible ? 'visible' : 'hidden' }}>
-          <button className="delete-configuration" onClick={() => this.onBeforeDelete()}>x</button>
+        <div
+          className="configuration-options"
+          style={{
+            visibility: this.state.optionsVisible ? 'visible' : 'hidden'
+          }}
+        >
+          <button
+            className="delete-configuration"
+            onClick={() => this.onBeforeDelete()}
+          >
+            x
+          </button>
         </div>
-        <ul className="context-menu" style={{ display: this.state.contextMenuVisible ? 'block' : 'none', top: this.state.y, left: this.state.x }}>
+        <ul
+          className="context-menu"
+          style={{
+            display: this.state.contextMenuVisible ? 'block' : 'none',
+            top: this.state.y,
+            left: this.state.x
+          }}
+        >
           <li>
-            <a href="#" onClick={() => this.onBeforeDelete()}>Delete</a>
-            <Popup open={this.state.showDeletePopup} onCancel={(event) => this.onCancelDelete(event)} onConfirm={(event) => this.onDelete(event)} title="Please confirm" text={<span>Do you really want to remove <b>{label}</b>?</span>} />
+            <a href="#" onClick={() => this.onBeforeDelete()}>
+              Delete
+            </a>
+            <Popup
+              open={this.state.showDeletePopup}
+              onCancel={(event) => this.onCancelDelete(event)}
+              onConfirm={(event) => this.onDelete(event)}
+              title="Please confirm"
+              text={
+                <span>
+                  Do you really want to remove <b>{label}</b>?
+                </span>
+              }
+            />
           </li>
         </ul>
       </div>

@@ -17,7 +17,16 @@ import UndoElement from '../commands/UndoElement'
 import { logger } from '../helpers/logger'
 
 class Monkey {
-  constructor(rawConfigurations, scope, globalVariables, withUndo = true, intervalTime = 100, urlManager = false, inlineRuleManager = false, featureFlags = {}) {
+  constructor(
+    rawConfigurations,
+    scope,
+    globalVariables,
+    withUndo = true,
+    intervalTime = 100,
+    urlManager = false,
+    inlineRuleManager = false,
+    featureFlags = {}
+  ) {
     this.scope = scope
     this.globalVariables = globalVariables
     this.undo = []
@@ -27,18 +36,35 @@ class Monkey {
 
     this.intervalTime = intervalTime
     if (typeof this.intervalTime !== 'number' || this.intervalTime < 100) {
-      logger('warn', 'Interval time is not well-defined: ', this.intervalTime).write()
+      logger(
+        'warn',
+        'Interval time is not well-defined: ',
+        this.intervalTime
+      ).write()
       this.intervalTime = 100
     }
     this.intervals = []
 
     this.configurations = rawConfigurations.map((rawConfig) => {
-      const config = new Configuration(rawConfig.content, this.repository, rawConfig.enabled === true, rawConfig.values, featureFlags, globalVariables)
+      const config = new Configuration(
+        rawConfig.content,
+        this.repository,
+        rawConfig.enabled === true,
+        rawConfig.values,
+        featureFlags,
+        globalVariables
+      )
       this.repository.addConfiguration(rawConfig.name, config)
       return [rawConfig.name, config]
     })
-    this.urlManager = urlManager === false ? { add: () => {}, remove: () => {}, clear: () => {} } : urlManager
-    this.inlineRuleManager = inlineRuleManager === false ? { add: () => {}, run: () => {}, clear: () => {} } : inlineRuleManager
+    this.urlManager =
+      urlManager === false
+        ? { add: () => {}, remove: () => {}, clear: () => {} }
+        : urlManager
+    this.inlineRuleManager =
+      inlineRuleManager === false
+        ? { add: () => {}, run: () => {}, clear: () => {} }
+        : inlineRuleManager
     this.observers = []
   }
 
@@ -47,7 +73,7 @@ class Monkey {
   }
 
   notifyObservers(event) {
-    this.observers.forEach(observer => observer.update(event))
+    this.observers.forEach((observer) => observer.update(event))
   }
 
   getUndoLength() {
@@ -66,7 +92,10 @@ class Monkey {
     if (this.withUndo) {
       // Simple protection against loops that fill up the undo array.
       if (this.undo.length > 100000) {
-        logger('warn', 'Too many undo elements, disabling undo feature. Your configuration might have a replacement loop.').write()
+        logger(
+          'warn',
+          'Too many undo elements, disabling undo feature. Your configuration might have a replacement loop.'
+        ).write()
         this.withUndo = false
       }
       this.undo = this.undo.concat(elements)
@@ -91,26 +120,73 @@ class Monkey {
     // We do them early, because later modifications may cause problems to get them solved.
     this._cornerCases(configuration)
 
-    sum.text = this._applyOnXpathGroup(configuration, '//body//text()[ normalize-space(.) != ""]', 'text', 'data')
-    configuration.getTextAttributes().forEach(attribute => {
-      sum.text += this._applyOnXpathGroup(configuration, `//*[@${attribute}]`, 'text', attribute)
+    sum.text = this._applyOnXpathGroup(
+      configuration,
+      '//body//text()[ normalize-space(.) != ""]',
+      'text',
+      'data'
+    )
+    configuration.getTextAttributes().forEach((attribute) => {
+      sum.text += this._applyOnXpathGroup(
+        configuration,
+        `//*[@${attribute}]`,
+        'text',
+        attribute
+      )
     })
 
     // Special treatment for AppD OC hyper graph.
-    sum.hyperGraph = this._applyOnXpathGroup(configuration, '//head//template[@id="demo-monkey-hyper-graph"]//text()[ normalize-space(.) != ""]', 'text', 'data')
+    sum.hyperGraph = this._applyOnXpathGroup(
+      configuration,
+      '//head//template[@id="demo-monkey-hyper-graph"]//text()[ normalize-space(.) != ""]',
+      'text',
+      'data'
+    )
 
-    sum.input = this._applyOnXpathGroup(configuration, '//body//input', 'input', 'value')
-    sum.input += this._applyOnXpathGroup(configuration, '//body//textarea', 'input', 'value')
-    sum.image = this._applyOnXpathGroup(configuration, '//body//img', 'image', 'src')
-    sum.image += this._applyOnXpathGroup(configuration, '//body//div[contains(@ad-test-id, "dash-image-widget-renderer")]', 'image', 'style.backgroundImage')
-    sum.image += this._applyOnXpathGroup(configuration, '//body//dash-kit-image-widget2/div/ui-kit-card-v1/div/div/div', 'image', 'style.backgroundImage')
-    sum.dashboard = this._applyOnXpathGroup(configuration, '//body//div[contains(@class, "ads-dashboard-canvas-pane")]', 'ad-dashboard', 'style')
+    sum.input = this._applyOnXpathGroup(
+      configuration,
+      '//body//input',
+      'input',
+      'value'
+    )
+    sum.input += this._applyOnXpathGroup(
+      configuration,
+      '//body//textarea',
+      'input',
+      'value'
+    )
+    sum.image = this._applyOnXpathGroup(
+      configuration,
+      '//body//img',
+      'image',
+      'src'
+    )
+    sum.image += this._applyOnXpathGroup(
+      configuration,
+      '//body//div[contains(@ad-test-id, "dash-image-widget-renderer")]',
+      'image',
+      'style.backgroundImage'
+    )
+    sum.image += this._applyOnXpathGroup(
+      configuration,
+      '//body//dash-kit-image-widget2/div/ui-kit-card-v1/div/div/div',
+      'image',
+      'style.backgroundImage'
+    )
+    sum.dashboard = this._applyOnXpathGroup(
+      configuration,
+      '//body//div[contains(@class, "ads-dashboard-canvas-pane")]',
+      'ad-dashboard',
+      'style'
+    )
 
     // Apply the text commands on the title element
     this.addUndo(configuration.apply(this.scope.document, 'title', 'text'))
 
     // Finally we can apply document commands on the document itself.
-    this.addUndo(configuration.apply(this.scope.document, 'documentElement', 'document'))
+    this.addUndo(
+      configuration.apply(this.scope.document, 'documentElement', 'document')
+    )
 
     this.notifyObservers({
       type: 'applied',
@@ -125,7 +201,13 @@ class Monkey {
 
   _applyOnXpathGroup(configuration, xpath, groupName, key) {
     let text, i
-    const texts = this.scope.document.evaluate(xpath, this.scope.document, null, 6, null)
+    const texts = this.scope.document.evaluate(
+      xpath,
+      this.scope.document,
+      null,
+      6,
+      null
+    )
     for (i = 0; (text = texts.snapshotItem(i)) !== null; i += 1) {
       this.addUndo(configuration.apply(text, key, groupName))
     }
@@ -136,27 +218,43 @@ class Monkey {
     const undos = []
     // On the flowmap nodes might be shorten by name, but the full name is still kept in the title.
     // We can use that knowledge to replace the shortened names
-    this.scope.document.querySelectorAll('svg .adsFlowMapNode > title').forEach(title => {
-      title.parentElement.querySelectorAll('.adsFlowMapTextContainer tspan').forEach(tspan => {
-        if (tspan.textContent.includes('...')) {
-          const pseudoNode = {
-            value: title.textContent
-          }
-          configuration.apply(pseudoNode, 'value', 'text')
-          const replacement = pseudoNode.value.length > 32 ? pseudoNode.value.substr(0, 15) + '...' + pseudoNode.value.substr(-15) : pseudoNode.value
-          if (tspan.textContent !== replacement) {
-            const original = tspan.textContent
-            tspan.textContent = replacement
-            undos.push(new UndoElement(tspan, 'textContent', original, tspan.textContent))
-          }
-        }
+    this.scope.document
+      .querySelectorAll('svg .adsFlowMapNode > title')
+      .forEach((title) => {
+        title.parentElement
+          .querySelectorAll('.adsFlowMapTextContainer tspan')
+          .forEach((tspan) => {
+            if (tspan.textContent.includes('...')) {
+              const pseudoNode = {
+                value: title.textContent
+              }
+              configuration.apply(pseudoNode, 'value', 'text')
+              const replacement =
+                pseudoNode.value.length > 32
+                  ? pseudoNode.value.substr(0, 15) +
+                    '...' +
+                    pseudoNode.value.substr(-15)
+                  : pseudoNode.value
+              if (tspan.textContent !== replacement) {
+                const original = tspan.textContent
+                tspan.textContent = replacement
+                undos.push(
+                  new UndoElement(
+                    tspan,
+                    'textContent',
+                    original,
+                    tspan.textContent
+                  )
+                )
+              }
+            }
+          })
       })
-    })
 
     // In AppDynamics Analytics the Tree widget view uses <tspan> in <text> to split
     // text over multiple lines. The full text is contained in a <title> tag.
     // So we search for the <title> in the <text> and check if tspans are contained.
-    this.scope.document.querySelectorAll('svg text title').forEach(title => {
+    this.scope.document.querySelectorAll('svg text title').forEach((title) => {
       const tspans = title.parentElement.querySelectorAll('tspan')
       if (tspans.length > 1) {
         let content = []
@@ -180,17 +278,23 @@ class Monkey {
         let wordCounter = 0
         tspans.forEach(function (tspan) {
           const original = tspan.textContent
-          tspan.textContent = words.slice(wordCounter,
-            wordCounter + tspan.textContent.split(' ').length).join(' ')
+          tspan.textContent = words
+            .slice(
+              wordCounter,
+              wordCounter + tspan.textContent.split(' ').length
+            )
+            .join(' ')
           wordCounter += tspan.textContent.split(' ').length
-          undos.push(new UndoElement(tspan, 'textContent', original, tspan.textContent))
+          undos.push(
+            new UndoElement(tspan, 'textContent', original, tspan.textContent)
+          )
         })
       }
     })
 
     // In AppDynamics Analytics the Business Journey view shortens labels over the milestones.
     // In the source it looks like the following: Case <text>Lon...<title>Long Text</title></text>
-    this.scope.document.querySelectorAll('svg text title').forEach(title => {
+    this.scope.document.querySelectorAll('svg text title').forEach((title) => {
       if (title.parentElement.textContent.includes('...')) {
         const [short, long] = title.parentElement.textContent.split('...')
         if (long.startsWith(short)) {
@@ -202,7 +306,9 @@ class Monkey {
 
           const result = pseudoNode.value.substring(0, short.length) + '...'
 
-          const textNode = Array.from(title.parentElement.childNodes).filter(node => node.nodeType === 3)[0]
+          const textNode = Array.from(title.parentElement.childNodes).filter(
+            (node) => node.nodeType === 3
+          )[0]
 
           const original = textNode.data
           textNode.data = result
@@ -213,35 +319,61 @@ class Monkey {
 
     // The Service Now Event Management Dashboard shortens words by space on a box
     // The full name is kept as "name" of the tspan
-    this.scope.document.querySelectorAll('svg > g text > tspan[name]').forEach(tspan => {
-      const pseudoNode = {
-        value: tspan.attributes.name.value
-      }
-      configuration.apply(pseudoNode, 'value', 'text')
+    this.scope.document
+      .querySelectorAll('svg > g text > tspan[name]')
+      .forEach((tspan) => {
+        const pseudoNode = {
+          value: tspan.attributes.name.value
+        }
+        configuration.apply(pseudoNode, 'value', 'text')
 
-      const original = tspan.textContent
-      tspan.textContent = pseudoNode.value.substring(0, tspan.textContent.length)
+        const original = tspan.textContent
+        tspan.textContent = pseudoNode.value.substring(
+          0,
+          tspan.textContent.length
+        )
 
-      undos.push(new UndoElement(tspan, 'textContent', original, tspan.textContent))
-    })
+        undos.push(
+          new UndoElement(tspan, 'textContent', original, tspan.textContent)
+        )
+      })
 
     // The Experience Journey Map in AppDynamics shortens the labels but provides a "data-full-string"
     // property we can work with
-    this.scope.document.querySelectorAll('eum-user-journey-map-label > div.eum-ui-user-journey-node-body').forEach(node => {
-      const pseudoNode = {
-        value: node.dataset.fullString
-      }
-      configuration.apply(pseudoNode, 'value', 'text')
-      if (node.dataset.fullString !== pseudoNode.value) {
-        const original = node.textContent
-        const originalFullString = node.dataset.fullString
-        const replacement = original.length < pseudoNode.value.length ? '...' + pseudoNode.value.substring(pseudoNode.value.length - original.length - 3) : pseudoNode.value
-        node.dataset.fullString = pseudoNode.value
-        node.textContent = replacement
-        undos.push(new UndoElement(node, 'textContent', original, node.textContent))
-        undos.push(new UndoElement(node.dataset, 'fullString', originalFullString, node.dataset.fullString))
-      }
-    })
+    this.scope.document
+      .querySelectorAll(
+        'eum-user-journey-map-label > div.eum-ui-user-journey-node-body'
+      )
+      .forEach((node) => {
+        const pseudoNode = {
+          value: node.dataset.fullString
+        }
+        configuration.apply(pseudoNode, 'value', 'text')
+        if (node.dataset.fullString !== pseudoNode.value) {
+          const original = node.textContent
+          const originalFullString = node.dataset.fullString
+          const replacement =
+            original.length < pseudoNode.value.length
+              ? '...' +
+                pseudoNode.value.substring(
+                  pseudoNode.value.length - original.length - 3
+                )
+              : pseudoNode.value
+          node.dataset.fullString = pseudoNode.value
+          node.textContent = replacement
+          undos.push(
+            new UndoElement(node, 'textContent', original, node.textContent)
+          )
+          undos.push(
+            new UndoElement(
+              node.dataset,
+              'fullString',
+              originalFullString,
+              node.dataset.fullString
+            )
+          )
+        }
+      })
     this.addUndo(undos)
   }
 
@@ -265,7 +397,7 @@ class Monkey {
     })
 
     if (this.withUndo) {
-      this.undo.reverse().forEach(undo => {
+      this.undo.reverse().forEach((undo) => {
         if (typeof undo.apply === 'function') {
           undo.apply()
         }

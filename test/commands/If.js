@@ -34,7 +34,10 @@ describe('If', function () {
         value: 'asdf'
       }
 
-      new If('', '', new SearchAndReplace('a', 'b'), location).apply(node, 'value')
+      new If('', '', new SearchAndReplace('a', 'b'), location).apply(
+        node,
+        'value'
+      )
 
       assert.equal(node.value, 'bsdf')
     })
@@ -44,10 +47,16 @@ describe('If', function () {
         value: 'asdf'
       }
 
-      new If('asdf', '', new SearchAndReplace('a', 'b'), locationAlt).apply(node, 'value')
+      new If('asdf', '', new SearchAndReplace('a', 'b'), locationAlt).apply(
+        node,
+        'value'
+      )
 
       assert.equal(node.value, 'asdf')
-      new If('asdf', '', new SearchAndReplace('a', 'b'), location).apply(node, 'value')
+      new If('asdf', '', new SearchAndReplace('a', 'b'), location).apply(
+        node,
+        'value'
+      )
 
       assert.equal(node.value, 'bsdf')
     })
@@ -61,10 +70,16 @@ describe('If', function () {
         }
       }
 
-      new If('asdf', '.a', new SearchAndReplace('a', 'b'), location).apply(node, 'value')
+      new If('asdf', '.a', new SearchAndReplace('a', 'b'), location).apply(
+        node,
+        'value'
+      )
       assert.equal(node.value, 'asdf')
 
-      new If('asdf', '.b', new SearchAndReplace('a', 'b'), location).apply(node, 'value')
+      new If('asdf', '.b', new SearchAndReplace('a', 'b'), location).apply(
+        node,
+        'value'
+      )
       assert.equal(node.value, 'bsdf')
     })
 
@@ -77,16 +92,28 @@ describe('If', function () {
         }
       }
 
-      new If('asdf', '.a', new SearchAndReplace('a', 'b'), locationAlt).apply(node, 'value')
+      new If('asdf', '.a', new SearchAndReplace('a', 'b'), locationAlt).apply(
+        node,
+        'value'
+      )
       assert.equal(node.value, 'asdf')
 
-      new If('asdf', '.a', new SearchAndReplace('a', 'b'), location).apply(node, 'value')
+      new If('asdf', '.a', new SearchAndReplace('a', 'b'), location).apply(
+        node,
+        'value'
+      )
       assert.equal(node.value, 'asdf')
 
-      new If('asdf', '.b', new SearchAndReplace('a', 'b'), locationAlt).apply(node, 'value')
+      new If('asdf', '.b', new SearchAndReplace('a', 'b'), locationAlt).apply(
+        node,
+        'value'
+      )
       assert.equal(node.value, 'asdf')
 
-      new If('asdf', '.b', new SearchAndReplace('a', 'b'), location).apply(node, 'value')
+      new If('asdf', '.b', new SearchAndReplace('a', 'b'), location).apply(
+        node,
+        'value'
+      )
       assert.equal(node.value, 'bsdf')
     })
   })

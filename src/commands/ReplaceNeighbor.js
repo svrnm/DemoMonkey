@@ -15,7 +15,16 @@ import Command from './Command'
 import UndoElement from './UndoElement'
 
 class ReplaceNeighbor extends Command {
-  constructor(search, replace, nthParent, cssSelector, locationFilter = '', property = '', location = {}, cb = null) {
+  constructor(
+    search,
+    replace,
+    nthParent,
+    cssSelector,
+    locationFilter = '',
+    property = '',
+    location = {},
+    cb = null
+  ) {
     super()
     this.search = search
     this.replace = replace
@@ -28,8 +37,10 @@ class ReplaceNeighbor extends Command {
   }
 
   _checkLocation() {
-    return typeof this.location === 'object' &&
+    return (
+      typeof this.location === 'object' &&
       this.location.toString().includes(this.locationFilter)
+    )
   }
 
   apply(target, key = 'value') {
@@ -42,7 +53,11 @@ class ReplaceNeighbor extends Command {
     }
 
     // Check if we can find search in the current node
-    if (typeof target[key] !== 'undefined' && this._match(target[key].trim(), this.search, null) && this._checkLocation()) {
+    if (
+      typeof target[key] !== 'undefined' &&
+      this._match(target[key].trim(), this.search, null) &&
+      this._checkLocation()
+    ) {
       // Walk up some parent nodes
       const parentNode = this._walk(target, this.nthParent)
       // Check if the parent node exists and has a querySelector, _walk can return false
@@ -65,20 +80,37 @@ class ReplaceNeighbor extends Command {
             const original = neighbor.href.baseVal
             if (original !== this.replace && !original.endsWith(this.replace)) {
               neighbor.href.baseVal = this.replace
-              return new UndoElement(neighbor, 'href.baseVal', original, neighbor.href)
+              return new UndoElement(
+                neighbor,
+                'href.baseVal',
+                original,
+                neighbor.href
+              )
             }
           } else if (this.property !== '') {
             const original = neighbor.style[this.property]
             if (original !== this.replace) {
               neighbor.style[this.property] = this.replace
-              return new UndoElement(neighbor, 'style.' + this.property, original, neighbor.style[this.property])
+              return new UndoElement(
+                neighbor,
+                'style.' + this.property,
+                original,
+                neighbor.style[this.property]
+              )
             }
           } else if (neighbor.childNodes && neighbor.childNodes.length > 0) {
-            const neighborText = Array.from(neighbor.childNodes).filter(node => node.nodeType === 3)[0]
+            const neighborText = Array.from(neighbor.childNodes).filter(
+              (node) => node.nodeType === 3
+            )[0]
             const original = neighborText.data
             if (original !== this.replace) {
               neighborText.data = this.replace
-              return new UndoElement(neighborText, 'data', original, this.replace)
+              return new UndoElement(
+                neighborText,
+                'data',
+                original,
+                this.replace
+              )
             }
           }
         }

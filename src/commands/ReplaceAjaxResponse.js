@@ -34,7 +34,11 @@ class ReplaceAjaxResponse extends Command {
   }
 
   apply(target, key) {
-    target.add('replaceAjaxResponse', { urlPattern: this.urlPattern, search: this.search, replace: this.replace })
+    target.add('replaceAjaxResponse', {
+      urlPattern: this.urlPattern,
+      search: this.search,
+      replace: this.replace
+    })
     return false
   }
 }

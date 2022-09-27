@@ -16,13 +16,16 @@ function logger() {
   const timestamp = Date.now()
   const message = [...arguments]
   const level = message.shift()
-  const out = console[['error', 'info', 'warn', 'debug', 'log'].includes(level) ? level : 'log']
+  const out =
+    console[
+      ['error', 'info', 'warn', 'debug', 'log'].includes(level) ? level : 'log'
+    ]
   if (globalThis && globalThis.dmLogger) {
     globalThis.dmLogger({
       level,
       // we need to make sure that errors are converted into objects early,
       // since they are not stringified properly. JSON.stringify(new Error()) => {}
-      message: message.map(e => {
+      message: message.map((e) => {
         if (e instanceof Error) {
           return {
             fromError: true,

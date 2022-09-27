@@ -29,7 +29,12 @@ class Style extends Command {
       const original = node.style[this.property]
       node.style[this.property] = this.value
       if (original !== this.value) {
-        return new UndoElement(node, 'style.' + this.property, original, this.value)
+        return new UndoElement(
+          node,
+          'style.' + this.property,
+          original,
+          this.value
+        )
       }
     }
     return false

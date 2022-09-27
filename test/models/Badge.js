@@ -78,7 +78,11 @@ describe('Badge', function () {
     })
 
     it('sets the timer text to 5 and updates all tabs on opening', function () {
-      const tabs = [{ text: '0', color: '' }, { text: '4', color: '' }, { text: '8/8', color: '' }]
+      const tabs = [
+        { text: '0', color: '' },
+        { text: '4', color: '' },
+        { text: '8/8', color: '' }
+      ]
       const badge = new Badge(new BrowserAction(tabs))
       tabs.forEach((tab, id) => badge.updateDemoCounter(0, id))
       badge.updateTimer(5)
@@ -107,7 +111,11 @@ describe('Badge', function () {
     })
 
     it('clears the timer and updates all tabs on opening', function () {
-      const tabs = [{ text: '0', color: '' }, { text: '4/13', color: '' }, { text: '8/8', color: '' }]
+      const tabs = [
+        { text: '0', color: '' },
+        { text: '4/13', color: '' },
+        { text: '8/8', color: '' }
+      ]
       const badge = new Badge(new BrowserAction(tabs))
       badge.clearTimer(0)
       assert.equal(tabs[0].text, '0')

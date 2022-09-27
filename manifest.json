@@ -8,20 +8,22 @@
   "content_security_policy": {
     "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval'; object-src 'self'"
   },
-    "icons": {
+  "icons": {
     "16": "icons/monkey_16.png",
     "48": "icons/monkey_48.png",
     "128": "icons/monkey_128.png"
   },
-  "web_accessible_resources": [{
-    "resources": [
-      "manifest.json",
-      "COMMITHASH",
-      "js/inline.js",
-      "js/index.js.map"
-    ],
-    "matches": ["<all_urls>"]
-  }],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "manifest.json",
+        "COMMITHASH",
+        "js/inline.js",
+        "js/index.js.map"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "background": {
     "service_worker": "js/background.js"
   },
@@ -35,11 +37,15 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "storage", "unlimitedStorage", "activeTab", "contextMenus", "scripting", "declarativeNetRequest", "alarms"
+    "storage",
+    "unlimitedStorage",
+    "activeTab",
+    "contextMenus",
+    "scripting",
+    "declarativeNetRequest",
+    "alarms"
   ],
-  "optional_host_permissions": [
-    "<all_urls>"
-  ],
+  "optional_host_permissions": ["<all_urls>"],
   "commands": {
     "live-mode": {
       "suggested_key": {

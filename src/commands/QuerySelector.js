@@ -27,7 +27,11 @@ class QuerySelector extends Command {
   }
 
   _applyOnTarget(target) {
-    if (target === null || typeof target !== 'object' || typeof target.innerHTML !== 'string') {
+    if (
+      target === null ||
+      typeof target !== 'object' ||
+      typeof target.innerHTML !== 'string'
+    ) {
       return false
     }
 
@@ -36,7 +40,7 @@ class QuerySelector extends Command {
     if (key.includes('.')) {
       const path = key.split('.')
       key = path.pop()
-      path.forEach(k => {
+      path.forEach((k) => {
         if (target && target[k]) {
           target = target[k]
         }
@@ -66,7 +70,7 @@ class QuerySelector extends Command {
         case 1:
           return this._applyOnTarget(targetList[0])
         default:
-          return Array.from(targetList).map(t => this._applyOnTarget(t))
+          return Array.from(targetList).map((t) => this._applyOnTarget(t))
       }
     } else {
       return false

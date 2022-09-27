@@ -55,68 +55,131 @@ class ReplaceFlowmapConnection extends Command {
         const g = document.getElementById(tier1id + '_' + tier2id + flowmapid)
         if (g && g.parentElement) {
           const r = []
-          g.parentElement.childNodes.forEach(
-            (node, index) => {
-              this.value.split(',').forEach(replacement => {
-                const originalReplacement = replacement
-                replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1).toLowerCase()
-                if (['Normal', 'Critical', 'Warning', 'UnknownFlowMap'].includes(replacement)) {
-                  const searchPattern = this.force ? /ads((Normal|Critical|Warning)Node|UnknownFlowMap)Color/ : /ads(Normal|Critical|Warning)NodeColor/
-                  const newValue = node.className.baseVal.replace(
-                    searchPattern, 'ads' + replacement + 'NodeColor')
-                  if (newValue !== node.className.baseVal) {
-                    const original = node.className.baseVal
-                    node.className.baseVal = newValue
-                    r.push(new UndoElement(node, 'className.baseVal', original, newValue))
-                  }
-                } else if (replacement === 'Async') {
-                  // Dash the line between the nodes.
-                  if (node.hasAttribute('stroke-dasharray')) {
-                    const origstroke = node.attributes['stroke-dasharray'].value
-                    if (origstroke !== '5,5') {
-                      node.attributes['stroke-dasharray'].value = '5,5'
-                      r.push(new UndoElement(node, 'attributes.stroke-dasharray.value', origstroke, '5,5'))
-                    }
-                  }
-                  if (node.className.baseVal.includes('adsFlowMapStatsDetails') && !node.innerHTML.includes('(async)')) {
-                    const innerHTML = node.innerHTML
-                    node.innerHTML += ' (async)'
-                    r.push(new UndoElement(node, 'innerHTML', innerHTML, node.innerHTML))
-                  }
-                } else if (replacement === 'Sync') {
-                  // Turn the dashes into a solid line
-                  if (node.hasAttribute('stroke-dasharray')) {
-                    const origstroke = node.attributes['stroke-dasharray'].value
-                    if (origstroke === '5,5') {
-                      node.attributes['stroke-dasharray'].value = ''
-                      r.push(new UndoElement(node, 'attributes.stroke-dasharray.value', origstroke, ''))
-                    }
-                  }
-                  if (node.className.baseVal.includes('adsFlowMapStatsDetails') && node.innerHTML.includes('(async)')) {
-                    Array.from(node.children).forEach(tspan => {
-                      const innerHTML = tspan.innerHTML
-                      tspan.innerHTML = tspan.innerHTML.replace('(async)', '')
-                      r.push(new UndoElement(tspan, 'innerHTML', innerHTML, tspan.innerHTML))
-                    })
-                  }
-                } else if (replacement === 'Hide') {
-                  if (node.style.display !== 'none') {
-                    const oldDisplay = node.style.display
-                    node.style.display = 'none'
-                    r.push(new UndoElement(node, 'style.display', oldDisplay, node.style.display))
-                  }
-                } else {
-                  if (node.className.baseVal.includes('adsFlowMapText')) {
-                    Array.from(node.children).forEach(tspan => {
-                      const innerHTML = tspan.innerHTML
-                      tspan.innerHTML = originalReplacement
-                      r.push(new UndoElement(tspan, 'innerHTML', innerHTML, tspan.innerHTML))
-                    })
+          g.parentElement.childNodes.forEach((node, index) => {
+            this.value.split(',').forEach((replacement) => {
+              const originalReplacement = replacement
+              replacement =
+                replacement.charAt(0).toUpperCase() +
+                replacement.slice(1).toLowerCase()
+              if (
+                ['Normal', 'Critical', 'Warning', 'UnknownFlowMap'].includes(
+                  replacement
+                )
+              ) {
+                const searchPattern = this.force
+                  ? /ads((Normal|Critical|Warning)Node|UnknownFlowMap)Color/
+                  : /ads(Normal|Critical|Warning)NodeColor/
+                const newValue = node.className.baseVal.replace(
+                  searchPattern,
+                  'ads' + replacement + 'NodeColor'
+                )
+                if (newValue !== node.className.baseVal) {
+                  const original = node.className.baseVal
+                  node.className.baseVal = newValue
+                  r.push(
+                    new UndoElement(
+                      node,
+                      'className.baseVal',
+                      original,
+                      newValue
+                    )
+                  )
+                }
+              } else if (replacement === 'Async') {
+                // Dash the line between the nodes.
+                if (node.hasAttribute('stroke-dasharray')) {
+                  const origstroke = node.attributes['stroke-dasharray'].value
+                  if (origstroke !== '5,5') {
+                    node.attributes['stroke-dasharray'].value = '5,5'
+                    r.push(
+                      new UndoElement(
+                        node,
+                        'attributes.stroke-dasharray.value',
+                        origstroke,
+                        '5,5'
+                      )
+                    )
                   }
                 }
-              })
-            }
-          )
+                if (
+                  node.className.baseVal.includes('adsFlowMapStatsDetails') &&
+                  !node.innerHTML.includes('(async)')
+                ) {
+                  const innerHTML = node.innerHTML
+                  node.innerHTML += ' (async)'
+                  r.push(
+                    new UndoElement(
+                      node,
+                      'innerHTML',
+                      innerHTML,
+                      node.innerHTML
+                    )
+                  )
+                }
+              } else if (replacement === 'Sync') {
+                // Turn the dashes into a solid line
+                if (node.hasAttribute('stroke-dasharray')) {
+                  const origstroke = node.attributes['stroke-dasharray'].value
+                  if (origstroke === '5,5') {
+                    node.attributes['stroke-dasharray'].value = ''
+                    r.push(
+                      new UndoElement(
+                        node,
+                        'attributes.stroke-dasharray.value',
+                        origstroke,
+                        ''
+                      )
+                    )
+                  }
+                }
+                if (
+                  node.className.baseVal.includes('adsFlowMapStatsDetails') &&
+                  node.innerHTML.includes('(async)')
+                ) {
+                  Array.from(node.children).forEach((tspan) => {
+                    const innerHTML = tspan.innerHTML
+                    tspan.innerHTML = tspan.innerHTML.replace('(async)', '')
+                    r.push(
+                      new UndoElement(
+                        tspan,
+                        'innerHTML',
+                        innerHTML,
+                        tspan.innerHTML
+                      )
+                    )
+                  })
+                }
+              } else if (replacement === 'Hide') {
+                if (node.style.display !== 'none') {
+                  const oldDisplay = node.style.display
+                  node.style.display = 'none'
+                  r.push(
+                    new UndoElement(
+                      node,
+                      'style.display',
+                      oldDisplay,
+                      node.style.display
+                    )
+                  )
+                }
+              } else {
+                if (node.className.baseVal.includes('adsFlowMapText')) {
+                  Array.from(node.children).forEach((tspan) => {
+                    const innerHTML = tspan.innerHTML
+                    tspan.innerHTML = originalReplacement
+                    r.push(
+                      new UndoElement(
+                        tspan,
+                        'innerHTML',
+                        innerHTML,
+                        tspan.innerHTML
+                      )
+                    )
+                  })
+                }
+              }
+            })
+          })
           return r
         }
       }
