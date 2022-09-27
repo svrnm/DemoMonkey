@@ -73,10 +73,8 @@ const Base = {
     await driver.wait(until.elementsLocated(By.className('toggle-group')))
     const button = By.css(`#toggle-${title} input`)
     // const status = By.css(`#toggle-${title} > div > input`)
-    console.log(button)
     await driver.findElement(button).click()
     const checked = await driver.findElement(button).isSelected()
-    console.log(checked)
     assert.equal(checked, true)
   },
   disableOptionalFeature: async function (title = 'webRequestHook') {

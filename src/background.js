@@ -114,7 +114,6 @@ try {
     })
 
     scope.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-      console.log(request)
       if (request.receiver && request.receiver === 'background') {
         if (typeof request.count === 'number' && typeof sender.tab === 'object' && typeof sender.tab.id === 'number') {
           badge.updateDemoCounter(request.count, sender.tab.id)
@@ -136,18 +135,6 @@ try {
     // and this will be reset to false, as expected, whenever
     // the service worker wakes up from idle.
     let isInitialized = false
-
-    // Listens for incomming connections from content
-    // scripts, or from the popup. This will be triggered
-    // whenever the extension "wakes up" from idle.
-    /*
-    scope.chrome.runtime.onConnect.addListener((port) => {
-      console.log('wake up', port)
-      if (port.name === 'DEMO_MONKEY_STORE') {
-        init()
-      }
-    })
-    */
 
     const persistentStates = {
       configurations: [{
@@ -197,7 +184,6 @@ try {
           state.log = []
           run(state)
           isInitialized = true
-          console.log('Send message')
           scope.chrome.runtime.sendMessage({ type: 'STORE_INITIALIZED' })
         }
       })
@@ -205,7 +191,6 @@ try {
     init()
 
     function updateStorage(store) {
-      console.log('Updating Storage.')
       const configurations = store.getState().configurations
       const settings = store.getState().settings
 
@@ -223,7 +208,6 @@ try {
     }
 
     function run(state) {
-      console.log('Background Script started')
       const store = createStore(reducers, state)
       wrapStore(store, { portName: 'DEMO_MONKEY_STORE' })
 
