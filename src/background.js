@@ -123,6 +123,7 @@ try {
     })
 
     scope.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+      console.log(request)
       if (request.receiver && request.receiver === 'background') {
         if (typeof request.count === 'number' && typeof sender.tab === 'object' && typeof sender.tab.id === 'number') {
           badge.updateDemoCounter(request.count, sender.tab.id)

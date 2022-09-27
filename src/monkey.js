@@ -75,13 +75,6 @@ try {
 
         if (inlineConfig.hookIntoAjax) {
           if (!['miro.com'].includes(scope.location.host)) {
-            /*
-            TODO: MV3 Unfixed
-            const inlineConfigScriptTag = scope.document.createElement('script')
-            inlineConfigScriptTag.innerHTML = 'window.demoMonkeyConfig = ' + JSON.stringify(inlineConfig)
-            scope.document.head.append(inlineConfigScriptTag)
-            */
-
             const inlineScriptTag = scope.document.createElement('script')
             inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
             inlineScriptTag.setAttribute('data-dm-config-hook-into-ajax', inlineConfig.hookIntoAjax)
