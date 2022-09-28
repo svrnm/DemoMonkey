@@ -319,7 +319,7 @@ class Editor extends React.Component {
 
     const hotkeyOptions = Array.from(Array(9).keys())
 
-    const currentHotkeys = current.hotkeys.filter(e => e !== null)
+    const currentHotkeys = current.hotkeys.filter((e) => e !== null)
 
     console.log('CH', currentHotkeys)
 
@@ -329,14 +329,14 @@ class Editor extends React.Component {
       <div className="editor">
         <div className="title">
           <div className="toggle-configuration" style={hiddenIfNew}>
-              <Switch
-                checked={!!this.props.currentConfiguration.enabled}
-                onChange={() => {
-                  this.toggle()
-                }}
-                height={20}
-                width={48}
-              />
+            <Switch
+              checked={!!this.props.currentConfiguration.enabled}
+              onChange={() => {
+                this.toggle()
+              }}
+              height={20}
+              width={48}
+            />
           </div>
           <b>Name</b>
           <input
@@ -354,7 +354,7 @@ class Editor extends React.Component {
                   if (selected.length === 0) {
                     return <em>Shortcut Groups...</em>
                   }
-                  return selected.map(e => '#' + e).join(', ')
+                  return selected.map((e) => '#' + e).join(', ')
                 }}
                 displayEmpty
                 value={currentHotkeys}
