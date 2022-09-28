@@ -20,10 +20,12 @@ import CodeEditor from './CodeEditor'
 import Configuration from '../../../models/Configuration'
 import PropTypes from 'prop-types'
 import Mousetrap from 'mousetrap'
-import Select from 'react-select'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
 import CommandBuilder from '../../../commands/CommandBuilder'
 import ErrorCommand from '../../../commands/ErrorCommand'
-import Switch from 'react-switch'
+import Switch from '@mui/material/Switch'
 
 class Editor extends React.Component {
   static propTypes = {
@@ -91,8 +93,9 @@ class Editor extends React.Component {
     })
   }
 
-  handleHotkeysChange(options) {
-    this.handleUpdate('hotkeys', options === null ? [] : options.map((o) => o.value), null)
+  handleHotkeysChange(event) {
+    console.log(event)
+    this.handleUpdate('hotkeys', event.target.value, null)
   }
 
   updateVariable(id, value) {
@@ -314,14 +317,11 @@ class Editor extends React.Component {
     const showTemplateWarning =
       tmpConfig.isTemplate() || tmpConfig.isRestricted() ? 'no-warning-box' : 'warning-box'
 
-    const hotkeyOptions = Array.from(Array(9).keys()).map((x) => ({
-      value: x + 1,
-      label: '#' + (x + 1)
-    }))
+    const hotkeyOptions = Array.from(Array(9).keys())
 
-    const currentHotkeys = current.hotkeys
-      ? current.hotkeys.map((value) => ({ value, label: '#' + value }))
-      : []
+    const currentHotkeys = current.hotkeys.filter(e => e !== null)
+
+    console.log('CH', currentHotkeys)
 
     const autosave = current.id === 'new' ? false : this.props.autoSave
 
@@ -329,14 +329,14 @@ class Editor extends React.Component {
       <div className="editor">
         <div className="title">
           <div className="toggle-configuration" style={hiddenIfNew}>
-            <Switch
-              checked={!!this.props.currentConfiguration.enabled}
-              onChange={() => {
-                this.toggle()
-              }}
-              height={20}
-              width={48}
-            />
+              <Switch
+                checked={!!this.props.currentConfiguration.enabled}
+                onChange={() => {
+                  this.toggle()
+                }}
+                height={20}
+                width={48}
+              />
           </div>
           <b>Name</b>
           <input
@@ -348,13 +348,27 @@ class Editor extends React.Component {
             onChange={(event) => this.handleUpdate('name', event.target.value, event)}
           />
           <div className="select-hotkeys">
-            <Select
-              placeholder="Shortcut Groups..."
-              value={currentHotkeys}
-              isMulti={true}
-              onChange={(options) => this.handleHotkeysChange(options)}
-              options={hotkeyOptions}
-            />
+            <FormControl sx={{ m: 1, width: '95%' }} size="small">
+              <Select
+                renderValue={(selected) => {
+                  if (selected.length === 0) {
+                    return <em>Shortcut Groups...</em>
+                  }
+                  return selected.map(e => '#' + e).join(', ')
+                }}
+                displayEmpty
+                value={currentHotkeys}
+                multiple
+                width="100%"
+                onChange={(event) => this.handleHotkeysChange(event)}
+              >
+                {hotkeyOptions.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    <span>#{value}</span>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
           <button
             className={'save-button ' + (this.state.unsavedChanges ? '' : 'disabled')}
