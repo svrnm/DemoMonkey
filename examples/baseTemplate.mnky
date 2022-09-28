@@ -5,7 +5,7 @@
 ; Script only run on the demo environments by default
 @include[] = /^https?://demo.*\.saas\..*/.*$/
 
-;       Gets rid of Errors in the Controller
+; Gets rid of Errors in the Controller
 !querySelector(.platform-notification-message-error , style.display) = none
 
 ; Make the use of appd commands easier by importing the namespace
