@@ -32,15 +32,18 @@ class RemoveFlowmapNode extends Command {
   }
 
   apply(target, key) {
-    target.add(function (url, response, context) {
-      if (url.match(/applicationFlowMapUiService/i)) {
-        const j = JSON.parse(response)
-        console.log(j.nodes)
-        j.nodes = j.nodes.filter(node => node.name !== context.search)
-        return JSON.stringify(j)
-      }
-      return response
-    }, { search: this.search })
+    target.add(
+      function (url, response, context) {
+        if (url.match(/applicationFlowMapUiService/i)) {
+          const j = JSON.parse(response)
+          console.log(j.nodes)
+          j.nodes = j.nodes.filter((node) => node.name !== context.search)
+          return JSON.stringify(j)
+        }
+        return response
+      },
+      { search: this.search }
+    )
     return false
   }
 }

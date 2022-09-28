@@ -54,7 +54,10 @@ class ReplaceImage extends Command {
       return false
     }
 
-    if (this._match(original, search, this.replace) || this._match(original, `url("${search}")`, this.replace)) {
+    if (
+      this._match(original, search, this.replace) ||
+      this._match(original, `url("${search}")`, this.replace)
+    ) {
       const result = []
       if (this.withRatio && typeof target.width === 'number' && typeof target.height === 'number') {
         const oldWidth = target.width
@@ -65,11 +68,11 @@ class ReplaceImage extends Command {
           const heightFactor = this.naturalHeight / oldHeight
           if (this.naturalWidth > this.naturalHeight) {
             const originalHeight = this.style.height
-            this.style.height = (oldHeight * heightFactor / widthFactor) + 'px'
+            this.style.height = (oldHeight * heightFactor) / widthFactor + 'px'
             undoPlaceholder.update(this, 'style.height', originalHeight, this.style.height)
           } else {
             const originalWidth = this.style.width
-            this.style.width = (oldWidth * widthFactor / heightFactor) + 'px'
+            this.style.width = (oldWidth * widthFactor) / heightFactor + 'px'
             undoPlaceholder.update(this, 'style.height', originalWidth, this.style.width)
           }
           this.removeEventListener('load', el)

@@ -19,7 +19,7 @@ class MatchRule {
 
   _testString(pattern, str) {
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
-      return (new RegExp(pattern.substr(1, pattern.length - 2))).test(str)
+      return new RegExp(pattern.substr(1, pattern.length - 2)).test(str)
     }
     return str.includes(pattern)
   }

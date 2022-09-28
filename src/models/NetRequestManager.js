@@ -43,19 +43,38 @@ class NetRequestManager {
 
   _getResourceType(type) {
     if (type === '*') {
-      return ['csp_report', 'font', 'image', 'main_frame', 'media', 'object', 'other', 'ping', 'script', 'stylesheet', 'sub_frame', 'webbundle', 'websocket', 'webtransport', 'xmlhttprequest']
+      return [
+        'csp_report',
+        'font',
+        'image',
+        'main_frame',
+        'media',
+        'object',
+        'other',
+        'ping',
+        'script',
+        'stylesheet',
+        'sub_frame',
+        'webbundle',
+        'websocket',
+        'webtransport',
+        'xmlhttprequest'
+      ]
     }
     return type.split(',')
   }
 
   add(description, tabId) {
-    this.declarativeNetRequest.getSessionRules(rules => {
+    this.declarativeNetRequest.getSessionRules((rules) => {
       const resourceTypes = this._getResourceType(description.type)
       const existingRule = rules.find(({ action, condition }) => {
-        return action.type === description.action &&
+        return (
+          action.type === description.action &&
           condition.resourceTypes.join(',') === resourceTypes.join(',') &&
           condition.urlFilter === description.url &&
-          (description.action !== 'redirect' || action.redirect.url === description.options.redirect)
+          (description.action !== 'redirect' ||
+            action.redirect.url === description.options.redirect)
+        )
       })
       if (existingRule) {
         this.logger('debug', 'Use existing rule for tab', tabId, 'and rule ', description).write()
@@ -91,17 +110,20 @@ class NetRequestManager {
   }
 
   remove(description, tabId) {
-    this.declarativeNetRequest.getSessionRules(rules => {
+    this.declarativeNetRequest.getSessionRules((rules) => {
       const resourceTypes = this._getResourceType(description.type)
       this.logger('debug', 'Remove web hook from tab', tabId, ':', description).write()
       const existingRule = rules.find(({ action, condition }) => {
-        return action.type === description.action &&
+        return (
+          action.type === description.action &&
           condition.resourceTypes === resourceTypes &&
           condition.urlFilter === description.url &&
-          (description.action !== 'redirect' || action.redirect.url === description.options.redirect)
+          (description.action !== 'redirect' ||
+            action.redirect.url === description.options.redirect)
+        )
       })
       if (existingRule) {
-        existingRule.condition.tabIds = existingRule.condition.tabIds.filter(id => id !== tabId)
+        existingRule.condition.tabIds = existingRule.condition.tabIds.filter((id) => id !== tabId)
         if (existingRule.condition.tabIds.length > 0) {
           this.declarativeNetRequest.updateSessionRules({
             addRules: [existingRule],
@@ -117,9 +139,9 @@ class NetRequestManager {
   }
 
   removeTab(tabId) {
-    this.declarativeNetRequest.getSessionRules(rules => {
+    this.declarativeNetRequest.getSessionRules((rules) => {
       const newRules = rules.reduce((result, current) => {
-        current.condition.tabIds = current.condition.tabIds.filter(id => id !== tabId)
+        current.condition.tabIds = current.condition.tabIds.filter((id) => id !== tabId)
         if (current.condition.tabIds.length > 0) {
           result.push(current)
         }
@@ -127,16 +149,16 @@ class NetRequestManager {
       }, [])
       this.declarativeNetRequest.updateSessionRules({
         addRules: newRules,
-        removeRuleIds: rules.map(rule => rule.id)
+        removeRuleIds: rules.map((rule) => rule.id)
       })
     })
   }
 
   clear() {
     this.logger('debug', 'Clear all web hooks').write()
-    this.declarativeNetRequest.getSessionRules(rules => {
+    this.declarativeNetRequest.getSessionRules((rules) => {
       this.declarativeNetRequest.updateSessionRules({
-        removeRuleIds: rules.map(rule => rule.id)
+        removeRuleIds: rules.map((rule) => rule.id)
       })
     })
   }

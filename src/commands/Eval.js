@@ -42,7 +42,10 @@ class Eval extends Command {
       return r
     }
     if (Array.isArray(r)) {
-      return r.reduce((carry, element) => element instanceof UndoElement ? carry.concat(element) : carry, [])
+      return r.reduce(
+        (carry, element) => (element instanceof UndoElement ? carry.concat(element) : carry),
+        []
+      )
     }
     return false
   }

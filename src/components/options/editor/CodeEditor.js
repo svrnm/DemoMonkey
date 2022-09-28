@@ -77,43 +77,46 @@ class CodeEditor extends React.Component {
   }
 
   render() {
-    return <div className="editor-box"><AceEditor
-      value={this.props.value}
-      onChange={(content) => this.handleChange(content)}
-      onLoad={(editor) => {
-        this.editor = editor
-        window.editor = editor
-        this._updateAnnotations()
-      }}
-      width="100%"
-      height="calc(100% - 40px)"
-      theme={ this.props.isDarkMode ? 'merbivore' : 'xcode' }
-      mode="mnky"
-      readOnly = {this.props.readOnly === true}
-      className = {this.props.readOnly === true ? 'disabled' : ''}
-      enableBasicAutocompletion={true}
-      enableLiveAutocompletion={this.props.editorAutocomplete}
-      enableSnippets={false}
-      keyboardHandler={this.props.keyboardHandler}
-      editorProps={{ $blockScrolling: 'Infinity' }}
-      name="contentarea"
-      commands={[
-        {
-          name: 'Toggle Comment',
-          bindKey: { win: 'Ctrl-Shift-7', mac: 'Cmd-Shift-7' },
-          exec: 'togglecomment'
-        },
-        {
-          name: 'Save On Enter',
-          bindKey: { win: 'Enter', mac: 'Enter' },
-          exec: (editor) => {
-            editor.insert('\n')
-            this.autoSave()
-          }
-        }
-      ]}
-    />
-    </div>
+    return (
+      <div className="editor-box">
+        <AceEditor
+          value={this.props.value}
+          onChange={(content) => this.handleChange(content)}
+          onLoad={(editor) => {
+            this.editor = editor
+            window.editor = editor
+            this._updateAnnotations()
+          }}
+          width="100%"
+          height="calc(100% - 40px)"
+          theme={this.props.isDarkMode ? 'merbivore' : 'xcode'}
+          mode="mnky"
+          readOnly={this.props.readOnly === true}
+          className={this.props.readOnly === true ? 'disabled' : ''}
+          enableBasicAutocompletion={true}
+          enableLiveAutocompletion={this.props.editorAutocomplete}
+          enableSnippets={false}
+          keyboardHandler={this.props.keyboardHandler}
+          editorProps={{ $blockScrolling: 'Infinity' }}
+          name="contentarea"
+          commands={[
+            {
+              name: 'Toggle Comment',
+              bindKey: { win: 'Ctrl-Shift-7', mac: 'Cmd-Shift-7' },
+              exec: 'togglecomment'
+            },
+            {
+              name: 'Save On Enter',
+              bindKey: { win: 'Enter', mac: 'Enter' },
+              exec: (editor) => {
+                editor.insert('\n')
+                this.autoSave()
+              }
+            }
+          ]}
+        />
+      </div>
+    )
   }
 }
 export default CodeEditor

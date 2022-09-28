@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-(function () {
+;(function () {
   const later = document.getElementById('later')
   const interval = document.getElementById('interval')
   // Load some page elements deferred
@@ -35,9 +35,11 @@
     counter++
     // document.getElementById('monkey-stats').innerHTML = 'Undo Length: ' + window.$DEMO_MONKEY.getUndoLength()
   }, 3000)
-  fetch('https://github.com/svrnm/demomonkey').then(function (response) {
-    return response.text()
-  }).then(function (response) {
-    document.getElementById('ajax').innerHTML = response.split(/<\/?title>/)[1]
-  })
+  fetch('https://github.com/svrnm/demomonkey')
+    .then(function (response) {
+      return response.text()
+    })
+    .then(function (response) {
+      document.getElementById('ajax').innerHTML = response.split(/<\/?title>/)[1]
+    })
 })()

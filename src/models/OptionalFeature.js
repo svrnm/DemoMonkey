@@ -24,7 +24,11 @@ const optionalFeatures = [
     id: 'autoReplace',
     defaultValue: true,
     label: 'Automatically apply replacements',
-    description: <span>when configuration is saved. <i>(This will also disable undo)</i></span>
+    description: (
+      <span>
+        when configuration is saved. <i>(This will also disable undo)</i>
+      </span>
+    )
   },
   {
     id: 'autoSave',
@@ -42,25 +46,45 @@ const optionalFeatures = [
     id: 'editorAutocomplete',
     defaultValue: true,
     label: 'Autocomplete.',
-    description: 'The editor for configurations will display an auto completion for commands, options & imports.'
+    description:
+      'The editor for configurations will display an auto completion for commands, options & imports.'
   },
   {
     id: 'onlyShowAvailableConfigurations',
     defaultValue: true,
     label: 'Only show available configurations.',
-    description: 'Set the default value for the popup toggle, which hides configurations that are not available for the current url.'
+    description:
+      'Set the default value for the popup toggle, which hides configurations that are not available for the current url.'
   },
   {
     id: 'webRequestHook',
     defaultValue: false,
     label: 'Hook into Web Requests.',
-    description: <span>Turn this feature on, if you want to use the commands !blockUrl and !redirectUrl. <b>This will allow DemoMonkey to block or redirect requests in-flight</b>. To learn what this means, read about <a target="blank" rel="noopener noreferer" href="https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/">chrome.declarativeNetRequest</a></span>
+    description: (
+      <span>
+        Turn this feature on, if you want to use the commands !blockUrl and !redirectUrl.{' '}
+        <b>This will allow DemoMonkey to block or redirect requests in-flight</b>. To learn what
+        this means, read about{' '}
+        <a
+          target="blank"
+          rel="noopener noreferer"
+          href="https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/"
+        >
+          chrome.declarativeNetRequest
+        </a>
+      </span>
+    )
   },
   {
     id: 'debugBox',
     defaultValue: false,
     label: 'Expand Debug Box',
-    description: <span>Turn this feature on, to show the debug box with statistics in full length when running demo monkey in <i>debug mode</i></span>
+    description: (
+      <span>
+        Turn this feature on, to show the debug box with statistics in full length when running demo
+        monkey in <i>debug mode</i>
+      </span>
+    )
   },
   {
     id: 'keyboardHandlerVim',
@@ -72,13 +96,19 @@ const optionalFeatures = [
     id: 'withEvalCommand',
     defaultValue: false,
     label: 'Allow !eval.',
-    description: 'By turning on this flag, you can use the command !eval which allows you to write arbitrary javascript code. Use with caution!'
+    description:
+      'By turning on this flag, you can use the command !eval which allows you to write arbitrary javascript code. Use with caution!'
   },
   {
     id: 'hookIntoAjax',
     defaultValue: false,
     label: 'Hook into Ajax.',
-    description: <span>Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response. Does not support <i>window.fetch</i>.</span>
+    description: (
+      <span>
+        Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response.
+        Does not support <i>window.fetch</i>.
+      </span>
+    )
   },
   {
     id: 'syncDarkMode',
@@ -91,13 +121,18 @@ const optionalFeatures = [
     defaultValue: false,
     // style: { display: this.props.settings.optionalFeatures.syncDarkMode ? 'none' : 'flex' },
     label: 'Use dark mode.',
-    description: <span>Use this toggle to set <i>dark mode</i> as your preferred theme.</span>
+    description: (
+      <span>
+        Use this toggle to set <i>dark mode</i> as your preferred theme.
+      </span>
+    )
   },
   {
     id: 'noWarningForMissingPermissions',
     defaultValue: false,
     label: 'No warning for missing permissions.',
-    description: 'To work best, DemoMonkey requires permissions to interact with all sites, and will warn you if you don\'t provide those permissions. Turn this feature on to remove this warning.'
+    description:
+      "To work best, DemoMonkey requires permissions to interact with all sites, and will warn you if you don't provide those permissions. Turn this feature on to remove this warning."
   },
   {
     id: 'registerProtocolHandler',
@@ -109,7 +144,12 @@ const optionalFeatures = [
     id: 'writeLogs',
     defaultValue: true,
     label: 'Write Logs.',
-    description: <span>Turn this feature on to have a DemoMonkey logs accessible via the <b>Logs</b> navigation item.</span>
+    description: (
+      <span>
+        Turn this feature on to have a DemoMonkey logs accessible via the <b>Logs</b> navigation
+        item.
+      </span>
+    )
   }
 ]
 
@@ -131,7 +171,7 @@ class OptionalFeature {
   }
 
   static getAll(options = {}) {
-    return optionalFeatures.map(obj => {
+    return optionalFeatures.map((obj) => {
       const of = new OptionalFeature(obj.id, obj.defaultValue, obj.label, obj.description)
       if (options.styles && options.styles[obj.id]) {
         of.style = options.styles[obj.id]

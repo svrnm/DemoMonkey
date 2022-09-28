@@ -32,7 +32,7 @@ class Badge {
   }
 
   removeTab(tabId) {
-    this.tabs = this.tabs.filter(id => id !== tabId)
+    this.tabs = this.tabs.filter((id) => id !== tabId)
     this.save()
   }
 
@@ -59,7 +59,7 @@ class Badge {
     this.browserAction.getBadgeText({ tabId }, (oldText) => {
       // oldText can be undefined for a new tab, set it to ''
       const text = this._updateText(typeof oldText === 'undefined' ? '' : oldText, count + '')
-      const color = (count === '!' || count > 0) ? '#952613' : '#5c832f'
+      const color = count === '!' || count > 0 ? '#952613' : '#5c832f'
       this.browserAction.setBadgeText({ text, tabId })
       this.browserAction.setBadgeBackgroundColor({
         color,
@@ -71,12 +71,12 @@ class Badge {
   clearTimer() {
     this.timer = -1
     this.save()
-    this.tabs.forEach(tabId => this._updateBadgeText(tabId))
+    this.tabs.forEach((tabId) => this._updateBadgeText(tabId))
   }
 
   updateTimer(timer) {
     this.timer = timer > 99 ? 99 : timer
-    this.tabs.forEach(tabId => this._updateBadgeText(tabId))
+    this.tabs.forEach((tabId) => this._updateBadgeText(tabId))
   }
 }
 

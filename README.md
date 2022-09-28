@@ -12,7 +12,7 @@ flight booking service.
 
 ## Usage
 
-DemoMonkey is driven by __configurations__, that contain replace patterns in the following format:
+DemoMonkey is driven by **configurations**, that contain replace patterns in the following format:
 
 ```ini
 eCommerce = Booking Service

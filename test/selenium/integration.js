@@ -36,8 +36,14 @@ describe('Integration', function () {
     it('will create a test configurations', async function () {
       await base.getDriver().sleep(500)
       await base.createConfig('GermanCities', 'San Francisco = Berlin\nSeattle = Köln')
-      await base.createConfig('Test Config', '+GermanCities\n@include = /.*/\n!replaceUrl(*demomonkey*) = https://github.com/Appdynamics/api-commandline-tool')
-      await base.createConfig('AppDynamics Config', '@textAttributes[] = data-label,data-another\n@include = /.*/\n@namespace[] = appdynamics\n!replaceFlowmapIcon(ECommerce-Services) = php\nECommerce = Selenium')
+      await base.createConfig(
+        'Test Config',
+        '+GermanCities\n@include = /.*/\n!replaceUrl(*demomonkey*) = https://github.com/Appdynamics/api-commandline-tool'
+      )
+      await base.createConfig(
+        'AppDynamics Config',
+        '@textAttributes[] = data-label,data-another\n@include = /.*/\n@namespace[] = appdynamics\n!replaceFlowmapIcon(ECommerce-Services) = php\nECommerce = Selenium'
+      )
     })
 
     it('will enable the test configurations', async function () {
@@ -54,13 +60,27 @@ describe('Integration', function () {
       await driver.get(base.testUrl)
       await driver.findElement(By.id('input')).sendKeys('San Francisco')
       await driver.wait(until.elementsLocated(By.id('later')))
-      await driver.wait(until.elementsLocated(By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon')))
+      await driver.wait(
+        until.elementsLocated(By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon'))
+      )
       await base.getDriver().sleep(2000)
       expect(await driver.findElement(By.id('static')).getText()).to.include('Berlin')
       expect(await driver.findElement(By.id('later')).getText()).to.include('Köln')
       expect(await driver.findElement(By.id('ajax')).getText()).to.include('Command Line Tool')
-      expect(await driver.findElement(By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon')).getAttribute('xlink:href')).to.include('images/icon_nodetype_php_100x100.png')
-      expect(await driver.findElement(By.css('#APPLICATION_COMPONENT108_3f47 > g.adsFlowMapTextContainer > text > tspan.adsFlowMapTextFace')).getText()).to.include('Selenium')
+      expect(
+        await driver
+          .findElement(By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon'))
+          .getAttribute('xlink:href')
+      ).to.include('images/icon_nodetype_php_100x100.png')
+      expect(
+        await driver
+          .findElement(
+            By.css(
+              '#APPLICATION_COMPONENT108_3f47 > g.adsFlowMapTextContainer > text > tspan.adsFlowMapTextFace'
+            )
+          )
+          .getText()
+      ).to.include('Selenium')
       // expect(driver.findElement(By.css('[data-label]')).getAttribute('data-label')).to.eventually.include('Berlin')
     })
   })

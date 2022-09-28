@@ -36,7 +36,7 @@ class QuerySelector extends Command {
     if (key.includes('.')) {
       const path = key.split('.')
       key = path.pop()
-      path.forEach(k => {
+      path.forEach((k) => {
         if (target && target[k]) {
           target = target[k]
         }
@@ -66,7 +66,7 @@ class QuerySelector extends Command {
         case 1:
           return this._applyOnTarget(targetList[0])
         default:
-          return Array.from(targetList).map(t => this._applyOnTarget(t))
+          return Array.from(targetList).map((t) => this._applyOnTarget(t))
       }
     } else {
       return false

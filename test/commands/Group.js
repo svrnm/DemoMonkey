@@ -72,7 +72,10 @@ class HideApplication {
     this.group = new Group([
       new Hide(appName, 4, 'ads-application-card', '', 'APPS_ALL_DASHBOARD', location),
       new Hide(appName, 3, 'x-grid-row', '', 'APPS_ALL_DASHBOARD', location),
-      new Hide(appName, 2, 'ads-home-list-item', '', 'AD_HOME_OVERVIEW', location, function (_, parentNode) {
+      new Hide(appName, 2, 'ads-home-list-item', '', 'AD_HOME_OVERVIEW', location, function (
+        _,
+        parentNode
+      ) {
         return parentNode.getAttribute('ng-click').includes('ViewApplicationDashboard')
       })
     ])

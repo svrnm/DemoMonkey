@@ -58,20 +58,40 @@ describe('Variable', function () {
   describe('#evaluateFunctions', function () {
     it('evaluate predefined functions in variables`', function () {
       // random
-      assert.strictEqual(Variable.evaluateFunctions(Variable.evaluateFunctions('My magic numbers are ${random.integer({min: 7, max: 7})} and ${random.integer({min: 17, max: 17})}')), 'My magic numbers are 7 and 17')
+      assert.strictEqual(
+        Variable.evaluateFunctions(
+          Variable.evaluateFunctions(
+            'My magic numbers are ${random.integer({min: 7, max: 7})} and ${random.integer({min: 17, max: 17})}'
+          )
+        ),
+        'My magic numbers are 7 and 17'
+      )
       assert.strictEqual(Variable.evaluateFunctions('${random.character({pool: "b"})}'), 'b')
-      assert(['false', 'null', 'undefined', '0', 'NaN', ''].includes(Variable.evaluateFunctions('${random.falsy()}')))
-      assert.strictEqual(Variable.evaluateFunctions('${lots} of $variables and symb$ols} { ${random.character({pool: ")"})} ) } { } $'), '${lots} of $variables and symb$ols} { ) ) } { } $')
+      assert(
+        ['false', 'null', 'undefined', '0', 'NaN', ''].includes(
+          Variable.evaluateFunctions('${random.falsy()}')
+        )
+      )
+      assert.strictEqual(
+        Variable.evaluateFunctions(
+          '${lots} of $variables and symb$ols} { ${random.character({pool: ")"})} ) } { } $'
+        ),
+        '${lots} of $variables and symb$ols} { ) ) } { } $'
+      )
       // string
       assert.strictEqual(Variable.evaluateFunctions('${string.toUpperCase(b)}'), 'B')
-      assert.strictEqual(Variable.evaluateFunctions('${string.slice({string: "${string.headerCase(${string.toUpperCase(this is a test)})}", start: 0, stop: 10 })}'), 'This-Is-A-')
+      assert.strictEqual(
+        Variable.evaluateFunctions(
+          '${string.slice({string: "${string.headerCase(${string.toUpperCase(this is a test)})}", start: 0, stop: 10 })}'
+        ),
+        'This-Is-A-'
+      )
     })
   })
 
   describe('#applyList', function () {
     it('should apply a set of variables recursively', function () {
       const variables = [
-
         new Variable('c', '${random.integer({min: $b, max: 37})}'),
         new Variable('b', '37'),
         new Variable('number', '$b'),
@@ -81,12 +101,21 @@ describe('Variable', function () {
         new Variable('name', '${string.toLowerCase($prefix)}.$suffix', 'description'),
         new Variable('domain', '$name.$tld', 'description'),
         new Variable('argument', '${string.camelCase(demo monkey test)}', 'description'),
-        new Variable('path', '${random.integer({min: $number, max: ${random.integer({min: $c, max: 37})} })}')
+        new Variable(
+          'path',
+          '${random.integer({min: $number, max: ${random.integer({min: $c, max: 37})} })}'
+        )
       ]
-      assert.strictEqual(Variable.applyList(variables, 'https://$domain/$path/?id=$argument'), 'https://www.example.com/37/?id=demoMonkeyTest')
+      assert.strictEqual(
+        Variable.applyList(variables, 'https://$domain/$path/?id=$argument'),
+        'https://www.example.com/37/?id=demoMonkeyTest'
+      )
 
       // Test for endless loop.
-      assert.strictEqual(Variable.applyList([new Variable('loop', '$loop.')], '$loop.'), '$loop.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................')
+      assert.strictEqual(
+        Variable.applyList([new Variable('loop', '$loop.')], '$loop.'),
+        '$loop.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................'
+      )
     })
   })
 })

@@ -30,27 +30,27 @@ class Popup extends React.Component {
   }
 
   render() {
-    return <Dialog
-    open={this.props.open}
-    onClose={this.props.onCancel}
-    aria-labelledby="alert-dialog-title"
-    aria-describedby="alert-dialog-description"
-  >
-    <DialogTitle id="alert-dialog-title">
-      {this.props.title}
-    </DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        {this.props.text}
-      </DialogContentText>
-    </DialogContent>
-    <DialogActions>
-      <Button id="alert-dialog-cancel-button" onClick={this.props.onCancel}>Cancel</Button>
-      <Button id="alert-dialog-confirm-button" onClick={this.props.onConfirm} autoFocus>
-        Confirm
-      </Button>
-    </DialogActions>
-  </Dialog>
+    return (
+      <Dialog
+        open={this.props.open}
+        onClose={this.props.onCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{this.props.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{this.props.text}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button id="alert-dialog-cancel-button" onClick={this.props.onCancel}>
+            Cancel
+          </Button>
+          <Button id="alert-dialog-confirm-button" onClick={this.props.onConfirm} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
   }
 }
 

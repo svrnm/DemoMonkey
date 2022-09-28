@@ -42,11 +42,19 @@ class Manifest {
   }
 
   homepage() {
-    return <a href={this.url()} target="_blank" rel='noopener noreferrer'>{this.url()}</a>
+    return (
+      <a href={this.url()} target="_blank" rel="noopener noreferrer">
+        {this.url()}
+      </a>
+    )
   }
 
   supportLink() {
-    return <a href={this.supportUrl()} target="_blank" rel='noopener noreferrer'>{this.supportUrl()}</a>
+    return (
+      <a href={this.supportUrl()} target="_blank" rel="noopener noreferrer">
+        {this.supportUrl()}
+      </a>
+    )
   }
 
   version() {
@@ -58,7 +66,11 @@ class Manifest {
   }
 
   buildFromLink() {
-    return <a href={this.buildFromUrl()} target="_blank" rel='noopener noreferrer'>{this.commitHash}</a>
+    return (
+      <a href={this.buildFromUrl()} target="_blank" rel="noopener noreferrer">
+        {this.commitHash}
+      </a>
+    )
   }
 }
 

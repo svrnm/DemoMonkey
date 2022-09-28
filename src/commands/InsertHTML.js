@@ -31,8 +31,9 @@ class InsertHTML extends Command {
   }
 
   _checkLocation() {
-    return typeof this.location === 'object' &&
-      this.location.toString().includes(this.locationFilter)
+    return (
+      typeof this.location === 'object' && this.location.toString().includes(this.locationFilter)
+    )
   }
 
   _addMarker(string) {
@@ -45,7 +46,12 @@ class InsertHTML extends Command {
     }
 
     // Check if we can find search in the current node
-    if (this.input !== '' && typeof target[key] !== 'undefined' && this._match(target[key].trim(), this.search, null) && this._checkLocation()) {
+    if (
+      this.input !== '' &&
+      typeof target[key] !== 'undefined' &&
+      this._match(target[key].trim(), this.search, null) &&
+      this._checkLocation()
+    ) {
       const parentElement = this._walk(target, this.nthParent)
       if (parentElement && !parentElement.innerHTML.includes(this.marker)) {
         const original = parentElement.innerHTML

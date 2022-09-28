@@ -39,7 +39,7 @@ class QuerySelector extends Command {
     const scriptTag = target.createElement('script')
     scriptTag.innerHTML = this.body
     scriptTag.dataset.demoMonkeyId = this.demoMonkeyId
-    this.attributes.forEach(attribute => {
+    this.attributes.forEach((attribute) => {
       const [key, value] = attribute.split('=')
       if (key && value) {
         scriptTag.setAttribute(key, value)

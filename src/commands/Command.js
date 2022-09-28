@@ -138,7 +138,7 @@ class Command {
 
   toString() {
     // We need to apply "protection" so demo monkey does not run over this itself ;-)
-    return this.sourceString ? this.sourceString.split('').join(String.fromCharCode(0x200B)) : ''
+    return this.sourceString ? this.sourceString.split('').join(String.fromCharCode(0x200b)) : ''
   }
 }
 

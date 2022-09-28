@@ -63,7 +63,10 @@ describe('ReplaceImage', function () {
       }
       new ReplaceImage('another.png', ['!http://cdn.example.net/images/test.png']).apply(img, 'src')
       assert.strictEqual(img.src, 'http://cdn.example.net/images/test.png')
-      new ReplaceImage('another.png', ['!http://cdn2.example.com/images/test.png']).apply(img, 'src')
+      new ReplaceImage('another.png', ['!http://cdn2.example.com/images/test.png']).apply(
+        img,
+        'src'
+      )
       assert.strictEqual(img.src, 'another.png')
     })
 

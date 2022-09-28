@@ -36,9 +36,7 @@ describe('ReplaceNeighbor', function () {
                 querySelector: function (selector) {
                   if (selector === 'text.adsNodeCountText') {
                     return {
-                      childNodes: [
-                        innerNode
-                      ]
+                      childNodes: [innerNode]
                     }
                   }
                 }
@@ -47,7 +45,15 @@ describe('ReplaceNeighbor', function () {
           }
         }
       }
-      const cmd = new ReplaceNeighbor('Order-Processing-Services', '13', 4, 'text.adsNodeCountText', '', '', location)
+      const cmd = new ReplaceNeighbor(
+        'Order-Processing-Services',
+        '13',
+        4,
+        'text.adsNodeCountText',
+        '',
+        '',
+        location
+      )
 
       expect(cmd.apply(node, 'value')).to.be.an.instanceof(UndoElement)
 

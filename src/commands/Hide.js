@@ -29,28 +29,37 @@ class Hide extends Command {
     this.hrefFilter = typeof hrefFilter === 'string' ? hrefFilter : ''
     this.hashFilter = typeof hashFilter === 'string' ? hashFilter : ''
     this.location = location
-    this.conditionCallback = typeof conditionCallback === 'function' ? conditionCallback : function () { return true }
+    this.conditionCallback =
+      typeof conditionCallback === 'function' ? conditionCallback : () => true
   }
 
   _checkCss(node, className) {
-    return node !== false &&
+    return (
+      node !== false &&
       node.style.display !== 'none' &&
-        (
-          (typeof node.className.includes === 'function' && node.className.includes(className)) ||
-          (node.className.baseVal && typeof node.className.baseVal.includes === 'function' && node.className.baseVal.includes(className))
-        )
+      ((typeof node.className.includes === 'function' && node.className.includes(className)) ||
+        (node.className.baseVal &&
+          typeof node.className.baseVal.includes === 'function' &&
+          node.className.baseVal.includes(className)))
+    )
   }
 
   _checkLocation() {
-    return typeof this.location === 'object' &&
+    return (
+      typeof this.location === 'object' &&
       typeof this.location.href === 'string' &&
       typeof this.location.hash === 'string' &&
       this.location.hash.includes(this.hashFilter) &&
       this.location.href.includes(this.hrefFilter)
+    )
   }
 
   apply(node, key) {
-    if (typeof node[key] !== 'undefined' && this._match(node[key].trim(), this.search, null) && this._checkLocation()) {
+    if (
+      typeof node[key] !== 'undefined' &&
+      this._match(node[key].trim(), this.search, null) &&
+      this._checkLocation()
+    ) {
       const parentNode = this._walk(node, this.nthParent)
       if (this._checkCss(parentNode, this.cssFilter) && this.conditionCallback(node, parentNode)) {
         return this._hideNode(parentNode)

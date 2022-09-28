@@ -48,53 +48,65 @@ class App extends React.Component {
 
   render() {
     const manifest = this.props.manifest
-    const configurations = this.props.configurations.filter((config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined')
-    return <Page preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode} syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}>
-      <Tabs activeTab={this.state.activeTab} onNavigate={(e) => this.updateActiveTab(e)}>
-        <Pane label="Apply" name="apply">
-          <ConfigurationList currentUrl={this.props.currentUrl} configurations={configurations} settings={this.props.settings} actions={this.props.actions}/>
-        </Pane>
-        <Pane label="Help" name="help">
-          <div>
-            <b>Author:&nbsp;
-            </b>
-            {manifest.author()}
-          </div>
-          <div>
-            <b>Homepage:&nbsp;
-            </b>
-            {manifest.homepage()}
-          </div>
-          <div>
-            <b>Version:&nbsp;
-            </b>
-            {manifest.version()}
-          </div>
-          <div>
-            <b>Build from </b>
-            {manifest.buildFromLink()}
-          </div>
-          <div>
-            <b>Report bugs at </b>
-            {manifest.supportLink()}
-          </div>
-        </Pane>
-        <Pane link={(e) => {
-          e.preventDefault()
-          window.chrome.runtime.openOptionsPage()
-        }} label="Dashboard"/>
-      </Tabs>
-    </Page>
+    const configurations = this.props.configurations.filter(
+      (config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined'
+    )
+    return (
+      <Page
+        preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode}
+        syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
+      >
+        <Tabs activeTab={this.state.activeTab} onNavigate={(e) => this.updateActiveTab(e)}>
+          <Pane label="Apply" name="apply">
+            <ConfigurationList
+              currentUrl={this.props.currentUrl}
+              configurations={configurations}
+              settings={this.props.settings}
+              actions={this.props.actions}
+            />
+          </Pane>
+          <Pane label="Help" name="help">
+            <div>
+              <b>Author:&nbsp;</b>
+              {manifest.author()}
+            </div>
+            <div>
+              <b>Homepage:&nbsp;</b>
+              {manifest.homepage()}
+            </div>
+            <div>
+              <b>Version:&nbsp;</b>
+              {manifest.version()}
+            </div>
+            <div>
+              <b>Build from </b>
+              {manifest.buildFromLink()}
+            </div>
+            <div>
+              <b>Report bugs at </b>
+              {manifest.supportLink()}
+            </div>
+          </Pane>
+          <Pane
+            link={(e) => {
+              e.preventDefault()
+              window.chrome.runtime.openOptionsPage()
+            }}
+            label="Dashboard"
+          />
+        </Tabs>
+      </Page>
+    )
   }
 }
 
 const PopupPageApp = connect(
   // map state to props
-  state => {
+  (state) => {
     return { configurations: state.configurations, settings: state.settings }
   },
   // map dispatch to props
-  dispatch => ({
+  (dispatch) => ({
     actions: {
       setCurrentView: (key) => {
         dispatch({ type: 'SET_CURRENT_VIEW', view: key })
@@ -109,6 +121,7 @@ const PopupPageApp = connect(
         dispatch({ type: 'TOGGLE_LIVE_MODE' })
       }
     }
-  }))(App)
+  })
+)(App)
 
 export default PopupPageApp

@@ -33,11 +33,7 @@ class Page extends React.Component {
       document.documentElement.classList.remove('dark-mode')
       document.documentElement.classList.add('light-mode')
     }
-    return (
-      <div className={this.props.className}>
-        {this.props.children}
-      </div>
-    )
+    return <div className={this.props.className}>{this.props.children}</div>
   }
 }
 

@@ -32,8 +32,8 @@ class Help extends React.Component {
     // the inline usage docs without having to make a release every time
     // on the google chrome webstore.
     fetch('https://raw.githubusercontent.com/svrnm/DemoMonkey/main/USAGE.md')
-      .then(response => response.text())
-      .then(data => this.setState({ usage: data, loaded: true }))
+      .then((response) => response.text())
+      .then((data) => this.setState({ usage: data, loaded: true }))
       .catch(() => {
         this.setState({
           loaded: true,

@@ -9,7 +9,7 @@ It also provides a step by step guide to add custom commands.
 
 ## Setup Environment
 
-Before you start, make sure you have *nodejs*, *webpack* and *mocha* installed.
+Before you start, make sure you have _nodejs_, _webpack_ and _mocha_ installed.
 
 To get started, you need to checkout the latest development version via git:
 
@@ -18,7 +18,7 @@ git clone https://github.com/svrnm/demomonkey.git
 cd demomonkey
 ```
 
-Now, you need to download and install all dependencies for your  development environment:
+Now, you need to download and install all dependencies for your development environment:
 
 ```shell
 npm install
@@ -46,7 +46,7 @@ Likely, the first thing you want to do, is adding a custom command to DemoMonkey
 customisations for your demo. In the following you will learn how to build such a custom command step by step.
 
 Let's start with a helloworld example. The goal of this first exercise is creating a command `!helloworld()` that just
-replaces *all* text on the website with `hello world`.
+replaces _all_ text on the website with `hello world`.
 
 First, create an empty file called `HelloWorld.js` in the folder `src/commands`. Next add the following code:
 
@@ -55,9 +55,9 @@ import Command from './Command'
 
 class HelloWorld extends Command {
   apply(target, key) {
-    target[key] = 'hello world'    
+    target[key] = 'hello world'
     return false
-  }  
+  }
 }
 
 export default HelloWorld
@@ -71,7 +71,7 @@ import HelloWorld from './HelloWorld'
 ```
 
 Afterward add the following within the method body of `_buildCustomCommand` right before the comment
-`//  Add new commands above this line.`:
+`// Add new commands above this line.`:
 
 ```javascript
 if (command === 'helloWorld') {
@@ -112,7 +112,6 @@ First, adding parameters to your command is easy. Just add a constructor to your
 import Command from './Command'
 
 class HelloWorld extends Command {
-
   constructor(hello, world) {
     super()
     this.hello = hello
@@ -122,7 +121,7 @@ class HelloWorld extends Command {
   apply(target, key) {
     target[key] = this.hello + ' ' + this.world
     return false
-  }  
+  }
 }
 
 export default HelloWorld
@@ -143,7 +142,7 @@ Reload your extension and update your demo configuration to
 !helloWorld(hallo) = welt
 ```
 
-Now, reloading your demo page, you should see *hallo welt* everywhere instead of *hello world*.
+Now, reloading your demo page, you should see _hallo welt_ everywhere instead of _hello world_.
 
 If you need further parameters `parameters[1], ..., parameters[n]`, just add them to your constructor and to the
 `CommandBuilder.js` as needed.
@@ -155,7 +154,6 @@ import Command from './Command'
 import UndoElement from './UndoElement'
 
 class HelloWorld extends Command {
-
   constructor(hello, world) {
     super()
     this.hello = hello
@@ -170,7 +168,7 @@ class HelloWorld extends Command {
       return new UndoElement(target, key, original, replacement)
     }
     return false
-  }  
+  }
 }
 
 export default HelloWorld

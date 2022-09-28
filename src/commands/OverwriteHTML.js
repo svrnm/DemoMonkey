@@ -23,12 +23,14 @@ class OverwriteHTML extends Command {
     this.html = html
     this.location = location
     this.marker = uuidV4()
-    this.conditionCallback = typeof conditionCallback === 'function' ? conditionCallback : function () { return true }
+    this.conditionCallback =
+      typeof conditionCallback === 'function' ? conditionCallback : () => true
   }
 
   _checkLocation() {
-    return typeof this.location === 'object' &&
-      this.location.toString().includes(this.locationFilter)
+    return (
+      typeof this.location === 'object' && this.location.toString().includes(this.locationFilter)
+    )
   }
 
   _addMarker(string) {
@@ -79,7 +81,7 @@ class OverwriteHTML extends Command {
           target = targetList[0]
           break
         default:
-          return Array.from(targetList).map(t => this._applyOnTarget(t))
+          return Array.from(targetList).map((t) => this._applyOnTarget(t))
       }
     } else {
       target = target[key]

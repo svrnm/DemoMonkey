@@ -44,7 +44,12 @@ describe('#match', function () {
   })
 
   it('should match http://www.example.com/this/is/a/wildcard/test for `http://*.example.com/this/*/a/wildcard/*`', function () {
-    assert(match('http://www.example.com/this/is/a/wildcard/test', 'http://*.example.com/this/*/a/wildcard/*'))
+    assert(
+      match(
+        'http://www.example.com/this/is/a/wildcard/test',
+        'http://*.example.com/this/*/a/wildcard/*'
+      )
+    )
   })
 
   it('should not match 12345 for `[0-9]*`', function () {

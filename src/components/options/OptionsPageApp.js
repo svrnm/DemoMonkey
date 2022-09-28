@@ -102,7 +102,7 @@ class App extends React.Component {
 
   deleteAll(event) {
     this.downloadAll(event, () => {
-      this.props.configurations.forEach(config => {
+      this.props.configurations.forEach((config) => {
         this.props.actions.deleteConfiguration(config.id)
       })
     })
@@ -113,9 +113,16 @@ class App extends React.Component {
       return this.addConfiguration(configuration)
     } else {
       if (typeof configuration.values !== 'undefined') {
-        const variables = (new Configuration(configuration.content, this.getRepository(), false, configuration.values)).getVariables().map(v => v.id)
+        const variables = new Configuration(
+          configuration.content,
+          this.getRepository(),
+          false,
+          configuration.values
+        )
+          .getVariables()
+          .map((v) => v.id)
 
-        Object.keys(configuration.values).forEach(name => {
+        Object.keys(configuration.values).forEach((name) => {
           if (!variables.includes(name)) {
             delete configuration.values[name]
           }
@@ -135,7 +142,9 @@ class App extends React.Component {
   }
 
   hasConfigurationWithSameName(configuration) {
-    return this.props.configurations.some(c => !c.deleted_at && c.name === configuration.name && c.id !== configuration.id)
+    return this.props.configurations.some(
+      (c) => !c.deleted_at && c.name === configuration.name && c.id !== configuration.id
+    )
   }
 
   uploadConfiguration(upload) {
@@ -158,7 +167,7 @@ class App extends React.Component {
     const name = 'Copy of ' + path.pop()
     this.addConfiguration({
       ...configuration,
-      name: path.length > 0 ? (path.join('/') + '/' + name) : name,
+      name: path.length > 0 ? path.join('/') + '/' + name : name,
       id: 'new',
       file_id: undefined,
       enabled: false,
@@ -179,7 +188,8 @@ class App extends React.Component {
 
   downloadConfiguration(configuration) {
     const link = document.createElement('a')
-    link.href = 'data:text/octet-stream;base64,' + Base64.encode(this._prepareForDownload(configuration))
+    link.href =
+      'data:text/octet-stream;base64,' + Base64.encode(this._prepareForDownload(configuration))
     link.download = configuration.name.split('/').pop() + '.mnky'
     const event = document.createEvent('MouseEvents')
     event.initEvent('click', true, true)
@@ -194,23 +204,24 @@ class App extends React.Component {
       zip.file(configuration.name + '.mnky', this._prepareForDownload(configuration))
     })
 
-    zip.generateAsync({ type: 'base64' })
-      .then(function (content) {
-        const link = document.createElement('a')
-        link.href = 'data:application/zip;base64,' + content
-        link.download = 'demomonkey-' + (new Date()).toISOString().split('T')[0] + '.zip'
-        const event = document.createEvent('MouseEvents')
-        event.initEvent('click', true, true)
-        link.dispatchEvent(event)
-        cb()
-      })
+    zip.generateAsync({ type: 'base64' }).then(function (content) {
+      const link = document.createElement('a')
+      link.href = 'data:application/zip;base64,' + content
+      link.download = 'demomonkey-' + new Date().toISOString().split('T')[0] + '.zip'
+      const event = document.createEvent('MouseEvents')
+      event.initEvent('click', true, true)
+      link.dispatchEvent(event)
+      cb()
+    })
   }
 
   deleteConfiguration(configuration) {
     this.navigateTo('help')
     logger('info', `Deleting ${configuration.name} (${configuration.nodeType})`).write()
     if (configuration.nodeType === 'directory') {
-      this.props.actions.deleteConfigurationByPrefix(configuration.id.split('/').reverse().join('/'))
+      this.props.actions.deleteConfigurationByPrefix(
+        configuration.id.split('/').reverse().join('/')
+      )
     } else {
       this.props.actions.deleteConfiguration(configuration.id)
     }
@@ -221,14 +232,18 @@ class App extends React.Component {
   }
 
   updateRepository() {
-    this._repo = new Repository(this.getConfigurations().reduce(function (repo, rawConfig) {
-      repo[rawConfig.name] = new Configuration(rawConfig.content)
-      return repo
-    }, {}))
+    this._repo = new Repository(
+      this.getConfigurations().reduce(function (repo, rawConfig) {
+        repo[rawConfig.name] = new Configuration(rawConfig.content)
+        return repo
+      }, {})
+    )
   }
 
   getConfigurations() {
-    return this.props.configurations.filter((config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined')
+    return this.props.configurations.filter(
+      (config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined'
+    )
   }
 
   getConfiguration(id) {
@@ -248,11 +263,10 @@ class App extends React.Component {
 
   registerProtocolHandler() {
     const url = window.chrome.runtime.getURL('/options.html?s=%s')
-    const method = this.props.settings.optionalFeatures.registerProtocolHandler ? 'registerProtocolHandler' : 'unregisterProtocolHandler'
-    window.navigator[method](
-      'web+mnky',
-      url,
-      'Demo Monkey Handler')
+    const method = this.props.settings.optionalFeatures.registerProtocolHandler
+      ? 'registerProtocolHandler'
+      : 'unregisterProtocolHandler'
+    window.navigator[method]('web+mnky', url, 'Demo Monkey Handler')
   }
 
   toggleOptionalFeature(feature) {
@@ -299,50 +313,64 @@ class App extends React.Component {
 
       switch (segments[0]) {
         case 'settings':
-          return <Settings settings={this.props.settings}
-            configurations={this.props.configurations}
-            onToggleOptionalFeature={(feature) => this.toggleOptionalFeature(feature)}
-            onSetBaseTemplate={(baseTemplate) => this.setBaseTemplate(baseTemplate)}
-            onSetAnalyticsSnippet={(analyticsSnippet) => this.setAnalyticsSnippet(analyticsSnippet)}
-            getRepository={() => this.getRepository()}
-            onSaveGlobalVariables={(globalVariables) => this.saveGlobalVariables(globalVariables)}
-            onSetMonkeyInterval={(value) => this.setMonkeyInterval(value)}
-            onDownloadAll={(event) => this.downloadAll(event)}
-            onDeleteAll={(event) => this.deleteAll(event)}
-            onReset={(event) => this.resetDemoMonkey(event)}
-            onRequestExtendedPermissions={(revoke) => this.requestExtendedPermissions(revoke)}
-            hasExtendedPermissions={this.hasExtendedPermissions()}
-            isDarkMode={this._getDarkMode()}
-            activeTab={segments[1]}
-            onNavigate={(target) => this.navigateTo('settings/' + target)}
-          />
+          return (
+            <Settings
+              settings={this.props.settings}
+              configurations={this.props.configurations}
+              onToggleOptionalFeature={(feature) => this.toggleOptionalFeature(feature)}
+              onSetBaseTemplate={(baseTemplate) => this.setBaseTemplate(baseTemplate)}
+              onSetAnalyticsSnippet={(analyticsSnippet) =>
+                this.setAnalyticsSnippet(analyticsSnippet)
+              }
+              getRepository={() => this.getRepository()}
+              onSaveGlobalVariables={(globalVariables) => this.saveGlobalVariables(globalVariables)}
+              onSetMonkeyInterval={(value) => this.setMonkeyInterval(value)}
+              onDownloadAll={(event) => this.downloadAll(event)}
+              onDeleteAll={(event) => this.deleteAll(event)}
+              onReset={(event) => this.resetDemoMonkey(event)}
+              onRequestExtendedPermissions={(revoke) => this.requestExtendedPermissions(revoke)}
+              hasExtendedPermissions={this.hasExtendedPermissions()}
+              isDarkMode={this._getDarkMode()}
+              activeTab={segments[1]}
+              onNavigate={(target) => this.navigateTo('settings/' + target)}
+            />
+          )
         case 'configuration':
           // If an unknown ID is selected, we throw an error.
           if (typeof configuration === 'undefined') {
             return <ErrorBox error={{ message: `Unknown Configuration ${segments[1]}` }} />
           }
-          return <Editor getRepository={() => this.getRepository()}
-            currentConfiguration={configuration}
-            globalVariables={this.props.settings.globalVariables}
-            autoSave={this.props.settings.optionalFeatures.autoSave}
-            saveOnClose={this.props.settings.optionalFeatures.saveOnClose}
-            editorAutocomplete={this.props.settings.optionalFeatures.editorAutocomplete}
-            keyboardHandler={this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null}
-            onDownload={(configuration, _) => this.downloadConfiguration(configuration)}
-            onSave={(_, configuration) => this.saveConfiguration(configuration)}
-            hasConfigurationWithSameName={(configuration) => this.hasConfigurationWithSameName(configuration)}
-            onCopy={(configuration, _) => this.copyConfiguration(configuration)}
-            onDelete={(configuration, _) => this.deleteConfiguration(configuration)}
-            toggleConfiguration={() => this.props.actions.toggleConfiguration(configuration.id)}
-            featureFlags={{
-              withEvalCommand: this.props.settings.optionalFeatures.withEvalCommand,
-              hookIntoAjax: this.props.settings.optionalFeatures.hookIntoAjax,
-              webRequestHook: this.props.settings.optionalFeatures.webRequestHook
-            }}
-            isDarkMode={this._getDarkMode()}
-            activeTab={segments[2]}
-            onNavigate={(target) => this.navigateTo('configuration/' + configuration.id + '/' + target)}
-          />
+          return (
+            <Editor
+              getRepository={() => this.getRepository()}
+              currentConfiguration={configuration}
+              globalVariables={this.props.settings.globalVariables}
+              autoSave={this.props.settings.optionalFeatures.autoSave}
+              saveOnClose={this.props.settings.optionalFeatures.saveOnClose}
+              editorAutocomplete={this.props.settings.optionalFeatures.editorAutocomplete}
+              keyboardHandler={
+                this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null
+              }
+              onDownload={(configuration, _) => this.downloadConfiguration(configuration)}
+              onSave={(_, configuration) => this.saveConfiguration(configuration)}
+              hasConfigurationWithSameName={(configuration) =>
+                this.hasConfigurationWithSameName(configuration)
+              }
+              onCopy={(configuration, _) => this.copyConfiguration(configuration)}
+              onDelete={(configuration, _) => this.deleteConfiguration(configuration)}
+              toggleConfiguration={() => this.props.actions.toggleConfiguration(configuration.id)}
+              featureFlags={{
+                withEvalCommand: this.props.settings.optionalFeatures.withEvalCommand,
+                hookIntoAjax: this.props.settings.optionalFeatures.hookIntoAjax,
+                webRequestHook: this.props.settings.optionalFeatures.webRequestHook
+              }}
+              isDarkMode={this._getDarkMode()}
+              activeTab={segments[2]}
+              onNavigate={(target) =>
+                this.navigateTo('configuration/' + configuration.id + '/' + target)
+              }
+            />
+          )
         case 'logs':
           return <Logs entries={this.props.log} />
         default:
@@ -357,7 +385,8 @@ class App extends React.Component {
     const permissions = this.state.permissions
     if (Array.isArray(permissions.origins) && permissions.origins.length > 0) {
       return (
-        (permissions.origins.includes('http://*/*') && permissions.origins.includes('https://*/*')) ||
+        (permissions.origins.includes('http://*/*') &&
+          permissions.origins.includes('https://*/*')) ||
         permissions.origins.includes('<all_urls>')
       )
     }
@@ -367,70 +396,100 @@ class App extends React.Component {
   requestExtendedPermissions(revoke = false) {
     console.log(revoke)
     if (revoke) {
-      window.chrome.permissions.remove({
-        origins: ['http://*/*', 'https://*/*']
-      }, function (removed) {
-        if (removed) {
-          logger('info', 'Additional permissions removed')
-        } else {
-          logger('warn', 'Additional permissions not removed')
+      window.chrome.permissions.remove(
+        {
+          origins: ['http://*/*', 'https://*/*']
+        },
+        function (removed) {
+          if (removed) {
+            logger('info', 'Additional permissions removed')
+          } else {
+            logger('warn', 'Additional permissions not removed')
+          }
         }
-      })
+      )
     } else {
-      window.chrome.permissions.request({
-        origins: ['http://*/*', 'https://*/*']
-      }, function (granted) {
-        if (granted) {
-          logger('info', 'Additional permissions granted')
-        } else {
-          logger('warn', 'Additional permissions not granted')
+      window.chrome.permissions.request(
+        {
+          origins: ['http://*/*', 'https://*/*']
+        },
+        function (granted) {
+          if (granted) {
+            logger('info', 'Additional permissions granted')
+          } else {
+            logger('warn', 'Additional permissions not granted')
+          }
         }
-      })
+      )
     }
   }
 
-  render() {
-    const activeItem = this.state.currentView.indexOf('configuration/') === -1 ? false : this.state.currentView.split('/').pop()
+  _renderWarningBox(withWarning) {
+    if (withWarning !== '') {
+      return (
+        <WarningBox
+          onDismiss={() => this.toggleOptionalFeature('noWarningForMissingPermissions')}
+          onRequestExtendedPermissions={() => this.requestExtendedPermissions()}
+        />
+      )
+    }
+    return (
+      <div id="has-extended-permissions" style={{ display: 'none' }}>
+        GRANTED
+      </div>
+    )
+  }
 
-    const withWarning = (!this.hasExtendedPermissions() && !this.props.settings.optionalFeatures.noWarningForMissingPermissions) ? ' with-warning' : ''
+  render() {
+    const activeItem =
+      this.state.currentView.indexOf('configuration/') === -1
+        ? false
+        : this.state.currentView.split('/').pop()
+
+    const withWarning =
+      !this.hasExtendedPermissions() &&
+      !this.props.settings.optionalFeatures.noWarningForMissingPermissions
+        ? ' with-warning'
+        : ''
 
     // Add tags to all configurations
-    const configurations = this.getConfigurations().map(c => {
-      const nsPattern = /^@tags(?:\[\])?\s*=\s*(.*)$/mg
+    const configurations = this.getConfigurations().map((c) => {
+      const nsPattern = /^@tags(?:\[\])?\s*=\s*(.*)$/gm
       let match
       c.tags = []
       while ((match = nsPattern.exec(c.content))) {
-        c.tags = c.tags.concat(match[1].split(',').map(t => t.trim().toLowerCase()))
+        c.tags = c.tags.concat(match[1].split(',').map((t) => t.trim().toLowerCase()))
       }
       return c
     })
 
-    return <Page className={`main-grid${withWarning}`} preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode} syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}>
-      { withWarning !== ''
-        ? <WarningBox onDismiss={() => this.toggleOptionalFeature('noWarningForMissingPermissions')}
-          onRequestExtendedPermissions={() => this.requestExtendedPermissions()}
-        />
-        : <div id="has-extended-permissions" style={{ display: 'none' }}>GRANTED</div> }
-      <div className="navigation">
-        <Navigation onNavigate={(target) => this.navigateTo(target)}
-          onUpload={(upload) => this.uploadConfiguration(upload)}
-          onDelete={(configuration) => this.deleteConfiguration(configuration)}
-          items={configurations}
-          onDownloadAll={(event) => this.downloadAll(event)}
-          active={activeItem}
-          showLogs={this.props.settings.optionalFeatures.writeLogs === true}
-        />
-      </div>
-      <div className="current-view">
-        {this.getCurrentView()}
-      </div>
-    </Page>
+    return (
+      <Page
+        className={`main-grid${withWarning}`}
+        preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode}
+        syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
+      >
+        {this._renderWarningBox(withWarning)}
+        <div className="navigation">
+          <Navigation
+            onNavigate={(target) => this.navigateTo(target)}
+            onUpload={(upload) => this.uploadConfiguration(upload)}
+            onDelete={(configuration) => this.deleteConfiguration(configuration)}
+            items={configurations}
+            onDownloadAll={(event) => this.downloadAll(event)}
+            active={activeItem}
+            showLogs={this.props.settings.optionalFeatures.writeLogs === true}
+          />
+        </div>
+        <div className="current-view">{this.getCurrentView()}</div>
+      </Page>
+    )
   }
 }
 
 const OptionsPageApp = connect(
   // map state to props
-  state => {
+  (state) => {
     return {
       configurations: state.configurations,
       settings: state.settings,
@@ -438,7 +497,7 @@ const OptionsPageApp = connect(
     }
   },
   // map dispatch to props
-  dispatch => ({
+  (dispatch) => ({
     actions: {
       setMonkeyInterval: (monkeyInterval) => {
         dispatch({ type: 'SET_MONKEY_INTERVAL', monkeyInterval })
@@ -474,6 +533,7 @@ const OptionsPageApp = connect(
         return dispatch({ type: 'TOGGLE_OPTIONAL_FEATURE', optionalFeature })
       }
     }
-  }))(App)
+  })
+)(App)
 
 export default OptionsPageApp

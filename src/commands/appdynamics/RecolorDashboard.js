@@ -26,7 +26,10 @@ class RecolorDashboard extends Command {
   }
 
   _checkDashboardId() {
-    return typeof this.location === 'object' && this.location.toString().includes('dashboard=' + this.dashboardId)
+    return (
+      typeof this.location === 'object' &&
+      this.location.toString().includes('dashboard=' + this.dashboardId)
+    )
   }
 
   isApplicableForGroup(group) {
@@ -39,32 +42,92 @@ class RecolorDashboard extends Command {
     const r = []
 
     svgs.forEach((svg) => {
-      const dots = svg.querySelectorAll('path[fill="' + this.search.hex() + '"], path[fill="' + this.search.hex().toLowerCase() + '"], path[fill="' + this.search.rgb().string() + '"]')
+      const dots = svg.querySelectorAll(
+        'path[fill="' +
+          this.search.hex() +
+          '"], path[fill="' +
+          this.search.hex().toLowerCase() +
+          '"], path[fill="' +
+          this.search.rgb().string() +
+          '"]'
+      )
 
-      const rects = svg.querySelectorAll('rect[fill="' + this.search.hex() + '"], rect[fill="' + this.search.hex().toLowerCase() + '"], rect[fill="' + this.search.rgb().string() + '"]')
+      const rects = svg.querySelectorAll(
+        'rect[fill="' +
+          this.search.hex() +
+          '"], rect[fill="' +
+          this.search.hex().toLowerCase() +
+          '"], rect[fill="' +
+          this.search.rgb().string() +
+          '"]'
+      )
 
-      const lines = svg.querySelectorAll('path[stroke="' + this.search.hex() + '"], path[stroke="' + this.search.hex().toLowerCase() + '"], path[stroke="' + this.search.rgb().string() + '"]')
+      const lines = svg.querySelectorAll(
+        'path[stroke="' +
+          this.search.hex() +
+          '"], path[stroke="' +
+          this.search.hex().toLowerCase() +
+          '"], path[stroke="' +
+          this.search.rgb().string() +
+          '"]'
+      )
 
-      const stops = svg.querySelectorAll('stop[stop-color="' + this.search.hex() + '"], stop[stop-color="' + this.search.hex().toLowerCase() + '"], stop[stop-color="' + this.search.rgb().string() + '"]')
+      const stops = svg.querySelectorAll(
+        'stop[stop-color="' +
+          this.search.hex() +
+          '"], stop[stop-color="' +
+          this.search.hex().toLowerCase() +
+          '"], stop[stop-color="' +
+          this.search.rgb().string() +
+          '"]'
+      )
 
-      dots.forEach(path => {
+      dots.forEach((path) => {
         path.setAttribute('fill', this.replace.rgb().toString())
-        r.push(new UndoElement(path.attributes.fill, 'value', this.search.rgb().toString(), this.replace.rgb().toString()))
+        r.push(
+          new UndoElement(
+            path.attributes.fill,
+            'value',
+            this.search.rgb().toString(),
+            this.replace.rgb().toString()
+          )
+        )
       })
 
-      rects.forEach(rect => {
+      rects.forEach((rect) => {
         rect.setAttribute('fill', this.replace.rgb().toString())
-        r.push(new UndoElement(rect.attributes.fill, 'value', this.search.rgb().toString(), this.replace.rgb().toString()))
+        r.push(
+          new UndoElement(
+            rect.attributes.fill,
+            'value',
+            this.search.rgb().toString(),
+            this.replace.rgb().toString()
+          )
+        )
       })
 
-      lines.forEach(path => {
+      lines.forEach((path) => {
         path.setAttribute('stroke', this.replace.rgb().toString())
-        r.push(new UndoElement(path.attributes.stroke, 'value', this.search.rgb().toString(), this.replace.rgb().toString()))
+        r.push(
+          new UndoElement(
+            path.attributes.stroke,
+            'value',
+            this.search.rgb().toString(),
+            this.replace.rgb().toString()
+          )
+        )
       })
 
-      stops.forEach(stop => {
+      stops.forEach((stop) => {
         stop.setAttribute('stop-color', this.replace.rgb().toString())
-        r.push(new UndoElement(stop.attributes['stop-color'], 'value', this.search.rgb().toString(), this.replace.rgb().toString()))
+        r.push(
+          new UndoElement(
+            stop.attributes['stop-color'],
+            'value',
+            this.search.rgb().toString(),
+            this.replace.rgb().toString()
+          )
+        )
       })
     })
 
@@ -81,7 +144,14 @@ class RecolorDashboard extends Command {
       if (this.search.rgb().toString() === currentBackgroundColor.rgb().toString()) {
         const original = label.parentElement.style.backgroundColor
         label.parentElement.style.backgroundColor = this.replace.rgb().toString()
-        r.push(new UndoElement(label.parentElement.style, 'backgroundColor', original, label.parentElement.style.backgroundColor))
+        r.push(
+          new UndoElement(
+            label.parentElement.style,
+            'backgroundColor',
+            original,
+            label.parentElement.style.backgroundColor
+          )
+        )
       }
 
       const textLabel = label.querySelector('.ad-widget-label')
@@ -110,10 +180,20 @@ class RecolorDashboard extends Command {
       }
       const original = img.src
 
-      img.src = img.src.replace(new RegExp('(fill|stroke)="(%23|#)' + (this.search.hex().slice(1)) + '"', 'gi'), '$1="$2' + this.replace.hex().slice(1) + '"')
+      img.src = img.src.replace(
+        new RegExp('(fill|stroke)="(%23|#)' + this.search.hex().slice(1) + '"', 'gi'),
+        '$1="$2' + this.replace.hex().slice(1) + '"'
+      )
       // Rerun with short color code
-      const shortHex = colorString.to.hex(this.search.array()).split('').filter((_, i) => [1, 3, 5, 7].includes(i)).join('')
-      img.src = img.src.replace(new RegExp('(fill|stroke)="(%23|#)' + (shortHex) + '"', 'gi'), '$1="$2' + this.replace.hex().slice(1) + '"')
+      const shortHex = colorString.to
+        .hex(this.search.array())
+        .split('')
+        .filter((_, i) => [1, 3, 5, 7].includes(i))
+        .join('')
+      img.src = img.src.replace(
+        new RegExp('(fill|stroke)="(%23|#)' + shortHex + '"', 'gi'),
+        '$1="$2' + this.replace.hex().slice(1) + '"'
+      )
 
       if (original !== img.src) {
         r.push(new UndoElement(img, 'src', original, img.src))
@@ -131,11 +211,20 @@ class RecolorDashboard extends Command {
     analyticsWidgets.forEach((widget) => {
       const currentBackgroundColor = Color(widget.parentElement.style.backgroundColor)
       if (this.search.rgb().toString() === currentBackgroundColor.rgb().toString()) {
-        Array.from(widget.querySelectorAll('[style*="background-color"]')).concat(widget.parentElement).forEach(element => {
-          const original = element.style.backgroundColor
-          element.style.backgroundColor = this.replace.rgb().toString()
-          r.push(new UndoElement(element.style, 'backgroundColor', original, element.style.backgroundColor))
-        })
+        Array.from(widget.querySelectorAll('[style*="background-color"]'))
+          .concat(widget.parentElement)
+          .forEach((element) => {
+            const original = element.style.backgroundColor
+            element.style.backgroundColor = this.replace.rgb().toString()
+            r.push(
+              new UndoElement(
+                element.style,
+                'backgroundColor',
+                original,
+                element.style.backgroundColor
+              )
+            )
+          })
       }
     })
 

@@ -53,8 +53,14 @@ class ElementPicker {
       this._previousEvent = e
       let target = e.target
       // console.log("TCL: ElementPicker -> this._moveHoverBox -> target", target)
-      if (this.matches(target) && this.ignoreElements.indexOf(target) === -1 && target.matches(this.selectors) &&
-        this.container.contains(target) || target === this.hoverBox) { // is NOT ignored elements
+      if (
+        (this.matches(target) &&
+          this.ignoreElements.indexOf(target) === -1 &&
+          target.matches(this.selectors) &&
+          this.container.contains(target)) ||
+        target === this.hoverBox
+      ) {
+        // is NOT ignored elements
         // console.log("TCL: target", target);
         if (target === this.hoverBox) {
           // the truly hovered element behind the added hover box
@@ -161,8 +167,7 @@ class ElementPicker {
 
   set action(value) {
     if (value instanceof Object) {
-      if (typeof value.trigger === 'string' &&
-        typeof value.callback === 'function') {
+      if (typeof value.trigger === 'string' && typeof value.callback === 'function') {
         if (this._triggerListener) {
           document.removeEventListener(this.action.trigger, this._triggerListener)
           this._triggered = false
@@ -175,7 +180,8 @@ class ElementPicker {
           this._redetectMouseMove()
         }
         document.addEventListener(this.action.trigger, this._triggerListener)
-      } else if (value.trigger !== undefined || value.callback !== undefined) { // allow empty action object
+      } else if (value.trigger !== undefined || value.callback !== undefined) {
+        // allow empty action object
         throw new Error('action must include two keys: trigger (String) and callback (function)!')
       }
     } else {

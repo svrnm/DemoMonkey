@@ -30,15 +30,30 @@ describe('OverwriteHTML', function () {
           innerHTML: 'asdf'
         }
       }
-      new OverwriteHTML('another', '', '', { toString: () => 'here' }).apply(document, 'documentElement')
+      new OverwriteHTML('another', '', '', { toString: () => 'here' }).apply(
+        document,
+        'documentElement'
+      )
       assert.equal(document.documentElement.innerHTML, 'asdf')
     })
 
     it('should not fail on null as target', function () {
-      assert.equal(new OverwriteHTML('here', '', '', { toString: () => 'here' }).apply(null, 'documentElement'), false)
-      assert.equal(new OverwriteHTML('here', '', '', { toString: () => 'here' }).apply({
-        documentElement: null
-      }, 'documentElement'), false)
+      assert.equal(
+        new OverwriteHTML('here', '', '', { toString: () => 'here' }).apply(
+          null,
+          'documentElement'
+        ),
+        false
+      )
+      assert.equal(
+        new OverwriteHTML('here', '', '', { toString: () => 'here' }).apply(
+          {
+            documentElement: null
+          },
+          'documentElement'
+        ),
+        false
+      )
     })
 
     it('should overwrite target innerHTML', function () {
@@ -47,7 +62,9 @@ describe('OverwriteHTML', function () {
           innerHTML: 'asdf'
         }
       }
-      const cmd = new OverwriteHTML('here', '', 'xyz', { toString: () => 'here' })
+      const cmd = new OverwriteHTML('here', '', 'xyz', {
+        toString: () => 'here'
+      })
       cmd.apply(document, 'documentElement')
       assert.equal(document.documentElement.innerHTML, cmd._addMarker('xyz'))
     })
@@ -64,7 +81,9 @@ describe('OverwriteHTML', function () {
           innerHTML: 'asdf'
         }
       }
-      const cmd = new OverwriteHTML('here', '.css', 'xyz', { toString: () => 'here' })
+      const cmd = new OverwriteHTML('here', '.css', 'xyz', {
+        toString: () => 'here'
+      })
       cmd.apply(document, 'documentElement')
       assert.equal(sub.innerHTML, cmd._addMarker('xyz'))
     })

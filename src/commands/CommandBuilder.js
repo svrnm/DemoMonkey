@@ -17,7 +17,15 @@ import registry from './CommandRegistry'
 import extractParameters from '../helpers/extractParameters'
 
 class CommandBuilder {
-  constructor(namespaces = [], includeRules, excludeRules, featureFlags = {}, logger = () => { return { write: () => {} } }) {
+  constructor(
+    namespaces = [],
+    includeRules,
+    excludeRules,
+    featureFlags = {},
+    logger = () => {
+      return { write: () => {} }
+    }
+  ) {
     this.namespaces = namespaces
     this.includeRules = includeRules
     this.excludeRules = excludeRules
@@ -25,25 +33,29 @@ class CommandBuilder {
 
     this.logger = logger
 
-    this.commands = registry.reduce((result, current) => {
-      // handle namespace
-      if (current.registry) {
-        result['_' + current.name] = {}
-        current.registry.forEach(command => {
-          result['_' + current.name][command.name] = command
-          command.aliases && command.aliases.forEach(alias => {
-            result.__[alias] = command
+    this.commands = registry.reduce(
+      (result, current) => {
+        // handle namespace
+        if (current.registry) {
+          result['_' + current.name] = {}
+          current.registry.forEach((command) => {
+            result['_' + current.name][command.name] = command
+            command.aliases &&
+              command.aliases.forEach((alias) => {
+                result.__[alias] = command
+              })
           })
-        })
-      }
-      if (current.command) {
-        result.__[current.name] = current
-        current.aliases.forEach(alias => {
-          result.__[alias] = current
-        })
-      }
-      return result
-    }, { __: {} })
+        }
+        if (current.command) {
+          result.__[current.name] = current
+          current.aliases.forEach((alias) => {
+            result.__[alias] = current
+          })
+        }
+        return result
+      },
+      { __: {} }
+    )
   }
 
   _buildRegex(search, modifiers, replace) {
@@ -52,17 +64,17 @@ class CommandBuilder {
     try {
       modifiers = typeof modifiers === 'string' ? modifiers : 'g'
       if (modifiers.includes('p')) {
-        return new SearchAndReplace(
-          new RegExp(search, modifiers.replace('p', '')),
-          function (match) {
-            if (match.toUpperCase() === match) {
-              replace = replace.toUpperCase()
-            }
-            if (match.toLowerCase() === match) {
-              replace = replace.toLowerCase()
-            }
-            return match.replace(new RegExp(search, modifiers.replace('p', '')), replace)
-          })
+        return new SearchAndReplace(new RegExp(search, modifiers.replace('p', '')), function (
+          match
+        ) {
+          if (match.toUpperCase() === match) {
+            replace = replace.toUpperCase()
+          }
+          if (match.toLowerCase() === match) {
+            replace = replace.toLowerCase()
+          }
+          return match.replace(new RegExp(search, modifiers.replace('p', '')), replace)
+        })
       }
       return new SearchAndReplace(new RegExp(search, modifiers), replace)
     } catch (e) {
@@ -75,18 +87,39 @@ class CommandBuilder {
 
     // Run namespaced command
     if (this.commands['_' + namespace] && this.commands['_' + namespace][name]) {
-      return this.commands['_' + namespace][name].command.bind(this)(value, parameters, location, this.includeRules, this.excludeRules, this)
+      return this.commands['_' + namespace][name].command.bind(this)(
+        value,
+        parameters,
+        location,
+        this.includeRules,
+        this.excludeRules,
+        this
+      )
     }
 
     // Run command without namespace
     if (this.commands.__[name]) {
-      return this.commands.__[name].command.bind(this)(value, parameters, location, this.includeRules, this.excludeRules, this)
+      return this.commands.__[name].command.bind(this)(
+        value,
+        parameters,
+        location,
+        this.includeRules,
+        this.excludeRules,
+        this
+      )
     }
 
     for (let i = 0; i < this.namespaces.length; i++) {
       const ns = this.namespaces[i]
       if (this.commands['_' + ns] && this.commands['_' + ns][name]) {
-        return this.commands['_' + ns][name].command.bind(this)(value, parameters, location, this.includeRules, this.excludeRules, this)
+        return this.commands['_' + ns][name].command.bind(this)(
+          value,
+          parameters,
+          location,
+          this.includeRules,
+          this.excludeRules,
+          this
+        )
       }
     }
 
@@ -128,7 +161,12 @@ class CommandBuilder {
     const rawCommand = this._extractForCustomCommand(key)
 
     if (rawCommand.extracted) {
-      return this._buildCustomCommand(rawCommand.namespace, rawCommand.command, rawCommand.parameters, value)
+      return this._buildCustomCommand(
+        rawCommand.namespace,
+        rawCommand.command,
+        rawCommand.parameters,
+        value
+      )
     }
     return new ErrorCommand('Could not build command')
   }
@@ -162,8 +200,14 @@ class CommandBuilder {
     const cmd = this._innerBuild(key, value)
 
     if (!cmd.isAvailable(this.featureFlags)) {
-      this.logger('warn', `Command requires the following feature flags: ${cmd.getRequiredFlags()}`).write()
-      return new ErrorCommand(`Command requires the following feature flags: ${cmd.getRequiredFlags()}`, 'warning')
+      this.logger(
+        'warn',
+        `Command requires the following feature flags: ${cmd.getRequiredFlags()}`
+      ).write()
+      return new ErrorCommand(
+        `Command requires the following feature flags: ${cmd.getRequiredFlags()}`,
+        'warning'
+      )
     }
 
     cmd.setSource(key, value)

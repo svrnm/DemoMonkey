@@ -52,7 +52,7 @@ describe('SearchAndReplace', function () {
         value: 'aAaAsdf'
       }
 
-      new SearchAndReplace(/a/ig, 'b').apply(node, 'value')
+      new SearchAndReplace(/a/gi, 'b').apply(node, 'value')
 
       assert.equal(node.value, 'bbbbsdf')
     })
@@ -62,7 +62,7 @@ describe('SearchAndReplace', function () {
         value: '1234sdf'
       }
 
-      new SearchAndReplace(/[0-9]/ig, 'b').apply(node, 'value')
+      new SearchAndReplace(/[0-9]/gi, 'b').apply(node, 'value')
 
       assert.equal(node.value, 'bbbbsdf')
     })

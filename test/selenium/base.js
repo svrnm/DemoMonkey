@@ -94,7 +94,9 @@ const Base = {
     await driver.findElement(By.id('configuration-title')).sendKeys(title)
     await driver.findElement(By.css('li#current-configuration-editor a')).click()
     const currentContent = await driver.findElement(By.id('contentarea')).getText()
-    await driver.findElement(By.css('#contentarea > textarea')).sendKeys(new Array(currentContent.length + 1).join('\b'))
+    await driver
+      .findElement(By.css('#contentarea > textarea'))
+      .sendKeys(new Array(currentContent.length + 1).join('\b'))
     // Slow down the input, since sometimes not all chars are send
     await driver.findElement(By.css('#contentarea > textarea')).sendKeys(';;;;\n')
     await driver.findElement(By.css('#contentarea > textarea')).sendKeys(content)

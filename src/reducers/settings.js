@@ -27,19 +27,16 @@ const connections = function (state, action) {
   switch (action.type) {
     case 'ADD_CONNECTION':
       if (action.connection.key === false) {
-        return [
-          ...state,
-          Object.assign(action.connection, { key: uuidV4() })
-        ]
+        return [...state, Object.assign(action.connection, { key: uuidV4() })]
       }
-      return state.map(c => {
+      return state.map((c) => {
         if (c.key === action.connection.key) {
           return action.connection
         }
         return c
       })
     case 'REMOVE_CONNECTION':
-      return state.filter(c => c.key !== action.key)
+      return state.filter((c) => c.key !== action.key)
     default:
       return state
   }

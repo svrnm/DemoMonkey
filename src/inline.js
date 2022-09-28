@@ -14,8 +14,7 @@
 import match from './helpers/match'
 import * as jsonpatch from 'fast-json-patch'
 import JSON5 from 'json5'
-
-(function (scope, config) {
+;(function (scope, config) {
   const rules = []
 
   function isDebug() {
@@ -39,14 +38,17 @@ import JSON5 from 'json5'
   })
 
   if (config.hookIntoAjax) {
-    console.info('Demo Monkey hooks into ajax requests. This may break things. Use at your own risk!')
+    console.info(
+      'Demo Monkey hooks into ajax requests. This may break things. Use at your own risk!'
+    )
     let ajaxCounter = 0
     const functions = {
       patchAjaxResponse: (url, response, context) => {
         const link = scope.document.createElement('a')
         link.href = url
         if (match(url, context.urlPattern) || match(link.href, context.urlPattern)) {
-          const patch = typeof context.patch === 'string' ? JSON5.parse(context.patch) : context.patch
+          const patch =
+            typeof context.patch === 'string' ? JSON5.parse(context.patch) : context.patch
           const patched = jsonpatch.applyPatch(JSON5.parse(response), patch).newDocument
           return JSON.stringify(patched)
         }
@@ -66,16 +68,18 @@ import JSON5 from 'json5'
       }
     }
     const mutateResponse = function (url, response) {
-      return rules.filter(e => e[0].includes('AjaxResponse')).reduce((r, e) => {
-        try {
-          const r2 = functions[e[0]](url, r, e[1])
-          return r2
-        } catch (err) {
-          console.warn(`Could not run ${e[0]}, because of an error:`)
-          console.warn(err)
-        }
-        return r
-      }, response)
+      return rules
+        .filter((e) => e[0].includes('AjaxResponse'))
+        .reduce((r, e) => {
+          try {
+            const r2 = functions[e[0]](url, r, e[1])
+            return r2
+          } catch (err) {
+            console.warn(`Could not run ${e[0]}, because of an error:`)
+            console.warn(err)
+          }
+          return r
+        }, response)
     }
     const openPrototype = XMLHttpRequest.prototype.open
     XMLHttpRequest.prototype.open = function () {

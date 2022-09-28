@@ -77,14 +77,18 @@ class ReplaceFlowmapIcon extends Command {
       newIcon = ''
     }
     this.appName = appName
-    this.newIcon = ReplaceFlowmapIcon.icons[newIcon.toLowerCase()] ? ReplaceFlowmapIcon.icons[newIcon.toLowerCase()] : newIcon
+    this.newIcon = ReplaceFlowmapIcon.icons[newIcon.toLowerCase()]
+      ? ReplaceFlowmapIcon.icons[newIcon.toLowerCase()]
+      : newIcon
   }
 
   apply(node, key) {
     if (this.newIcon !== '' && typeof node[key] === 'string' && node[key].trim() === this.appName) {
       const parent = this._walk(node, 2)
       if (parent !== false) {
-        const image = parent.querySelector('image.adsFlowNodeTypeIcon, image.adsFlowMapBackendImage')
+        const image = parent.querySelector(
+          'image.adsFlowNodeTypeIcon, image.adsFlowMapBackendImage'
+        )
         if (image !== null) {
           const original = image.href.baseVal
           image.href.baseVal = this.newIcon

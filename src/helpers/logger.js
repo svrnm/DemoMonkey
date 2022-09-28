@@ -22,7 +22,7 @@ function logger() {
       level,
       // we need to make sure that errors are converted into objects early,
       // since they are not stringified properly. JSON.stringify(new Error()) => {}
-      message: message.map(e => {
+      message: message.map((e) => {
         if (e instanceof Error) {
           return {
             fromError: true,

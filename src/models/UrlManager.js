@@ -17,7 +17,7 @@ class UrlManager {
     this.enabled = enabled
   }
 
-  add (description) {
+  add(description) {
     if (this.enabled) {
       this.scope.chrome.runtime.sendMessage({
         receiver: 'background',
@@ -27,7 +27,7 @@ class UrlManager {
     }
   }
 
-  remove (description) {
+  remove(description) {
     if (this.enabled) {
       this.scope.chrome.runtime.sendMessage({
         receiver: 'background',
@@ -37,7 +37,7 @@ class UrlManager {
     }
   }
 
-  clear () {
+  clear() {
     if (this.enabled) {
       this.scope.chrome.runtime.sendMessage({
         receiver: 'background',
