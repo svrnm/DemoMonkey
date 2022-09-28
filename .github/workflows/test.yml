@@ -33,4 +33,4 @@ jobs:
       - name: Run All Node.js Tests
         run: npm run build
       - name: Run All Node.js Tests
-        run: npm run test
+        run: npm run test-no-ui
