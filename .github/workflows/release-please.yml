@@ -12,10 +12,8 @@ jobs:
         with:
           release-type: node
           package-name: release-please-action
-          extra-files:
-            - type: json
-              path: manifest.json
-              jsonpath: '$.version'
+          extra-files: |
+            manifest.json
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
