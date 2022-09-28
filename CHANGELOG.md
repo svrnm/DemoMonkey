@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.2.3](https://github.com/svrnm/DemoMonkey/compare/v8.2.2...v8.2.3) (2022-09-28)
+
+
+### version
+
+* release 8.2.3 ([6557edb](https://github.com/svrnm/DemoMonkey/commit/6557edbd6eca9d2e6eec862c8e435c31ca070955))
+
 ## [8.2.2](https://github.com/svrnm/DemoMonkey/compare/v8.2.1...v8.2.2) (2022-09-28)
 
 ### version
