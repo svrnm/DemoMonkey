@@ -36,18 +36,8 @@ const configurationWithOption = new Configuration('@a = b')
 const configurationWithInclude = new Configuration('@include = /www/')
 const configurationWithBlockList = new Configuration('@blocklist = div')
 const configurationWithAllowList = new Configuration('@allowlist = style')
-const configurationWithVariable = new Configuration(
-  '$a = default\rx = $a',
-  null,
-  true,
-  { a: 'v' }
-)
-const configurationWithUnsetVariable = new Configuration(
-  '$a = default\rv = $a',
-  null,
-  true,
-  {}
-)
+const configurationWithVariable = new Configuration('$a = default\rx = $a', null, true, { a: 'v' })
+const configurationWithUnsetVariable = new Configuration('$a = default\rv = $a', null, true, {})
 const configurationWithSharedPrefixVariable = new Configuration(
   '[Section]\r[Section.SubSection]\r$a = a1\r$ab = a2\rdefault = $ab',
   null,
@@ -68,16 +58,13 @@ describe('Configuration', function () {
       assert.deepStrictEqual(simpleConfiguration.getVariables(), [])
     })
     it('ini $a = default should return array with one variable set', function () {
-      assert.deepStrictEqual(configurationWithVariable.getVariables(), [
-        new Variable('a', 'v', '')
-      ])
+      assert.deepStrictEqual(configurationWithVariable.getVariables(), [new Variable('a', 'v', '')])
     })
     it('should return the variables from imported configurations', function () {
       const repository = new Repository({ other: configurationWithVariable })
-      assert.deepStrictEqual(
-        new Configuration('+other', repository).getVariables(),
-        [new Variable('a', 'default', '', 'other')]
-      )
+      assert.deepStrictEqual(new Configuration('+other', repository).getVariables(), [
+        new Variable('a', 'default', '', 'other')
+      ])
     })
     it('should return variables with reassigned value', function () {
       const repository = new Repository({ other: configurationWithVariable })
@@ -106,21 +93,13 @@ describe('Configuration', function () {
     it('should apply variables on commands', function () {
       const config = configurationWithCommand._getConfiguration()
       const cb = new CommandBuilder()
-      assert.deepStrictEqual(config, [
-        cb.build('!replace(a)', 'b'),
-        cb.build('!replace(y)', 'w')
-      ])
+      assert.deepStrictEqual(config, [cb.build('!replace(a)', 'b'), cb.build('!replace(y)', 'w')])
     })
     it('should apply variables on imports', function () {
       /* eslint no-template-curly-in-string: "off" */
       const cb = new CommandBuilder()
       const repository = new Repository({
-        other1: new Configuration(
-          '$a = default\r$b = default\rx${b} = $a',
-          null,
-          true,
-          { a: 'v' }
-        ),
+        other1: new Configuration('$a = default\r$b = default\rx${b} = $a', null, true, { a: 'v' }),
         other2: new Configuration(
           '+other3\r$a = default\r$b = default\ry${b} = $a\r$c = reassigned\r$d = middle',
           new Repository({
@@ -136,12 +115,9 @@ describe('Configuration', function () {
         )
       })
       assert.deepStrictEqual(
-        new Configuration(
-          '+other1\r+other2\r$a = reassigned\r$b = b\r$d = top',
-          repository,
-          true,
-          { e: 'value' }
-        )._getConfiguration(),
+        new Configuration('+other1\r+other2\r$a = reassigned\r$b = b\r$d = top', repository, true, {
+          e: 'value'
+        })._getConfiguration(),
         [
           cb.build('xb', 'reassigned'),
           cb.build('ztop', 'reassignedvalue'),
@@ -221,10 +197,7 @@ describe('Configuration', function () {
 
   describe('#isEnabledForUrl', function () {
     it('should return false for empty rules', function () {
-      assert.strictEqual(
-        simpleConfiguration.isEnabledForUrl('http://www.example.com'),
-        false
-      )
+      assert.strictEqual(simpleConfiguration.isEnabledForUrl('http://www.example.com'), false)
     })
   })
 
@@ -233,14 +206,8 @@ describe('Configuration', function () {
       assert.deepStrictEqual(configurationWithInclude.getOptions(), {
         include: ['/www/']
       })
-      assert.strictEqual(
-        configurationWithInclude.isEnabledForUrl('http://www.example.com'),
-        true
-      )
-      assert.strictEqual(
-        configurationWithInclude.isEnabledForUrl('http://example.com'),
-        false
-      )
+      assert.strictEqual(configurationWithInclude.isEnabledForUrl('http://www.example.com'), true)
+      assert.strictEqual(configurationWithInclude.isEnabledForUrl('http://example.com'), false)
     })
   })
 
@@ -288,14 +255,8 @@ describe('Configuration', function () {
           nodeName: 'DIV'
         }
       }
-      assert.strictEqual(
-        configurationWithBlockList.isTagBlockListed(node),
-        true
-      )
-      assert.strictEqual(
-        configurationWithBlockList.isTagBlockListed(node.parentNode),
-        true
-      )
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node.parentNode), true)
     })
     it('should return true if tagname is script', function () {
       const node = {
@@ -305,14 +266,8 @@ describe('Configuration', function () {
           nodeName: 'SCRIPT'
         }
       }
-      assert.strictEqual(
-        configurationWithBlockList.isTagBlockListed(node),
-        true
-      )
-      assert.strictEqual(
-        configurationWithBlockList.isTagBlockListed(node.parentNode),
-        true
-      )
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node.parentNode), true)
     })
     it('should return true if tagname is style', function () {
       const node = {
@@ -322,14 +277,8 @@ describe('Configuration', function () {
           nodeName: 'STYLE'
         }
       }
-      assert.strictEqual(
-        configurationWithBlockList.isTagBlockListed(node),
-        true
-      )
-      assert.strictEqual(
-        configurationWithBlockList.isTagBlockListed(node.parentNode),
-        true
-      )
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), true)
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node.parentNode), true)
     })
     it('should return false if tagname is style and style is whitelisted', function () {
       const node = {
@@ -339,14 +288,8 @@ describe('Configuration', function () {
           nodeName: 'STYLE'
         }
       }
-      assert.strictEqual(
-        configurationWithAllowList.isTagBlockListed(node),
-        false
-      )
-      assert.strictEqual(
-        configurationWithAllowList.isTagBlockListed(node.parentNode),
-        false
-      )
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node), false)
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node.parentNode), false)
     })
     it('should return false if tagname is not blacklisted', function () {
       const node = {
@@ -356,14 +299,8 @@ describe('Configuration', function () {
           nodeName: 'INPUT'
         }
       }
-      assert.strictEqual(
-        configurationWithAllowList.isTagBlockListed(node),
-        false
-      )
-      assert.strictEqual(
-        configurationWithAllowList.isTagBlockListed(node.parentNode),
-        false
-      )
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node), false)
+      assert.strictEqual(configurationWithAllowList.isTagBlockListed(node.parentNode), false)
     })
     it('should return false if node type is not TEXT or ELEMENT', function () {
       const node = {
@@ -372,10 +309,7 @@ describe('Configuration', function () {
           nodeName: 'DIV'
         }
       }
-      assert.strictEqual(
-        configurationWithBlockList.isTagBlockListed(node),
-        false
-      )
+      assert.strictEqual(configurationWithBlockList.isTagBlockListed(node), false)
     })
   })
 })

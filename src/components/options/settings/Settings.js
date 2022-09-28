@@ -127,9 +127,7 @@ class Settings extends React.Component {
     const optionalFeatures = OptionalFeature.getAll({
       styles: {
         preferDarkMode: {
-          display: this.props.settings.optionalFeatures.syncDarkMode
-            ? 'none'
-            : 'flex'
+          display: this.props.settings.optionalFeatures.syncDarkMode ? 'none' : 'flex'
         }
       }
     })
@@ -138,14 +136,10 @@ class Settings extends React.Component {
       <div className="content">
         <div className="settings">
           <h1>Settings</h1>
-          <Tabs
-            activeTab={this.props.activeTab}
-            onNavigate={this.props.onNavigate}
-          >
+          <Tabs activeTab={this.props.activeTab} onNavigate={this.props.onNavigate}>
             <Pane label="Optional Features" name="optionalFeatures">
               <label>
-                Optional features can be toggled on or off to influence the
-                behaviour of DemoMonkey.
+                Optional features can be toggled on or off to influence the behaviour of DemoMonkey.
               </label>
               {optionalFeatures.map((feature, index) => {
                 return (
@@ -156,9 +150,7 @@ class Settings extends React.Component {
                     style={feature.style ? feature.style : {}}
                   >
                     <Switch
-                      onChange={() =>
-                        this.props.onToggleOptionalFeature(feature.id)
-                      }
+                      onChange={() => this.props.onToggleOptionalFeature(feature.id)}
                       checked={this.props.settings.optionalFeatures[feature.id]}
                     />
                     <label>
@@ -171,21 +163,17 @@ class Settings extends React.Component {
             <Pane label="Base Template" name="baseTemplate">
               <label htmlFor="template">
                 <p>
-                  This base template will be used for new configurations you
-                  create. It will auto-save while you edit it.
+                  This base template will be used for new configurations you create. It will
+                  auto-save while you edit it.
                 </p>
                 <p>
-                  <button
-                    className="save-button"
-                    onClick={() => this.saveBaseTemplate()}
-                  >
+                  <button className="save-button" onClick={() => this.saveBaseTemplate()}>
                     Save
                   </button>
                   <span
                     style={{
                       display:
-                        this.props.settings.baseTemplate ===
-                        this.state.baseTemplate
+                        this.props.settings.baseTemplate === this.state.baseTemplate
                           ? 'none'
                           : 'inline'
                     }}
@@ -208,13 +196,9 @@ class Settings extends React.Component {
                     : event.preventDefault()
                 }
                 keyboardHandler={
-                  this.props.settings.optionalFeatures.keyboardHandlerVim
-                    ? 'vim'
-                    : null
+                  this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null
                 }
-                editorAutocomplete={
-                  this.props.settings.optionalFeatures.editorAutocomplete
-                }
+                editorAutocomplete={this.props.settings.optionalFeatures.editorAutocomplete}
                 isDarkMode={this.props.isDarkMode}
               />
             </Pane>
@@ -229,25 +213,19 @@ class Settings extends React.Component {
               <div>
                 <label htmlFor="template">
                   <p>
-                    If your demo team asks you to provide analytics on your
-                    usage of their platform, this is the right place! Put a
-                    snippet of any end user monitoring or analytics solution
-                    (AppDynamics, Matamo, Plausible) into this box and it will
-                    be injected when an @include[] in your demo configuration
-                    matches.
+                    If your demo team asks you to provide analytics on your usage of their platform,
+                    this is the right place! Put a snippet of any end user monitoring or analytics
+                    solution (AppDynamics, Matamo, Plausible) into this box and it will be injected
+                    when an @include[] in your demo configuration matches.
                   </p>
                   <p>
-                    <button
-                      className="save-button"
-                      onClick={() => this.saveAnalyticsSnippet()}
-                    >
+                    <button className="save-button" onClick={() => this.saveAnalyticsSnippet()}>
                       Save
                     </button>
                     <span
                       style={{
                         display:
-                          this.props.settings.analyticsSnippet ===
-                          this.state.analyticsSnippet
+                          this.props.settings.analyticsSnippet === this.state.analyticsSnippet
                             ? 'none'
                             : 'inline'
                       }}
@@ -273,9 +251,8 @@ class Settings extends React.Component {
             <Pane label="More" name="more">
               <h2>{"Monkey's Behavior"}</h2>
               <label>
-                Change this value if you experience performance issues with
-                DemoMonkey. A higher value means less frequent updates. Default
-                is 100.
+                Change this value if you experience performance issues with DemoMonkey. A higher
+                value means less frequent updates. Default is 100.
               </label>
               <b>Update interval: </b>
               <input
@@ -285,69 +262,49 @@ class Settings extends React.Component {
                 value={this.state.monkeyInterval}
                 onChange={(e) => this.updateMonkeyInterval(e)}
               />
-              <button
-                className="save-button"
-                onClick={(e) => this.saveMonkeyInterval(e)}
-              >
+              <button className="save-button" onClick={(e) => this.saveMonkeyInterval(e)}>
                 save
               </button>
               <h2>Permissions</h2>
-              For DemoMonkey to work optimal you have to grant permissions to
-              access all websites.
+              For DemoMonkey to work optimal you have to grant permissions to access all websites.
               <div className="toggle-group" id="toggle-beta_configSync">
                 <Switch
                   onChange={() =>
-                    this.props.onRequestExtendedPermissions(
-                      this.props.hasExtendedPermissions
-                    )
+                    this.props.onRequestExtendedPermissions(this.props.hasExtendedPermissions)
                   }
                   checked={this.props.hasExtendedPermissions}
                 />
                 <label>
-                  <b>Allow access on all sites.</b> Allow DemoMonkey to read and
-                  change data on all sites you visit.
+                  <b>Allow access on all sites.</b> Allow DemoMonkey to read and change data on all
+                  sites you visit.
                 </label>
               </div>
-              If you can not revoke permissions from here, go to the extensions
-              page, choose Demo Monkey, click on <i>Details</i> and there set{' '}
-              <i>Site Access</i> to <i>On click</i>
+              If you can not revoke permissions from here, go to the extensions page, choose Demo
+              Monkey, click on <i>Details</i> and there set <i>Site Access</i> to <i>On click</i>
               <h2>Backup</h2>
-              You can always open the <a href="backup.html">backup page</a> to
-              download your files or manipulate your settings. Please use with
-              caution!
-              <button
-                className="save-button"
-                onClick={(event) => this.props.onDownloadAll(event)}
-              >
+              You can always open the <a href="backup.html">backup page</a> to download your files
+              or manipulate your settings. Please use with caution!
+              <button className="save-button" onClick={(event) => this.props.onDownloadAll(event)}>
                 Download all configurations
               </button>
-              <button
-                className="delete-button"
-                onClick={(event) => this.onBeforeDeleteAll(event)}
-              >
+              <button className="delete-button" onClick={(event) => this.onBeforeDeleteAll(event)}>
                 Download & Delete all configurations
               </button>
               <Popup
                 title="Please Confirm"
-                text={
-                  <span>Do you really want to delete all configurations?</span>
-                }
+                text={<span>Do you really want to delete all configurations?</span>}
                 open={this.state.showDeleteAllPopup}
                 onCancel={(event) => this.onCancelDeleteAll(event)}
                 onConfirm={(event) => this.onDeleteAll(event)}
               />
-              <button
-                className="delete-button"
-                onClick={(event) => this.onBeforeReset(event)}
-              >
+              <button className="delete-button" onClick={(event) => this.onBeforeReset(event)}>
                 Reset DemoMonkey
               </button>
               <Popup
                 title="Reset DemoMonkey"
                 text={
                   <span>
-                    Do you really want to reset{' '}
-                    <b>all configurations and all settings</b>?<br />
+                    Do you really want to reset <b>all configurations and all settings</b>?<br />
                     (This window will close.)
                   </span>
                 }

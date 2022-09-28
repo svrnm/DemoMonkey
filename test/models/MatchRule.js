@@ -22,10 +22,7 @@ describe('MatchRule', function () {
 
     it('should always return true for undefined rules', function () {
       const options = {}
-      assert.strictEqual(
-        new MatchRule(options.includes, options.excludes).test('asdf'),
-        true
-      )
+      assert.strictEqual(new MatchRule(options.includes, options.excludes).test('asdf'), true)
     })
 
     it('should return false if no include rule matches', function () {

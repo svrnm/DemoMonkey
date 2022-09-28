@@ -64,21 +64,17 @@ class CommandBuilder {
     try {
       modifiers = typeof modifiers === 'string' ? modifiers : 'g'
       if (modifiers.includes('p')) {
-        return new SearchAndReplace(
-          new RegExp(search, modifiers.replace('p', '')),
-          function (match) {
-            if (match.toUpperCase() === match) {
-              replace = replace.toUpperCase()
-            }
-            if (match.toLowerCase() === match) {
-              replace = replace.toLowerCase()
-            }
-            return match.replace(
-              new RegExp(search, modifiers.replace('p', '')),
-              replace
-            )
+        return new SearchAndReplace(new RegExp(search, modifiers.replace('p', '')), function (
+          match
+        ) {
+          if (match.toUpperCase() === match) {
+            replace = replace.toUpperCase()
           }
-        )
+          if (match.toLowerCase() === match) {
+            replace = replace.toLowerCase()
+          }
+          return match.replace(new RegExp(search, modifiers.replace('p', '')), replace)
+        })
       }
       return new SearchAndReplace(new RegExp(search, modifiers), replace)
     } catch (e) {
@@ -90,10 +86,7 @@ class CommandBuilder {
     const location = typeof window === 'undefined' ? '' : window.location
 
     // Run namespaced command
-    if (
-      this.commands['_' + namespace] &&
-      this.commands['_' + namespace][name]
-    ) {
+    if (this.commands['_' + namespace] && this.commands['_' + namespace][name]) {
       return this.commands['_' + namespace][name].command.bind(this)(
         value,
         parameters,
@@ -145,9 +138,7 @@ class CommandBuilder {
       if (command.substr(-1) !== ')') {
         return { extracted: false }
       }
-      parameters = extractParameters(
-        command.slice(command.indexOf('(') + 1, -1)
-      )
+      parameters = extractParameters(command.slice(command.indexOf('(') + 1, -1))
 
       command = command.split('(')[0]
     }

@@ -19,8 +19,7 @@ class RecolorImage extends Command {
   constructor(search, replace) {
     super()
     this.search = search
-    this.replace =
-      typeof replace === 'string' ? Command._getColorFromValue(replace) : false
+    this.replace = typeof replace === 'string' ? Command._getColorFromValue(replace) : false
   }
 
   isApplicableForGroup(group) {
@@ -34,10 +33,7 @@ class RecolorImage extends Command {
 
     const search = this._lookupImage(this.search)
 
-    if (
-      this._match(target[key], search) &&
-      !target.style.filter.includes('#demomonkey-color-')
-    ) {
+    if (this._match(target[key], search) && !target.style.filter.includes('#demomonkey-color-')) {
       const original = target.style.filter
       const colorId = 'demomonkey-color-' + uuidV4()
       // Note: For some reason it does not work to add the SVG first and apply the filter second.

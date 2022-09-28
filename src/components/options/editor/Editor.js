@@ -57,14 +57,9 @@ class Editor extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      this.props.currentConfiguration.id !== prevProps.currentConfiguration.id
-    ) {
+    if (this.props.currentConfiguration.id !== prevProps.currentConfiguration.id) {
       if (prevProps.saveOnClose && prevState.unsavedChanges) {
-        prevProps.onSave(
-          prevProps.currentConfiguration,
-          prevState.currentConfiguration
-        )
+        prevProps.onSave(prevProps.currentConfiguration, prevState.currentConfiguration)
       }
     }
   }
@@ -72,8 +67,7 @@ class Editor extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (
       nextProps.currentConfiguration.id !== prevState.currentConfiguration.id ||
-      nextProps.currentConfiguration.updated_at >
-        prevState.currentConfiguration.updated_at
+      nextProps.currentConfiguration.updated_at > prevState.currentConfiguration.updated_at
     ) {
       return {
         currentConfiguration: nextProps.currentConfiguration,
@@ -89,26 +83,16 @@ class Editor extends React.Component {
     }
     const config = this.state.currentConfiguration
     config[key] = value
-    this.setState(
-      { currentConfiguration: config, unsavedChanges: true },
-      function () {
-        if (key === 'hotkeys') {
-          this.props.onSave(
-            this.props.currentConfiguration,
-            this.state.currentConfiguration
-          )
-          this.setState({ unsavedChanges: false })
-        }
+    this.setState({ currentConfiguration: config, unsavedChanges: true }, function () {
+      if (key === 'hotkeys') {
+        this.props.onSave(this.props.currentConfiguration, this.state.currentConfiguration)
+        this.setState({ unsavedChanges: false })
       }
-    )
+    })
   }
 
   handleHotkeysChange(options) {
-    this.handleUpdate(
-      'hotkeys',
-      options === null ? [] : options.map((o) => o.value),
-      null
-    )
+    this.handleUpdate('hotkeys', options === null ? [] : options.map((o) => o.value), null)
   }
 
   updateVariable(id, value) {
@@ -166,10 +150,7 @@ class Editor extends React.Component {
       this.setState({ unsavedChanges: false })
     }
     action = 'on' + action.charAt(0).toUpperCase() + action.substr(1)
-    this.props[action](
-      this.props.currentConfiguration,
-      this.state.currentConfiguration
-    )
+    this.props[action](this.props.currentConfiguration, this.state.currentConfiguration)
   }
 
   _buildAnnotations(content) {
@@ -190,10 +171,7 @@ class Editor extends React.Component {
     lines.forEach((line, rowIdx) => {
       // Process each line and add infos, warnings, errors
       // Multiple = signs can lead to issues, add an info
-      if (
-        (line.replaceAll('\\=', '\u2260').match(/(?:^=)|(?:[^\\]=)/g) || [])
-          .length > 1
-      ) {
+      if ((line.replaceAll('\\=', '\u2260').match(/(?:^=)|(?:[^\\]=)/g) || []).length > 1) {
         result.push({
           row: rowIdx,
           column: 0,
@@ -220,10 +198,7 @@ class Editor extends React.Component {
 
       if (line.startsWith('!') && line.length > 1) {
         const [lhs, rhs] = line.replaceAll('\\=', '\u2260').split('=')
-        const cmd = cb.build(
-          lhs.trim(),
-          typeof rhs === 'string' ? rhs.trim() : ''
-        )
+        const cmd = cb.build(lhs.trim(), typeof rhs === 'string' ? rhs.trim() : '')
         if (cmd instanceof ErrorCommand) {
           // `Command "${command}" not found.\nPlease check the spelling and\nif all required namespaces are loaded.`
           result.push({
@@ -249,11 +224,7 @@ class Editor extends React.Component {
 
       if (line.includes('=')) {
         const [, rhs] = line.split(/=(.+)/, 2).map((e) => e.trim())
-        if (
-          typeof rhs === 'string' &&
-          rhs.startsWith('/') &&
-          rhs.endsWith('/')
-        ) {
+        if (typeof rhs === 'string' && rhs.startsWith('/') && rhs.endsWith('/')) {
           result.push({
             row: rowIdx,
             column: 0,
@@ -277,10 +248,7 @@ class Editor extends React.Component {
         })
       }
 
-      if (
-        line.includes('=') &&
-        !['!', '@', '+', ';', '#', '[', '$'].includes(line.charAt(0))
-      ) {
+      if (line.includes('=') && !['!', '@', '+', ';', '#', '[', '$'].includes(line.charAt(0))) {
         const [lhs, rhs] = line.split(/=(.+)/, 2).map((e) => e.trim())
         if (rhs && rhs.includes(lhs)) {
           result.push({
@@ -305,9 +273,7 @@ class Editor extends React.Component {
   }
 
   onBeforeSave() {
-    if (
-      !this.props.hasConfigurationWithSameName(this.state.currentConfiguration)
-    ) {
+    if (!this.props.hasConfigurationWithSameName(this.state.currentConfiguration)) {
       this.handleClick(null, 'save')
     } else {
       this.setState({ showSavePopup: true })
@@ -346,9 +312,7 @@ class Editor extends React.Component {
     const variables = tmpConfig.getVariables()
 
     const showTemplateWarning =
-      tmpConfig.isTemplate() || tmpConfig.isRestricted()
-        ? 'no-warning-box'
-        : 'warning-box'
+      tmpConfig.isTemplate() || tmpConfig.isRestricted() ? 'no-warning-box' : 'warning-box'
 
     const hotkeyOptions = Array.from(Array(9).keys()).map((x) => ({
       value: x + 1,
@@ -381,9 +345,7 @@ class Editor extends React.Component {
             id="configuration-title"
             placeholder="Please provide a name. You can use slashes (/) in it to create folders."
             value={current.name}
-            onChange={(event) =>
-              this.handleUpdate('name', event.target.value, event)
-            }
+            onChange={(event) => this.handleUpdate('name', event.target.value, event)}
           />
           <div className="select-hotkeys">
             <Select
@@ -395,9 +357,7 @@ class Editor extends React.Component {
             />
           </div>
           <button
-            className={
-              'save-button ' + (this.state.unsavedChanges ? '' : 'disabled')
-            }
+            className={'save-button ' + (this.state.unsavedChanges ? '' : 'disabled')}
             onClick={() => this.onBeforeSave()}
           >
             Save
@@ -410,11 +370,7 @@ class Editor extends React.Component {
             text={
               <span>
                 A configuration with{' '}
-                <b>
-                  {current.name} already exists. Do you really want to use this
-                  name
-                </b>
-                ?
+                <b>{current.name} already exists. Do you really want to use this name</b>?
               </span>
             }
           />
@@ -452,20 +408,12 @@ class Editor extends React.Component {
           />
         </div>
         <div className={showTemplateWarning}>
-          <b>Warning:</b> Without <b>@include</b> or <b>@exclude</b> defined,
-          your configuration can not be enabled. You can only import it as
-          template into another configuration. If this is intended, add{' '}
-          <b>@template</b> to remove this warning.
+          <b>Warning:</b> Without <b>@include</b> or <b>@exclude</b> defined, your configuration can
+          not be enabled. You can only import it as template into another configuration. If this is
+          intended, add <b>@template</b> to remove this warning.
         </div>
-        <Tabs
-          activeTab={this.props.activeTab}
-          onNavigate={this.props.onNavigate}
-        >
-          <Pane
-            label="Configuration"
-            name="configuration"
-            id="current-configuration-editor"
-          >
+        <Tabs activeTab={this.props.activeTab} onNavigate={this.props.onNavigate}>
+          <Pane label="Configuration" name="configuration" id="current-configuration-editor">
             <CodeEditor
               value={current.content}
               getRepository={this.props.getRepository}
@@ -487,20 +435,13 @@ class Editor extends React.Component {
           <Pane label="Variables" name="variables">
             <div>
               Introduce variables in your configuration with a line{' '}
-              <code>$variableName = variableValue//description</code>. You can
-              quickly update the values of variables here. Note, that you also
-              can see the variables of imported configurations and set their
-              value accordingly. If you define a variable with the same name
-              here and in the important, your local variable has precedence.
+              <code>$variableName = variableValue//description</code>. You can quickly update the
+              values of variables here. Note, that you also can see the variables of imported
+              configurations and set their value accordingly. If you define a variable with the same
+              name here and in the important, your local variable has precedence.
             </div>
             <div className="scrolling-pane">
-              {variables.length > 0
-                ? (
-                    ''
-                  )
-                : (
-                <div className="no-variables">No variables defined</div>
-                  )}
+              {variables.length > 0 ? '' : <div className="no-variables">No variables defined</div>}
               {variables.map((variable, index) => {
                 return (
                   <Variable
@@ -520,9 +461,7 @@ class Editor extends React.Component {
           <Pane
             link={(e) => {
               e.preventDefault()
-              window.open(
-                'https://github.com/svrnm/DemoMonkey/blob/master/SHORTCUTS.md'
-              )
+              window.open('https://github.com/svrnm/DemoMonkey/blob/master/SHORTCUTS.md')
             }}
             label="Shortcuts"
           />

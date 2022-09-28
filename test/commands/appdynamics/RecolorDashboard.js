@@ -93,12 +93,7 @@ describe('RecolorDashboard', function () {
         attr2 = { stroke: 'green' }
         attr3 = { backgroundColor: 'green' }
 
-        const result = new RecolorDashboard(
-          search,
-          replace,
-          '1',
-          location
-        ).apply(node, 'data')
+        const result = new RecolorDashboard(search, replace, '1', location).apply(node, 'data')
 
         if (result !== false) {
           assert.equal(result.length, 3)
@@ -118,13 +113,7 @@ describe('RecolorDashboard', function () {
 
       new RecolorDashboard('green', 'blue', '2', location).apply(node, 'data')
 
-      assert.equal(
-        new RecolorDashboard('green', 'blue', '2', location).apply(
-          node,
-          'data'
-        ),
-        false
-      )
+      assert.equal(new RecolorDashboard('green', 'blue', '2', location).apply(node, 'data'), false)
 
       assert.equal(attr1.fill, 'green')
       assert.equal(attr2.stroke, 'green')

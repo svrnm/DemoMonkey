@@ -94,10 +94,7 @@ function autocomplete(getRepository, variables) {
       }
     }
     const content = getRepository().findByName(data.configName).rawContent
-    snippetManager.insertSnippet(
-      editor,
-      content.replace(/@template\S*[\r\n]+/g, '')
-    )
+    snippetManager.insertSnippet(editor, content.replace(/@template\S*[\r\n]+/g, ''))
   }
 
   langTools.setCompleters([
@@ -190,18 +187,14 @@ function autocomplete(getRepository, variables) {
           const lineToPos = fullLine.substr(0, pos.column - prefix.length)
           // replaceFlowmapIcon provides some values.
           // console.log(fullLine, lineToPos)
-          if (
-            fullLine.match(/^!(?:appdynamics.)?replaceFlowmapIcon\(.*\)\s*=\s*/)
-          ) {
+          if (fullLine.match(/^!(?:appdynamics.)?replaceFlowmapIcon\(.*\)\s*=\s*/)) {
             callback(
               null,
               Object.keys(ReplaceFlowmapIcon.icons).map((value) => {
                 return { value, meta: 'icon' }
               })
             )
-          } else if (
-            lineToPos.match(/^!(?:appdynamics.)?(hide|replace)Application\($/)
-          ) {
+          } else if (lineToPos.match(/^!(?:appdynamics.)?(hide|replace)Application\($/)) {
             callback(
               null,
               [
@@ -251,9 +244,7 @@ function autocomplete(getRepository, variables) {
                   return { value, meta: 'color' }
                 })
             )
-          } else if (
-            fullLine.match(/^!(?:appdynamics.)?replaceNodeCount\(.*\)\s*=\s*/)
-          ) {
+          } else if (fullLine.match(/^!(?:appdynamics.)?replaceNodeCount\(.*\)\s*=\s*/)) {
             callback(
               null,
               ['otel', 'lambda', 'opentelemetry'].sort().map((value) => {

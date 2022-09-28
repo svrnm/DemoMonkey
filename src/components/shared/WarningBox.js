@@ -33,13 +33,9 @@ class WarningBox extends React.Component {
   render() {
     return (
       <div className="warning-box fixed">
-        <b>Warning:</b> For DemoMonkey to work optimal you have to grant
-        permissions to access all websites.{' '}
-        <a
-          id="grant-permissions-button"
-          href="#"
-          onClick={(e) => this.grantPermission(e)}
-        >
+        <b>Warning:</b> For DemoMonkey to work optimal you have to grant permissions to access all
+        websites.{' '}
+        <a id="grant-permissions-button" href="#" onClick={(e) => this.grantPermission(e)}>
           Click here
         </a>{' '}
         to grant that permission or{' '}

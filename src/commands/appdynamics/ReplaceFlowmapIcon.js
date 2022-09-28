@@ -83,11 +83,7 @@ class ReplaceFlowmapIcon extends Command {
   }
 
   apply(node, key) {
-    if (
-      this.newIcon !== '' &&
-      typeof node[key] === 'string' &&
-      node[key].trim() === this.appName
-    ) {
+    if (this.newIcon !== '' && typeof node[key] === 'string' && node[key].trim() === this.appName) {
       const parent = this._walk(node, 2)
       if (parent !== false) {
         const image = parent.querySelector(
@@ -97,12 +93,7 @@ class ReplaceFlowmapIcon extends Command {
           const original = image.href.baseVal
           image.href.baseVal = this.newIcon
           if (original !== this.newIcon) {
-            return new UndoElement(
-              image,
-              'href.baseVal',
-              original,
-              this.newIcon
-            )
+            return new UndoElement(image, 'href.baseVal', original, this.newIcon)
           }
         }
       }

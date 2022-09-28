@@ -46,11 +46,7 @@ function renderOptionsPageApp(root, store) {
     )
   })
 
-  window.chrome.runtime.onMessage.addListener(function (
-    request,
-    sender,
-    sendResponse
-  ) {
+  window.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (
       request.receiver &&
       request.receiver === 'dashboard' &&
@@ -76,21 +72,18 @@ function renderOptionsPageApp(root, store) {
 }
 
 function renderPopupPageApp(root, store, manifest) {
-  window.chrome.tabs.query(
-    { active: true, lastFocusedWindow: true },
-    function (tabs) {
-      const currentUrl = tabs.length > 0 ? tabs[0].url : ''
-      root.render(
-        <Provider store={store}>
-          <PopupPageApp currentUrl={currentUrl} manifest={manifest} />
-        </Provider>
-      )
-      // The following is required to fix https://bugs.chromium.org/p/chromium/issues/detail?id=428044
-      window.setTimeout(() => {
-        document.body.style.minHeight = document.body.clientHeight + 1 + 'px'
-      }, 200)
-    }
-  )
+  window.chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+    const currentUrl = tabs.length > 0 ? tabs[0].url : ''
+    root.render(
+      <Provider store={store}>
+        <PopupPageApp currentUrl={currentUrl} manifest={manifest} />
+      </Provider>
+    )
+    // The following is required to fix https://bugs.chromium.org/p/chromium/issues/detail?id=428044
+    window.setTimeout(() => {
+      document.body.style.minHeight = document.body.clientHeight + 1 + 'px'
+    }, 200)
+  })
 }
 
 const store = new Store({
@@ -144,15 +137,13 @@ fetch(window.chrome.runtime.getURL('COMMITHASH'))
         .then((configuration) => {
           if (configuration) {
             const configurations = store.getState().configurations
-            store
-              .dispatch({ type: 'ADD_CONFIGURATION', configuration })
-              .then(() => {
-                const latest = configurations[configurations.length - 1]
-                store.dispatch({
-                  type: 'SET_CURRENT_VIEW',
-                  view: `configuration/${latest.id}`
-                })
+            store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
+              const latest = configurations[configurations.length - 1]
+              store.dispatch({
+                type: 'SET_CURRENT_VIEW',
+                view: `configuration/${latest.id}`
               })
+            })
             window.history.replaceState(
               {},
               document.title,

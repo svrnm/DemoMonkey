@@ -16,10 +16,7 @@ function logger() {
   const timestamp = Date.now()
   const message = [...arguments]
   const level = message.shift()
-  const out =
-    console[
-      ['error', 'info', 'warn', 'debug', 'log'].includes(level) ? level : 'log'
-    ]
+  const out = console[['error', 'info', 'warn', 'debug', 'log'].includes(level) ? level : 'log']
   if (globalThis && globalThis.dmLogger) {
     globalThis.dmLogger({
       level,

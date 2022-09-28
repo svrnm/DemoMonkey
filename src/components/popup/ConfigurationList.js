@@ -31,8 +31,7 @@ class ConfigurationList extends React.Component {
     this.state = {
       search: '',
       onlyShowActivated: false,
-      onlyShowAvailable:
-        props.settings.optionalFeatures.onlyShowAvailableConfigurations === true
+      onlyShowAvailable: props.settings.optionalFeatures.onlyShowAvailableConfigurations === true
     }
   }
 
@@ -53,22 +52,14 @@ class ConfigurationList extends React.Component {
   }
 
   renderPath(configuration, index) {
-    return (
-      <div key={configuration.id}>{this.renderItem(configuration, index)}</div>
-    )
+    return <div key={configuration.id}>{this.renderItem(configuration, index)}</div>
   }
 
   renderItem(configuration, index) {
-    const tmpConfig = new Configuration(
-      configuration.content,
-      null,
-      false,
-      configuration.values
-    )
+    const tmpConfig = new Configuration(configuration.content, null, false, configuration.values)
 
     if (
-      (this.state.onlyShowAvailable &&
-        !tmpConfig.isAvailableForUrl(this.props.currentUrl)) ||
+      (this.state.onlyShowAvailable && !tmpConfig.isAvailableForUrl(this.props.currentUrl)) ||
       (this.state.onlyShowActivated && !configuration.enabled) ||
       tmpConfig.isTemplate() ||
       !tmpConfig.isRestricted() ||
@@ -117,9 +108,7 @@ class ConfigurationList extends React.Component {
     return (
       <div className="latest-configurations">
         <div className="latest-title">Latest</div>
-        {this.getLatest().map((configuration, index) =>
-          this.renderPath(configuration, index)
-        )}
+        {this.getLatest().map((configuration, index) => this.renderPath(configuration, index))}
       </div>
     )
   }
@@ -129,9 +118,7 @@ class ConfigurationList extends React.Component {
       <div>
         {this.renderLatest()}
         <div>
-          {this.getList().map((configuration, index) =>
-            this.renderPath(configuration, index)
-          )}
+          {this.getList().map((configuration, index) => this.renderPath(configuration, index))}
         </div>
       </div>
     )
@@ -159,9 +146,7 @@ class ConfigurationList extends React.Component {
     if (this.props.currentUrl) {
       const u = new URL(this.props.currentUrl)
 
-      const protocol = ['https:', 'http:'].includes(u.protocol)
-        ? 'https?:'
-        : u.protocol
+      const protocol = ['https:', 'http:'].includes(u.protocol) ? 'https?:' : u.protocol
 
       const host = u.hostname
 
@@ -215,9 +200,7 @@ class ConfigurationList extends React.Component {
             Run in <i>Debug Mode</i>
           </div>
           <div className="configurations-list">
-            {this.getConfigurations().length < 1
-              ? this.renderEmpty()
-              : this.renderList()}
+            {this.getConfigurations().length < 1 ? this.renderEmpty() : this.renderList()}
           </div>
         </div>
       )

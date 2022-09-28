@@ -62,12 +62,9 @@ const optionalFeatures = [
     label: 'Hook into Web Requests.',
     description: (
       <span>
-        Turn this feature on, if you want to use the commands !blockUrl and
-        !redirectUrl.{' '}
-        <b>
-          This will allow DemoMonkey to block or redirect requests in-flight
-        </b>
-        . To learn what this means, read about{' '}
+        Turn this feature on, if you want to use the commands !blockUrl and !redirectUrl.{' '}
+        <b>This will allow DemoMonkey to block or redirect requests in-flight</b>. To learn what
+        this means, read about{' '}
         <a
           target="blank"
           rel="noopener noreferer"
@@ -84,8 +81,8 @@ const optionalFeatures = [
     label: 'Expand Debug Box',
     description: (
       <span>
-        Turn this feature on, to show the debug box with statistics in full
-        length when running demo monkey in <i>debug mode</i>
+        Turn this feature on, to show the debug box with statistics in full length when running demo
+        monkey in <i>debug mode</i>
       </span>
     )
   },
@@ -93,8 +90,7 @@ const optionalFeatures = [
     id: 'keyboardHandlerVim',
     defaultValue: false,
     label: 'VIM Keyboard Handler.',
-    description:
-      'Turn this feature on, to use the vim keyboard handler for the editor.'
+    description: 'Turn this feature on, to use the vim keyboard handler for the editor.'
   },
   {
     id: 'withEvalCommand',
@@ -109,8 +105,8 @@ const optionalFeatures = [
     label: 'Hook into Ajax.',
     description: (
       <span>
-        Turn this feature on to allow DemoMonkey to hook into Ajax calls and
-        modify their response. Does not support <i>window.fetch</i>.
+        Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response.
+        Does not support <i>window.fetch</i>.
       </span>
     )
   },
@@ -142,8 +138,7 @@ const optionalFeatures = [
     id: 'registerProtocolHandler',
     defaultValue: false,
     label: 'Register Protocol Handler.',
-    description:
-      'Turn this feature on to register web+mnky to be handled by demomonkey.'
+    description: 'Turn this feature on to register web+mnky to be handled by demomonkey.'
   },
   {
     id: 'writeLogs',
@@ -151,8 +146,8 @@ const optionalFeatures = [
     label: 'Write Logs.',
     description: (
       <span>
-        Turn this feature on to have a DemoMonkey logs accessible via the{' '}
-        <b>Logs</b> navigation item.
+        Turn this feature on to have a DemoMonkey logs accessible via the <b>Logs</b> navigation
+        item.
       </span>
     )
   }
@@ -177,12 +172,7 @@ class OptionalFeature {
 
   static getAll(options = {}) {
     return optionalFeatures.map((obj) => {
-      const of = new OptionalFeature(
-        obj.id,
-        obj.defaultValue,
-        obj.label,
-        obj.description
-      )
+      const of = new OptionalFeature(obj.id, obj.defaultValue, obj.label, obj.description)
       if (options.styles && options.styles[obj.id]) {
         of.style = options.styles[obj.id]
       }

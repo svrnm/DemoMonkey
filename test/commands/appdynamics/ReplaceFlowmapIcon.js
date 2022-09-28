@@ -24,9 +24,7 @@ const node = {
   parentElement: {
     parentElement: {
       querySelector: function (string) {
-        if (
-          string === 'image.adsFlowNodeTypeIcon, image.adsFlowMapBackendImage'
-        ) {
+        if (string === 'image.adsFlowNodeTypeIcon, image.adsFlowMapBackendImage') {
           return {
             href
           }
@@ -49,10 +47,10 @@ describe('ReplaceFlowmapIcon', function () {
     })
 
     it('leaves the icon unchanged for an unknown replace pattern', function () {
-      new ReplaceFlowmapIcon(
-        'Inventory-Service',
-        'images/icon_nodetype_ruby_100x100.png'
-      ).apply(node, 'data')
+      new ReplaceFlowmapIcon('Inventory-Service', 'images/icon_nodetype_ruby_100x100.png').apply(
+        node,
+        'data'
+      )
       assert.equal(href.baseVal, 'images/icon_nodetype_ruby_100x100.png')
     })
   })

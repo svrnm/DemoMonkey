@@ -36,15 +36,9 @@ class ReplaceGeoStatus extends Command {
     this.search = search
     this.replace =
       typeof replace === 'string' &&
-      [
-        'normal',
-        'warning',
-        'critical',
-        'green',
-        'orange',
-        'yellow',
-        'red'
-      ].includes(replace.toLowerCase())
+      ['normal', 'warning', 'critical', 'green', 'orange', 'yellow', 'red'].includes(
+        replace.toLowerCase()
+      )
         ? 'images/eum/' + ReplaceGeoStatus.images[replace.toLowerCase()]
         : null
   }
@@ -60,20 +54,12 @@ class ReplaceGeoStatus extends Command {
     }
 
     const document = target[key]
-    const country = document.querySelector(
-      `.ads-geo-map-svg-layer path[name="${this.search}"]`
-    )
+    const country = document.querySelector(`.ads-geo-map-svg-layer path[name="${this.search}"]`)
     const circles = Array.from(
-      document.querySelectorAll(
-        '.ads-geo-map-svg-layer .ads-geo-map-load-circle'
-      )
+      document.querySelectorAll('.ads-geo-map-svg-layer .ads-geo-map-load-circle')
     )
 
-    if (
-      country &&
-      typeof country.getBBox === 'function' &&
-      circles.length > 0
-    ) {
+    if (country && typeof country.getBBox === 'function' && circles.length > 0) {
       const b = country.getBBox()
       const image = circles.filter((image) => {
         const { x, y } = image.getBBox()
@@ -85,9 +71,7 @@ class ReplaceGeoStatus extends Command {
         image.href.baseVal = this.replace
         if (original !== this.replace) {
           const result = []
-          result.push(
-            new UndoElement(image, 'href.baseVal', original, this.newIcon)
-          )
+          result.push(new UndoElement(image, 'href.baseVal', original, this.newIcon))
           return result
         }
       }

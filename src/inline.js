@@ -18,10 +18,7 @@ import JSON5 from 'json5'
   const rules = []
 
   function isDebug() {
-    return (
-      scope.document.head &&
-      scope.document.head.dataset.demoMonkeyMode === 'debug'
-    )
+    return scope.document.head && scope.document.head.dataset.demoMonkeyMode === 'debug'
   }
 
   scope.addEventListener('message', function (event) {
@@ -49,18 +46,10 @@ import JSON5 from 'json5'
       patchAjaxResponse: (url, response, context) => {
         const link = scope.document.createElement('a')
         link.href = url
-        if (
-          match(url, context.urlPattern) ||
-          match(link.href, context.urlPattern)
-        ) {
+        if (match(url, context.urlPattern) || match(link.href, context.urlPattern)) {
           const patch =
-            typeof context.patch === 'string'
-              ? JSON5.parse(context.patch)
-              : context.patch
-          const patched = jsonpatch.applyPatch(
-            JSON5.parse(response),
-            patch
-          ).newDocument
+            typeof context.patch === 'string' ? JSON5.parse(context.patch) : context.patch
+          const patched = jsonpatch.applyPatch(JSON5.parse(response), patch).newDocument
           return JSON.stringify(patched)
         }
         return response
@@ -68,10 +57,7 @@ import JSON5 from 'json5'
       replaceAjaxResponse: (url, response, context) => {
         const link = scope.document.createElement('a')
         link.href = url
-        if (
-          match(url, context.urlPattern) ||
-          match(link.href, context.urlPattern)
-        ) {
+        if (match(url, context.urlPattern) || match(link.href, context.urlPattern)) {
           if (context.search === false) {
             return context.replace
           }
@@ -113,9 +99,7 @@ import JSON5 from 'json5'
             console.log('[DM] Modified Ajax Response. Result:')
             console.log(result)
             console.log('[DM] Modified Ajax Response. End.')
-            const visualCounter = document.getElementById(
-              'demo-monkey-ajax-count'
-            )
+            const visualCounter = document.getElementById('demo-monkey-ajax-count')
             if (visualCounter) {
               visualCounter.innerHTML = `Ajax Count: ${ajaxCounter}`
             }
@@ -126,7 +110,4 @@ import JSON5 from 'json5'
       return openPrototype.apply(this, arguments)
     }
   }
-})(
-  window,
-  window.demoMonkeyConfig || { hookIntoAjax: false, hookIntoHyperGraph: false }
-)
+})(window, window.demoMonkeyConfig || { hookIntoAjax: false, hookIntoHyperGraph: false })

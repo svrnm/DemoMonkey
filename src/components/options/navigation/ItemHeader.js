@@ -79,6 +79,20 @@ class ItemHeader extends React.Component {
     this.props.onDelete(event, this.props.node)
   }
 
+  _renderTimeStamp(updatedAt) {
+    if (this.props.node.enabled) {
+      return <span style={{ color: 'red' }}>enabled</span>
+    }
+    if (this.props.node.updated_at) {
+      return (
+        <time dateTime={updatedAt.format()} title={updatedAt.format()}>
+          {updatedAt.fromNow(true)}
+        </time>
+      )
+    }
+    return ''
+  }
+
   render() {
     const style = Object.assign({}, this.props.style)
 
@@ -88,8 +102,7 @@ class ItemHeader extends React.Component {
 
     const updatedAt = moment(this.props.node.updated_at)
 
-    const label =
-      this.props.node.name === '%' ? <i>Snippets</i> : this.props.node.name
+    const label = this.props.node.name === '%' ? <i>Snippets</i> : this.props.node.name
 
     return (
       <div
@@ -98,9 +111,7 @@ class ItemHeader extends React.Component {
         onMouseLeave={(e) => this.handleHover(false)}
         onContextMenu={(e) => this.handleMenu(e)}
         className={
-          this.props.node.readOnly === true
-            ? 'navigation-item read-only-item'
-            : 'navigation-item'
+          this.props.node.readOnly === true ? 'navigation-item read-only-item' : 'navigation-item'
         }
         ref={(node) => {
           this.node = node
@@ -116,19 +127,7 @@ class ItemHeader extends React.Component {
           </a>
         </div>
         <div className="configuration-updated-at" style={style.timestamp}>
-          {this.props.node.enabled
-            ? (
-            <span style={{ color: 'red' }}>enabled</span>
-              )
-            : this.props.node.updated_at
-              ? (
-            <time dateTime={updatedAt.format()} title={updatedAt.format()}>
-              {updatedAt.fromNow(true)}
-            </time>
-                )
-              : (
-                  ''
-                )}
+          {this._renderTimeStamp(updatedAt)}
         </div>
         <div
           className="configuration-options"
@@ -136,10 +135,7 @@ class ItemHeader extends React.Component {
             visibility: this.state.optionsVisible ? 'visible' : 'hidden'
           }}
         >
-          <button
-            className="delete-configuration"
-            onClick={() => this.onBeforeDelete()}
-          >
+          <button className="delete-configuration" onClick={() => this.onBeforeDelete()}>
             x
           </button>
         </div>

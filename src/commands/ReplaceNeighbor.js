@@ -38,8 +38,7 @@ class ReplaceNeighbor extends Command {
 
   _checkLocation() {
     return (
-      typeof this.location === 'object' &&
-      this.location.toString().includes(this.locationFilter)
+      typeof this.location === 'object' && this.location.toString().includes(this.locationFilter)
     )
   }
 
@@ -80,12 +79,7 @@ class ReplaceNeighbor extends Command {
             const original = neighbor.href.baseVal
             if (original !== this.replace && !original.endsWith(this.replace)) {
               neighbor.href.baseVal = this.replace
-              return new UndoElement(
-                neighbor,
-                'href.baseVal',
-                original,
-                neighbor.href
-              )
+              return new UndoElement(neighbor, 'href.baseVal', original, neighbor.href)
             }
           } else if (this.property !== '') {
             const original = neighbor.style[this.property]
@@ -105,12 +99,7 @@ class ReplaceNeighbor extends Command {
             const original = neighborText.data
             if (original !== this.replace) {
               neighborText.data = this.replace
-              return new UndoElement(
-                neighborText,
-                'data',
-                original,
-                this.replace
-              )
+              return new UndoElement(neighborText, 'data', original, this.replace)
             }
           }
         }

@@ -45,11 +45,7 @@ class Popup extends React.Component {
           <Button id="alert-dialog-cancel-button" onClick={this.props.onCancel}>
             Cancel
           </Button>
-          <Button
-            id="alert-dialog-confirm-button"
-            onClick={this.props.onConfirm}
-            autoFocus
-          >
+          <Button id="alert-dialog-confirm-button" onClick={this.props.onConfirm} autoFocus>
             Confirm
           </Button>
         </DialogActions>

@@ -27,8 +27,7 @@
       ['Peking', 'Beijing', 'Singapore'],
       ['Cairo', 'Johannesburg', 'Lagos']
     ]
-    let text =
-      'This is another test, which is re-updated every 250ms. Some more cities: '
+    let text = 'This is another test, which is re-updated every 250ms. Some more cities: '
     for (let i = 0; i < 1000; i++) {
       text += '<div>' + cities[counter % 3] + '</div>'
     }
@@ -41,7 +40,6 @@
       return response.text()
     })
     .then(function (response) {
-      document.getElementById('ajax').innerHTML =
-        response.split(/<\/?title>/)[1]
+      document.getElementById('ajax').innerHTML = response.split(/<\/?title>/)[1]
     })
 })()

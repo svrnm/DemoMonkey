@@ -55,10 +55,7 @@ class Help extends React.Component {
 
     return (
       <div className="content">
-        <div
-          className="welcome"
-          dangerouslySetInnerHTML={{ __html: html }}
-        ></div>
+        <div className="welcome" dangerouslySetInnerHTML={{ __html: html }}></div>
       </div>
     )
   }

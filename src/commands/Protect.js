@@ -27,8 +27,7 @@ class Protect extends Command {
 
   _checkLocation() {
     return (
-      typeof this.location === 'object' &&
-      this.location.toString().includes(this.locationFilter)
+      typeof this.location === 'object' && this.location.toString().includes(this.locationFilter)
     )
   }
 

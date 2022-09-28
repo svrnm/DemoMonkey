@@ -23,18 +23,13 @@ class Tabs extends React.Component {
 
   _getSelected() {
     this.tabNames = this.props.children.map((child) => child.props.name)
-    return this.props.activeTab &&
-      this.tabNames.indexOf(this.props.activeTab) > -1
+    return this.props.activeTab && this.tabNames.indexOf(this.props.activeTab) > -1
       ? this.tabNames.indexOf(this.props.activeTab)
       : 0
   }
 
   _renderContent() {
-    return (
-      <div className="tabs__content">
-        {this.props.children[this._getSelected()]}
-      </div>
-    )
+    return <div className="tabs__content">{this.props.children[this._getSelected()]}</div>
   }
 
   handleClick(index, event) {
@@ -60,11 +55,7 @@ class Tabs extends React.Component {
         const activeClass = this._getSelected() === index ? 'active' : ''
         return (
           <li key={index} id={child.props.id} style={child.props.style}>
-            <a
-              href="#"
-              className={activeClass}
-              onClick={this.handleClick.bind(this, index)}
-            >
+            <a href="#" className={activeClass} onClick={this.handleClick.bind(this, index)}>
               {child.props.label}
             </a>
           </li>
@@ -72,11 +63,7 @@ class Tabs extends React.Component {
       }
     }
 
-    return (
-      <ul className="tabs__labels">
-        {this.props.children.map(labels.bind(this))}
-      </ul>
-    )
+    return <ul className="tabs__labels">{this.props.children.map(labels.bind(this))}</ul>
   }
 
   render() {

@@ -77,9 +77,7 @@ class GlobalVariables extends React.Component {
   }
 
   deleteVariable(index) {
-    const globalVariables = this.state.globalVariables.filter(
-      (v, i) => i !== index
-    )
+    const globalVariables = this.state.globalVariables.filter((v, i) => i !== index)
 
     this.setState({
       hasUnsavedChanges: true,
@@ -100,9 +98,7 @@ class GlobalVariables extends React.Component {
   }
 
   save() {
-    const globalVariables = this.state.globalVariables.filter(
-      (v) => v.key !== ''
-    )
+    const globalVariables = this.state.globalVariables.filter((v) => v.key !== '')
     this.props.onSaveGlobalVariables(globalVariables)
     this.setState({
       hasUnsavedChanges: false
@@ -119,24 +115,15 @@ class GlobalVariables extends React.Component {
     return (
       <div>
         <p>
-          Global variables defined here can be used in all your configurations.
-          You can store images and colors as variables to simplify the process
-          of replacing them.
+          Global variables defined here can be used in all your configurations. You can store images
+          and colors as variables to simplify the process of replacing them.
         </p>
-        {variables.length > 0
-          ? (
-              ''
-            )
-          : (
-          <div className="no-variables">No variables defined</div>
-            )}
+        {variables.length > 0 ? '' : <div className="no-variables">No variables defined</div>}
         {variables.map((variable, index) => {
           return (
             <VariableEditor
               key={index}
-              onUpdate={(name, value) =>
-                this.updateVariable(index, name, value)
-              }
+              onUpdate={(name, value) => this.updateVariable(index, name, value)}
               onDelete={() => this.deleteVariable(index)}
               variable={variable}
               isGlobal={true}

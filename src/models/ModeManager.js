@@ -86,11 +86,7 @@ class ModeManager {
 
   update(event) {
     if (event.type === 'applied') {
-      this.updateDebugBox(
-        event.stats.runtime,
-        event.stats.sum,
-        event.stats.undoLength
-      )
+      this.updateDebugBox(event.stats.runtime, event.stats.sum, event.stats.undoLength)
     }
     if (event.type === 'addUndo' && this.debugMode) {
       event.elements.forEach((undoElement) => {
@@ -98,8 +94,7 @@ class ModeManager {
           return
         }
         const isHidden =
-          undoElement.key === 'style.display' &&
-          undoElement.replacement === 'none'
+          undoElement.key === 'style.display' && undoElement.replacement === 'none'
             ? undoElement.original
             : false
         const source = undoElement.source
@@ -115,11 +110,7 @@ class ModeManager {
               undoElement.target.parentElement &&
               undoElement.target.parentElement.dataset
             ) {
-              this.addDebugAttribute(
-                undoElement.target.parentElement,
-                isHidden,
-                source
-              )
+              this.addDebugAttribute(undoElement.target.parentElement, isHidden, source)
             }
             break
         }
@@ -145,8 +136,7 @@ class ModeManager {
       this.addTooltipListeners(element)
     }
     if (isHidden !== false) {
-      element.dataset.demoMonkeyDebugDisplay =
-        isHidden === '' ? 'initial' : isHidden
+      element.dataset.demoMonkeyDebugDisplay = isHidden === '' ? 'initial' : isHidden
       element.style.setProperty(
         '--data-demo-monkey-debug-display',
         isHidden === '' ? 'initial' : isHidden
@@ -155,15 +145,13 @@ class ModeManager {
   }
 
   clearDebugAttributes() {
-    this.scope.document
-      .querySelectorAll('[data-demo-monkey-debug]')
-      .forEach((element) => {
-        delete element.dataset.demoMonkeyDebug
-        delete element.dataset.demoMonkeyDebugDisplay
-        delete element.dataset.demoMonkeyDebugSource
-        this.removeTooltipListeners(element)
-        element.style.removeProperty('--data-demo-monkey-debug-display')
-      })
+    this.scope.document.querySelectorAll('[data-demo-monkey-debug]').forEach((element) => {
+      delete element.dataset.demoMonkeyDebug
+      delete element.dataset.demoMonkeyDebugDisplay
+      delete element.dataset.demoMonkeyDebugSource
+      this.removeTooltipListeners(element)
+      element.style.removeProperty('--data-demo-monkey-debug-display')
+    })
   }
 
   removeDebugElements() {
@@ -189,10 +177,7 @@ class ModeManager {
 
   toggleDebugMode() {
     if (this.debugMode) {
-      if (
-        this.scope.document.getElementById('demo-monkey-debug-helper-style') ===
-        null
-      ) {
+      if (this.scope.document.getElementById('demo-monkey-debug-helper-style') === null) {
         this.scope.document.head.insertAdjacentHTML(
           'beforeend',
           `<style id="demo-monkey-debug-helper-style">
@@ -242,10 +227,7 @@ class ModeManager {
         </style>`
         )
       }
-      if (
-        this.scope.document.getElementById('demo-monkey-debug-helper-svg') ===
-        null
-      ) {
+      if (this.scope.document.getElementById('demo-monkey-debug-helper-svg') === null) {
         this.scope.document.body.insertAdjacentHTML(
           'beforeend',
           `<svg id="demo-monkey-debug-helper-svg">
@@ -262,9 +244,7 @@ class ModeManager {
         </svg>`
         )
       }
-      if (
-        this.scope.document.getElementById('demo-monkey-debug-box') === null
-      ) {
+      if (this.scope.document.getElementById('demo-monkey-debug-box') === null) {
         this.scope.document.body.insertAdjacentHTML(
           'beforeend',
           `
@@ -280,16 +260,12 @@ class ModeManager {
         </div>
         <div id="demo-monkey-debug-tooltip"></div>`
         )
-        this.debugTooltip = this.scope.document.getElementById(
-          'demo-monkey-debug-tooltip'
-        )
+        this.debugTooltip = this.scope.document.getElementById('demo-monkey-debug-tooltip')
         this.demoMonkeyPicker = false
         this.boxVisible = true
         const logo = this.scope.document.getElementById('demo-monkey-logo')
         const inner = Array.from(
-          this.scope.document.getElementsByClassName(
-            'demo-monkey-debug-box-inner'
-          )
+          this.scope.document.getElementsByClassName('demo-monkey-debug-box-inner')
         )
         const toggleBox = () => {
           // const box = document.getElementById('demo-monkey-debug-box')
@@ -344,9 +320,7 @@ class ModeManager {
                 if (target.classList.contains('adsFlowNodeTypeIcon')) {
                   try {
                     const label =
-                      target.parentElement.parentElement.querySelector(
-                        'title'
-                      ).textContent
+                      target.parentElement.parentElement.querySelector('title').textContent
                     const e = this.scope.document.createElement('select')
                     ;[
                       'java',
@@ -364,12 +338,7 @@ class ModeManager {
                       e.add(o, null)
                     })
                     e.addEventListener('change', (event) =>
-                      apply(
-                        event,
-                        label,
-                        event.target.value,
-                        'appdynamics.replaceFlowmapIcon'
-                      )
+                      apply(event, label, event.target.value, 'appdynamics.replaceFlowmapIcon')
                     )
                     return [e, false]
                   } catch (error) {
@@ -406,9 +375,7 @@ class ModeManager {
                 const cancelButton = this.scope.document.createElement('button')
                 cancelButton.innerHTML = 'Cancel'
 
-                cancelButton.addEventListener('click', (e) =>
-                  container.remove()
-                )
+                cancelButton.addEventListener('click', (e) => container.remove())
                 saveButton.addEventListener('click', cb)
 
                 container.appendChild(saveButton)
@@ -434,20 +401,22 @@ class ModeManager {
     }
   }
 
+  _getDemoMonkeyMode() {
+    if (this.debugMode) {
+      return 'debug'
+    }
+    if (this.liveMode) {
+      return 'live'
+    }
+    return 'unknown'
+  }
+
   updateMonkeyHead() {
     if (this.monkey.isRunning()) {
-      this.scope.document.head.dataset.demoMonkeyVersion =
-        this.manifest.version()
-      this.scope.document.head.dataset.demoMonkeyMode = this.debugMode
-        ? 'debug'
-        : this.liveMode
-          ? 'live'
-          : 'unknown'
-      // this.scope.document.head.insertAdjacentHTML('afterbegin', this.analyticsSnippet)
+      this.scope.document.head.dataset.demoMonkeyVersion = this.manifest.version()
+      this.scope.document.head.dataset.demoMonkeyMode = this._getDemoMonkeyMode()
       if (this.analyticsSnippet) {
-        const snippet = document
-          .createRange()
-          .createContextualFragment(this.analyticsSnippet)
+        const snippet = document.createRange().createContextualFragment(this.analyticsSnippet)
         this.scope.document.head.prepend(snippet)
       }
       this.toggleDebugMode()

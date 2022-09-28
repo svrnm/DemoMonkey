@@ -31,19 +31,11 @@ try {
       scope.chrome.storage.session.set({ badgeData: { timer, tabs } })
     })
 
-    const netRequestManager = new NetRequestManager(
-      scope.chrome.declarativeNetRequest,
-      logger
-    )
+    const netRequestManager = new NetRequestManager(scope.chrome.declarativeNetRequest, logger)
 
-    const liveModeAlarm = new LiveModeAlarm(
-      scope.chrome.alarms,
-      logger,
-      badge,
-      ({ startTime }) => {
-        scope.chrome.storage.session.set({ liveModeAlarmData: { startTime } })
-      }
-    )
+    const liveModeAlarm = new LiveModeAlarm(scope.chrome.alarms, logger, badge, ({ startTime }) => {
+      scope.chrome.storage.session.set({ liveModeAlarmData: { startTime } })
+    })
 
     // recover states
     scope.chrome.storage.session.get(
@@ -59,12 +51,7 @@ try {
           enabledHotkeyGroup: -1
         }
       },
-      ({
-        badgeData,
-        netRequestManagerData,
-        liveModeAlarmData,
-        hotKeyGroupData
-      }) => {
+      ({ badgeData, netRequestManagerData, liveModeAlarmData, hotKeyGroupData }) => {
         badge.load(badgeData.tabs, badgeData.timer)
         liveModeAlarm.load(liveModeAlarmData.startTime)
         enabledHotkeyGroup = hotKeyGroupData.enabledHotkeyGroup
@@ -113,23 +100,14 @@ try {
             }
           )
         } else {
-          logger(
-            'warn',
-            'Did not inject into tab ',
-            tabId,
-            ': Permission denied'
-          ).write()
+          logger('warn', 'Did not inject into tab ', tabId, ': Permission denied').write()
           badge.updateDemoCounter('!')
         }
       })
     })
 
     scope.chrome.tabs.onRemoved.addListener(function (tabId) {
-      logger(
-        'debug',
-        'Tab closed, cleaning up badge & netRequestManager',
-        tabId
-      ).write()
+      logger('debug', 'Tab closed, cleaning up badge & netRequestManager', tabId).write()
       badge.removeTab(tabId)
       netRequestManager.removeTab(tabId)
     })
@@ -142,11 +120,7 @@ try {
       scope.chrome.tabs.sendMessage(tab.tabId, { active: tab.tabId })
     })
 
-    scope.chrome.runtime.onMessage.addListener(function (
-      request,
-      sender,
-      sendResponse
-    ) {
+    scope.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.receiver && request.receiver === 'background') {
         if (
           typeof request.count === 'number' &&
@@ -155,11 +129,7 @@ try {
         ) {
           badge.updateDemoCounter(request.count, sender.tab.id)
         }
-        if (
-          request.task &&
-          request.task === 'addUrl' &&
-          typeof request.description === 'object'
-        ) {
+        if (request.task && request.task === 'addUrl' && typeof request.description === 'object') {
           netRequestManager.add(request.description, sender.tab.id)
         }
         if (

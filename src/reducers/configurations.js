@@ -38,10 +38,7 @@ const configuration = (state, action) => {
     case 'TOGGLE_CONFIGURATION':
       return {
         ...state,
-        enabled:
-          typeof action.enabled !== 'undefined'
-            ? action.enabled
-            : !state.enabled
+        enabled: typeof action.enabled !== 'undefined' ? action.enabled : !state.enabled
       }
     case 'ADD_CONFIGURATION':
       // id, created_at, updated_at can be overwritten by action.configuration
@@ -61,8 +58,7 @@ const configuration = (state, action) => {
       // saving the configuration should currently not include overwriting the enabled state
       return Object.assign({}, state, blocklist(action.configuration), {
         enabled: state.enabled,
-        updated_at:
-          action.sync === true ? action.configuration.updated_at : Date.now()
+        updated_at: action.sync === true ? action.configuration.updated_at : Date.now()
       })
     case 'DELETE_CONFIGURATION':
       return {
@@ -94,10 +90,7 @@ const configurations = function (state = [], action) {
       )
     case 'ADD_CONFIGURATION':
       // In the case of remote sync we have to protect ourselves against re-insertion
-      if (
-        action.sync === true &&
-        state.findIndex((c) => c.id === action.configuration.id) !== -1
-      ) {
+      if (action.sync === true && state.findIndex((c) => c.id === action.configuration.id) !== -1) {
         return state
       }
       return [...state, configuration(undefined, action)]

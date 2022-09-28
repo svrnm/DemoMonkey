@@ -72,9 +72,7 @@ class CodeEditor extends React.Component {
 
   _updateAnnotations() {
     if (this.editor) {
-      this.editor.session.setAnnotations(
-        this.props.annotations(this.editor.getValue())
-      )
+      this.editor.session.setAnnotations(this.props.annotations(this.editor.getValue()))
     }
   }
 

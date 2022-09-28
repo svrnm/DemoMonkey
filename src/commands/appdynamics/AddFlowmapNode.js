@@ -25,15 +25,7 @@ class AddFlowmapNode extends Command {
     wmb: ['WMB_AGENT', 'WMB Agent']
   }
 
-  constructor(
-    name,
-    type = 'java',
-    nodeCount = 1,
-    cpm = 50,
-    art = 100,
-    x = 400,
-    y = 400
-  ) {
+  constructor(name, type = 'java', nodeCount = 1, cpm = 50, art = 100, x = 400, y = 400) {
     super()
     this.name = name
     this.nodeCount = nodeCount

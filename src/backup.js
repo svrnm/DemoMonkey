@@ -36,9 +36,7 @@
         var config = storage.configurations[link.href.split('#')[1]]
         console.log(tojson(config.content))
         window.chrome.downloads.download({
-          url:
-            'data:text/octet-stream;base64,' +
-            window.btoa(tojson(config.content)),
+          url: 'data:text/octet-stream;base64,' + window.btoa(tojson(config.content)),
           filename: config.name + '.json' // Optional
         })
       }
@@ -46,11 +44,7 @@
 
     var loaded = false
     document.getElementById('load-storage').onclick = function () {
-      document.getElementById('storage-box').value = JSON.stringify(
-        storage,
-        null,
-        1
-      )
+      document.getElementById('storage-box').value = JSON.stringify(storage, null, 1)
       document.getElementById('save-storage').style.display = 'inline-block'
       loaded = true
     }
@@ -92,9 +86,7 @@
       .replace(/\\\./g, '\u0001')
       .split(/\./)
       .map(function (part) {
-        return part
-          .replace(/\1/g, '\\.')
-          .replace(/\2LITERAL\\1LITERAL\2/g, '\u0001')
+        return part.replace(/\1/g, '\\.').replace(/\2LITERAL\\1LITERAL\2/g, '\u0001')
       })
   }
 
@@ -149,8 +141,7 @@
     // use a filter to return the keys that have to be deleted.
     Object.keys(out)
       .filter(function (k, _, __) {
-        if (!out[k] || typeof out[k] !== 'object' || Array.isArray(out[k]))
-          return false
+        if (!out[k] || typeof out[k] !== 'object' || Array.isArray(out[k])) return false
         // see if the parent section is also an object.
         // if so, add it to that, and mark this one for deletion
         var parts = dotSplit(k),

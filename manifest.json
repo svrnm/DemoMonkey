@@ -15,12 +15,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "manifest.json",
-        "COMMITHASH",
-        "js/inline.js",
-        "js/index.js.map"
-      ],
+      "resources": ["manifest.json", "COMMITHASH", "js/inline.js", "js/index.js.map"],
       "matches": ["<all_urls>"]
     }
   ],

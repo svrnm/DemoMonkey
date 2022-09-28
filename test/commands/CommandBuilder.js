@@ -42,98 +42,74 @@ describe('Command', function () {
     })
 
     it('should return a command with namespace for a string with a dot', function () {
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('ns.cmd'),
-        {
-          extracted: true,
-          command: 'cmd',
-          namespace: 'ns',
-          parameters: []
-        }
-      )
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd'), {
+        extracted: true,
+        command: 'cmd',
+        namespace: 'ns',
+        parameters: []
+      })
     })
 
     it('extracts the command from the string after the last dot', function () {
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('this.is.a.long.ns.cmd'),
-        {
-          extracted: true,
-          command: 'cmd',
-          namespace: 'this.is.a.long.ns',
-          parameters: []
-        }
-      )
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('this.is.a.long.ns.cmd'), {
+        extracted: true,
+        command: 'cmd',
+        namespace: 'this.is.a.long.ns',
+        parameters: []
+      })
     })
 
     it('extracts a command until the first open (', function () {
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('ns.cmd()'),
-        {
-          extracted: true,
-          command: 'cmd',
-          namespace: 'ns',
-          parameters: ['']
-        }
-      )
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd()'), {
+        extracted: true,
+        command: 'cmd',
+        namespace: 'ns',
+        parameters: ['']
+      })
     })
 
     it('should return extracted: false for an command with no closing )', function () {
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('ns.cmd('),
-        { extracted: false }
-      )
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd('), {
+        extracted: false
+      })
     })
 
     it('extracts everything after the first ( as parameters', function () {
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('ns.cmd(asdf)'),
-        {
-          extracted: true,
-          command: 'cmd',
-          namespace: 'ns',
-          parameters: ['asdf']
-        }
-      )
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd(asdf)'), {
+        extracted: true,
+        command: 'cmd',
+        namespace: 'ns',
+        parameters: ['asdf']
+      })
     })
 
     it('supports quoting for the parameter', function () {
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('ns.cmd("asdf")'),
-        {
-          extracted: true,
-          command: 'cmd',
-          namespace: 'ns',
-          parameters: ['asdf']
-        }
-      )
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd("asdf")'), {
+        extracted: true,
+        command: 'cmd',
+        namespace: 'ns',
+        parameters: ['asdf']
+      })
     })
 
     it('extracts and , seperated parameter lists', function () {
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('ns.cmd(a,s,d,f)'),
-        {
-          extracted: true,
-          command: 'cmd',
-          namespace: 'ns',
-          parameters: ['a', 's', 'd', 'f']
-        }
-      )
-      assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand('ns.cmd(a, s,  d ,f)'),
-        {
-          extracted: true,
-          command: 'cmd',
-          namespace: 'ns',
-          parameters: ['a', 's', 'd', 'f']
-        }
-      )
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd(a,s,d,f)'), {
+        extracted: true,
+        command: 'cmd',
+        namespace: 'ns',
+        parameters: ['a', 's', 'd', 'f']
+      })
+      assert.deepEqual(new CommandBuilder()._extractForCustomCommand('ns.cmd(a, s,  d ,f)'), {
+        extracted: true,
+        command: 'cmd',
+        namespace: 'ns',
+        parameters: ['a', 's', 'd', 'f']
+      })
     })
 
     it('supports quoting for parameter lists', function () {
       assert.deepEqual(
-        new CommandBuilder()._extractForCustomCommand(
-          'ns.cmd("a,\'s",\' "d \',f,  g, (h), "i\')'
-        ),
+        new CommandBuilder()._extractForCustomCommand('ns.cmd("a,\'s",\' "d \',f,  g, (h), "i\')'),
         {
           extracted: true,
           command: 'cmd',
@@ -145,9 +121,7 @@ describe('Command', function () {
   })
   describe('#build', function () {
     it('should create a SearchAndReplace for simple strings', function () {
-      expect(new CommandBuilder().build('a', 'b')).to.be.an.instanceof(
-        SearchAndReplace
-      )
+      expect(new CommandBuilder().build('a', 'b')).to.be.an.instanceof(SearchAndReplace)
     })
 
     it('should create a SearchAndReplace for regular expression command', function () {
@@ -189,23 +163,16 @@ describe('Command', function () {
     })
 
     it('should create a SearchAndReplace for a quoted ! at position 0', function () {
-      expect(new CommandBuilder().build('\\!a', 'b')).to.be.an.instanceof(
-        SearchAndReplace
-      )
+      expect(new CommandBuilder().build('\\!a', 'b')).to.be.an.instanceof(SearchAndReplace)
     })
 
     it('should create a Hide command for !hide("ASDF")', function () {
-      expect(new CommandBuilder().build('!hide("ASDF")')).to.be.an.instanceof(
-        Hide
-      )
+      expect(new CommandBuilder().build('!hide("ASDF")')).to.be.an.instanceof(Hide)
     })
 
     it('should create a ReplaceFlowmapIcon command for !appdynamics.replaceFlowmapIcon(Inventory-Service)', function () {
       expect(
-        new CommandBuilder().build(
-          '!appdynamics.replaceFlowmapIcon(Inventory-Service)',
-          'php.png'
-        )
+        new CommandBuilder().build('!appdynamics.replaceFlowmapIcon(Inventory-Service)', 'php.png')
       ).to.be.an.instanceof(ReplaceFlowmapIcon)
     })
 

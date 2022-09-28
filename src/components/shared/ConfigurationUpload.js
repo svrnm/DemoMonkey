@@ -49,8 +49,8 @@ class Prompt extends React.Component {
     return (
       <React.Fragment>
         <label>
-          In which folder do you want to upload these configurations? Leave
-          empty to put them on the top level.
+          In which folder do you want to upload these configurations? Leave empty to put them on the
+          top level.
         </label>
         <input
           className="text-input"
@@ -91,11 +91,7 @@ class ConfigurationUpload extends React.Component {
         const file = files.item(i)
 
         const extension = file.name.split('.').pop()
-        if (
-          extension === 'mnky' ||
-          extension === 'ini' ||
-          extension === 'json'
-        ) {
+        if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
           reader.onloadend = () => {
             this.props.onUpload({
               name: file.name.replace(new RegExp('\\.' + extension + '$'), ''),
@@ -114,12 +110,7 @@ class ConfigurationUpload extends React.Component {
 
           Dialog.create({
             title: 'Batch upload into folder.',
-            content: (
-              <Prompt
-                onChange={promptChange}
-                placeholder="Please provide a folder name."
-              />
-            ),
+            content: <Prompt onChange={promptChange} placeholder="Please provide a folder name." />,
             buttons: {
               left: ['cancel'],
               right: [
@@ -134,21 +125,14 @@ class ConfigurationUpload extends React.Component {
                       const zipPromises = []
                       zip.forEach((relativePath, zipEntry) => {
                         const extension = zipEntry.name.split('.').pop()
-                        if (
-                          extension === 'mnky' ||
-                          extension === 'ini' ||
-                          extension === 'json'
-                        ) {
+                        if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
                           zipPromises.push(
                             zipEntry.async('string').then((content) => {
                               return {
                                 name: (
                                   folderName.replace(/\/$/, '') +
                                   '/' +
-                                  zipEntry.name.replace(
-                                    new RegExp('\\.' + extension + '$'),
-                                    ''
-                                  )
+                                  zipEntry.name.replace(new RegExp('\\.' + extension + '$'), '')
                                 ).replace(/^\//, ''),
                                 content: this.getIni(content, extension),
                                 test: '',
@@ -170,9 +154,7 @@ class ConfigurationUpload extends React.Component {
           })
         } else {
           window.alert(
-            'Unknown extension: ' +
-              extension +
-              '! Please specify a .mnky or .json file!'
+            'Unknown extension: ' + extension + '! Please specify a .mnky or .json file!'
           )
         }
       }
@@ -187,10 +169,7 @@ class ConfigurationUpload extends React.Component {
         <form id={this.props.id + 'Form'} className="upload-form">
           <input multiple id={this.props.id} type="file" />
         </form>
-        <a
-          href={'#configuration/upload'}
-          onClick={(event) => this.showUploadDialog(event)}
-        >
+        <a href={'#configuration/upload'} onClick={(event) => this.showUploadDialog(event)}>
           Upload
         </a>
       </div>

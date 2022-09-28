@@ -20,9 +20,7 @@ class SetDashboardBackground extends Command {
     super()
     this.dashboardId = dashboardId
     const [newValue, isImage] =
-      typeof value === 'string'
-        ? SetDashboardBackground._getValue(value)
-        : [false, false]
+      typeof value === 'string' ? SetDashboardBackground._getValue(value) : [false, false]
     this.opacity = opacity
     this.value = newValue
     this.isImage = isImage
@@ -70,9 +68,7 @@ class SetDashboardBackground extends Command {
     const replacement = this.value
     if (replacement !== original) {
       target.style[attribute] = replacement
-      r.push(
-        new UndoElement(target, 'style.' + attribute, original, replacement)
-      )
+      r.push(new UndoElement(target, 'style.' + attribute, original, replacement))
     }
 
     const originalBackgroundSize = target.style.backgroundSize
@@ -96,14 +92,7 @@ class SetDashboardBackground extends Command {
 
       if (originalColor !== replacementColor) {
         target.style.backgroundColor = replacementColor
-        r.push(
-          new UndoElement(
-            target,
-            'style.backgroundColor',
-            originalColor,
-            replacementColor
-          )
-        )
+        r.push(new UndoElement(target, 'style.backgroundColor', originalColor, replacementColor))
       }
 
       const originalBlendMode = target.style.backgroundBlendMode

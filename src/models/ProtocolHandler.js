@@ -28,9 +28,7 @@ class ProtocolHandler {
       let url = new URL(s)
       if (url.protocol !== this.protocol) {
         reject(
-          new Error(
-            `Presented url '${url}' does not start with expected protocol ${this.protocol}`
-          )
+          new Error(`Presented url '${url}' does not start with expected protocol ${this.protocol}`)
         )
       }
 

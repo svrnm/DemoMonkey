@@ -116,10 +116,7 @@ class Navigation extends React.Component {
 
   handleSearchUpdate(event) {
     this.setState({ search: event.target.value.toLowerCase() }, function () {
-      const { tree, cursor } = Navigation.buildTree(
-        this.props.items,
-        this.state
-      )
+      const { tree, cursor } = Navigation.buildTree(this.props.items, this.state)
       this.setState({ data: tree, cursor })
     })
   }

@@ -27,11 +27,7 @@ class QuerySelector extends Command {
   }
 
   _applyOnTarget(target) {
-    if (
-      target === null ||
-      typeof target !== 'object' ||
-      typeof target.innerHTML !== 'string'
-    ) {
+    if (target === null || typeof target !== 'object' || typeof target.innerHTML !== 'string') {
       return false
     }
 

@@ -70,28 +70,14 @@ const node2 = {
 class HideApplication {
   constructor(appName, location) {
     this.group = new Group([
-      new Hide(
-        appName,
-        4,
-        'ads-application-card',
-        '',
-        'APPS_ALL_DASHBOARD',
-        location
-      ),
+      new Hide(appName, 4, 'ads-application-card', '', 'APPS_ALL_DASHBOARD', location),
       new Hide(appName, 3, 'x-grid-row', '', 'APPS_ALL_DASHBOARD', location),
-      new Hide(
-        appName,
-        2,
-        'ads-home-list-item',
-        '',
-        'AD_HOME_OVERVIEW',
-        location,
-        function (_, parentNode) {
-          return parentNode
-            .getAttribute('ng-click')
-            .includes('ViewApplicationDashboard')
-        }
-      )
+      new Hide(appName, 2, 'ads-home-list-item', '', 'AD_HOME_OVERVIEW', location, function (
+        _,
+        parentNode
+      ) {
+        return parentNode.getAttribute('ng-click').includes('ViewApplicationDashboard')
+      })
     ])
   }
 
@@ -123,10 +109,7 @@ describe('Group', function () {
 
   describe('#apply', function () {
     it('does not break on other nodes', function () {
-      new HideApplication('UserOffers', window.location.hash).apply(
-        node.parentElement,
-        'data'
-      )
+      new HideApplication('UserOffers', window.location.hash).apply(node.parentElement, 'data')
       assert.equal(appNode.style.display, 'block')
     })
   })
@@ -134,10 +117,7 @@ describe('Group', function () {
   describe('#apply', function () {
     it('hides only applications', function () {
       appNode.className = 'not-an-application-card'
-      new HideApplication('UserOffers', window.location.hash).apply(
-        node,
-        'data'
-      )
+      new HideApplication('UserOffers', window.location.hash).apply(node, 'data')
       assert.equal(appNode.style.display, 'block')
     })
   })

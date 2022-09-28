@@ -21,15 +21,7 @@ class Hide extends Command {
   // 3 - href-filter
   // 4 - hash-filter
   // 5 - window.location object
-  constructor(
-    search,
-    nthParent,
-    cssFilter,
-    hrefFilter,
-    hashFilter,
-    location,
-    conditionCallback
-  ) {
+  constructor(search, nthParent, cssFilter, hrefFilter, hashFilter, location, conditionCallback) {
     super()
     this.search = search
     this.nthParent = parseInt(nthParent) || 1
@@ -38,19 +30,14 @@ class Hide extends Command {
     this.hashFilter = typeof hashFilter === 'string' ? hashFilter : ''
     this.location = location
     this.conditionCallback =
-      typeof conditionCallback === 'function'
-        ? conditionCallback
-        : function () {
-          return true
-        }
+      typeof conditionCallback === 'function' ? conditionCallback : () => true
   }
 
   _checkCss(node, className) {
     return (
       node !== false &&
       node.style.display !== 'none' &&
-      ((typeof node.className.includes === 'function' &&
-        node.className.includes(className)) ||
+      ((typeof node.className.includes === 'function' && node.className.includes(className)) ||
         (node.className.baseVal &&
           typeof node.className.baseVal.includes === 'function' &&
           node.className.baseVal.includes(className)))
@@ -74,10 +61,7 @@ class Hide extends Command {
       this._checkLocation()
     ) {
       const parentNode = this._walk(node, this.nthParent)
-      if (
-        this._checkCss(parentNode, this.cssFilter) &&
-        this.conditionCallback(node, parentNode)
-      ) {
+      if (this._checkCss(parentNode, this.cssFilter) && this.conditionCallback(node, parentNode)) {
         return this._hideNode(parentNode)
       }
     }

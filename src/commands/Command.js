@@ -41,10 +41,7 @@ class Command {
       return node
     }
 
-    if (
-      node.parentElement !== null &&
-      typeof node.parentElement !== 'undefined'
-    ) {
+    if (node.parentElement !== null && typeof node.parentElement !== 'undefined') {
       return this._walk(node.parentElement, count - 1)
     }
 
@@ -78,17 +75,12 @@ class Command {
       'ad-pink': Color('#e38ead'),
       'ad-red': Color('#ff3333')
     }
-    if (
-      Object.prototype.hasOwnProperty.call(magicColors, value.toLowerCase())
-    ) {
+    if (Object.prototype.hasOwnProperty.call(magicColors, value.toLowerCase())) {
       return magicColors[value.toLowerCase()]
     }
 
     // We want to accept colors from hex 'xxxxxx(aa)' and 'xxx(a)'
-    if (
-      value.match(/^(?:[0-9a-f]{3,4}|(?:[0-9a-f]{6}(?:[0-9a-f]{2})?))$/i) !==
-      null
-    ) {
+    if (value.match(/^(?:[0-9a-f]{3,4}|(?:[0-9a-f]{6}(?:[0-9a-f]{2})?))$/i) !== null) {
       value = '#' + value
     }
     let color = false
@@ -146,9 +138,7 @@ class Command {
 
   toString() {
     // We need to apply "protection" so demo monkey does not run over this itself ;-)
-    return this.sourceString
-      ? this.sourceString.split('').join(String.fromCharCode(0x200b))
-      : ''
+    return this.sourceString ? this.sourceString.split('').join(String.fromCharCode(0x200b)) : ''
   }
 }
 

@@ -20,10 +20,8 @@ class RecolorDashboard extends Command {
   constructor(search, replace, dashboardId = '', location) {
     super()
     this.dashboardId = dashboardId
-    this.search =
-      typeof search === 'string' ? Command._getColorFromValue(search) : false
-    this.replace =
-      typeof replace === 'string' ? Command._getColorFromValue(replace) : false
+    this.search = typeof search === 'string' ? Command._getColorFromValue(search) : false
+    this.replace = typeof replace === 'string' ? Command._getColorFromValue(replace) : false
     this.location = location
   }
 
@@ -141,17 +139,11 @@ class RecolorDashboard extends Command {
     const r = []
 
     labels.forEach((label) => {
-      const currentBackgroundColor = Color(
-        label.parentElement.style.backgroundColor
-      )
+      const currentBackgroundColor = Color(label.parentElement.style.backgroundColor)
 
-      if (
-        this.search.rgb().toString() === currentBackgroundColor.rgb().toString()
-      ) {
+      if (this.search.rgb().toString() === currentBackgroundColor.rgb().toString()) {
         const original = label.parentElement.style.backgroundColor
-        label.parentElement.style.backgroundColor = this.replace
-          .rgb()
-          .toString()
+        label.parentElement.style.backgroundColor = this.replace.rgb().toString()
         r.push(
           new UndoElement(
             label.parentElement.style,
@@ -166,19 +158,10 @@ class RecolorDashboard extends Command {
       if (textLabel !== null) {
         const currentTextColor = Color(textLabel.style.color)
 
-        if (
-          this.search.rgb().toString() === currentTextColor.rgb().toString()
-        ) {
+        if (this.search.rgb().toString() === currentTextColor.rgb().toString()) {
           const original2 = textLabel.style.color
           textLabel.style.color = this.replace.rgb().toString()
-          r.push(
-            new UndoElement(
-              textLabel.style,
-              'color',
-              original2,
-              textLabel.style.color
-            )
-          )
+          r.push(new UndoElement(textLabel.style, 'color', original2, textLabel.style.color))
         }
       }
     })
@@ -198,10 +181,7 @@ class RecolorDashboard extends Command {
       const original = img.src
 
       img.src = img.src.replace(
-        new RegExp(
-          '(fill|stroke)="(%23|#)' + this.search.hex().slice(1) + '"',
-          'gi'
-        ),
+        new RegExp('(fill|stroke)="(%23|#)' + this.search.hex().slice(1) + '"', 'gi'),
         '$1="$2' + this.replace.hex().slice(1) + '"'
       )
       // Rerun with short color code
@@ -229,12 +209,8 @@ class RecolorDashboard extends Command {
     const r = []
 
     analyticsWidgets.forEach((widget) => {
-      const currentBackgroundColor = Color(
-        widget.parentElement.style.backgroundColor
-      )
-      if (
-        this.search.rgb().toString() === currentBackgroundColor.rgb().toString()
-      ) {
+      const currentBackgroundColor = Color(widget.parentElement.style.backgroundColor)
+      if (this.search.rgb().toString() === currentBackgroundColor.rgb().toString()) {
         Array.from(widget.querySelectorAll('[style*="background-color"]'))
           .concat(widget.parentElement)
           .forEach((element) => {

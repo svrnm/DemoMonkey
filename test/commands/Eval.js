@@ -39,26 +39,15 @@ describe('Eval', function () {
 
     it('return false, UndoElement or an array of UndoElements', function () {
       assert(!new Eval('text', [], '').apply())
-      assert.deepEqual(
-        new Eval('text', [], 'return new UndoElement()').apply(),
-        new UndoElement()
-      )
+      assert.deepEqual(new Eval('text', [], 'return new UndoElement()').apply(), new UndoElement())
       assert(!new Eval('text', [], 'return {}').apply())
       assert.deepEqual(new Eval('text', [], 'return []').apply(), [])
       assert.deepEqual(
-        new Eval(
-          'text',
-          [],
-          'return [new UndoElement(), new UndoElement()]'
-        ).apply(),
+        new Eval('text', [], 'return [new UndoElement(), new UndoElement()]').apply(),
         [new UndoElement(), new UndoElement()]
       )
       assert.deepEqual(
-        new Eval(
-          'text',
-          [],
-          'return [new UndoElement(), false, new UndoElement(), {}]'
-        ).apply(),
+        new Eval('text', [], 'return [new UndoElement(), false, new UndoElement(), {}]').apply(),
         [new UndoElement(), new UndoElement()]
       )
     })

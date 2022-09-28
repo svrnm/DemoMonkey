@@ -33,11 +33,7 @@ try {
         scope.chrome = chrome
       }
 
-      scope.chrome.runtime.onMessage.addListener(function (
-        request,
-        sender,
-        sendResponse
-      ) {
+      scope.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.active) {
           scope['demomonkey-active-tab'] = true
         }
@@ -80,10 +76,7 @@ try {
           if (!['miro.com'].includes(scope.location.host)) {
             const inlineScriptTag = scope.document.createElement('script')
             inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
-            inlineScriptTag.setAttribute(
-              'data-dm-config-hook-into-ajax',
-              inlineConfig.hookIntoAjax
-            )
+            inlineScriptTag.setAttribute('data-dm-config-hook-into-ajax', inlineConfig.hookIntoAjax)
             inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
             scope.document.head.append(inlineScriptTag)
           } else {
@@ -163,9 +156,7 @@ try {
         store.subscribe(function () {
           const lastAction = store.getState().lastAction
           // updating the current view does not require any updates
-          if (
-            ['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)
-          ) {
+          if (['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)) {
             return
           }
           if (settings.isFeatureEnabled('autoReplace')) {
@@ -177,28 +168,20 @@ try {
           modeManager.start()
         })
 
-        scope.document.addEventListener(
-          'demomonkey-inline-editing',
-          function (e) {
-            let { search, replacement, command } = JSON.parse(e.detail)
-            const configs = store
-              .getState()
-              .configurations.filter((config) => config.enabled)
-            const configuration =
-              configs.length > 0
-                ? configs[0]
-                : store.getState().configurations[0]
-            if (command) {
-              search = `!${command}(${search})`
-            }
-            configuration.content += '\n' + search + ' = ' + replacement
-            store.dispatch({
-              type: 'SAVE_CONFIGURATION',
-              id: configuration.id,
-              configuration
-            })
+        scope.document.addEventListener('demomonkey-inline-editing', function (e) {
+          let { search, replacement, command } = JSON.parse(e.detail)
+          const configs = store.getState().configurations.filter((config) => config.enabled)
+          const configuration = configs.length > 0 ? configs[0] : store.getState().configurations[0]
+          if (command) {
+            search = `!${command}(${search})`
           }
-        )
+          configuration.content += '\n' + search + ' = ' + replacement
+          store.dispatch({
+            type: 'SAVE_CONFIGURATION',
+            id: configuration.id,
+            configuration
+          })
+        })
       })
     })(window)
   }

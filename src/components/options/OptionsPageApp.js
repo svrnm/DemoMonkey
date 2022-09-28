@@ -87,9 +87,7 @@ class App extends React.Component {
     this.mql.removeListener(this.darkModeUpdated)
     if (window.chrome.permissions.onAdded) {
       window.chrome.permissions.onAdded.removeListener(this.permissionsUpdated)
-      window.chrome.permissions.onRemoved.removeListener(
-        this.permissionsUpdated
-      )
+      window.chrome.permissions.onRemoved.removeListener(this.permissionsUpdated)
     }
     window.removeListener('onpopstate', this.ops)
     delete this.mql
@@ -136,21 +134,16 @@ class App extends React.Component {
       // written.
       if (!this.isSaving) {
         this.isSaving = true
-        this.props.actions
-          .saveConfiguration(configuration.id, configuration)
-          .then(() => {
-            this.isSaving = false
-          })
+        this.props.actions.saveConfiguration(configuration.id, configuration).then(() => {
+          this.isSaving = false
+        })
       }
     }
   }
 
   hasConfigurationWithSameName(configuration) {
     return this.props.configurations.some(
-      (c) =>
-        !c.deleted_at &&
-        c.name === configuration.name &&
-        c.id !== configuration.id
+      (c) => !c.deleted_at && c.name === configuration.name && c.id !== configuration.id
     )
   }
 
@@ -164,8 +157,7 @@ class App extends React.Component {
 
   addConfiguration(configuration) {
     this.props.actions.addConfiguration(configuration).then(() => {
-      const latest =
-        this.props.configurations[this.props.configurations.length - 1]
+      const latest = this.props.configurations[this.props.configurations.length - 1]
       this.navigateTo('configuration/' + latest.id)
     })
   }
@@ -197,8 +189,7 @@ class App extends React.Component {
   downloadConfiguration(configuration) {
     const link = document.createElement('a')
     link.href =
-      'data:text/octet-stream;base64,' +
-      Base64.encode(this._prepareForDownload(configuration))
+      'data:text/octet-stream;base64,' + Base64.encode(this._prepareForDownload(configuration))
     link.download = configuration.name.split('/').pop() + '.mnky'
     const event = document.createEvent('MouseEvents')
     event.initEvent('click', true, true)
@@ -210,17 +201,13 @@ class App extends React.Component {
     const zip = new JSZip()
 
     this.props.configurations.forEach((configuration) => {
-      zip.file(
-        configuration.name + '.mnky',
-        this._prepareForDownload(configuration)
-      )
+      zip.file(configuration.name + '.mnky', this._prepareForDownload(configuration))
     })
 
     zip.generateAsync({ type: 'base64' }).then(function (content) {
       const link = document.createElement('a')
       link.href = 'data:application/zip;base64,' + content
-      link.download =
-        'demomonkey-' + new Date().toISOString().split('T')[0] + '.zip'
+      link.download = 'demomonkey-' + new Date().toISOString().split('T')[0] + '.zip'
       const event = document.createEvent('MouseEvents')
       event.initEvent('click', true, true)
       link.dispatchEvent(event)
@@ -230,10 +217,7 @@ class App extends React.Component {
 
   deleteConfiguration(configuration) {
     this.navigateTo('help')
-    logger(
-      'info',
-      `Deleting ${configuration.name} (${configuration.nodeType})`
-    ).write()
+    logger('info', `Deleting ${configuration.name} (${configuration.nodeType})`).write()
     if (configuration.nodeType === 'directory') {
       this.props.actions.deleteConfigurationByPrefix(
         configuration.id.split('/').reverse().join('/')
@@ -258,9 +242,7 @@ class App extends React.Component {
 
   getConfigurations() {
     return this.props.configurations.filter(
-      (config) =>
-        typeof config.deleted_at === 'undefined' &&
-        typeof config._deleted === 'undefined'
+      (config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined'
     )
   }
 
@@ -335,26 +317,18 @@ class App extends React.Component {
             <Settings
               settings={this.props.settings}
               configurations={this.props.configurations}
-              onToggleOptionalFeature={(feature) =>
-                this.toggleOptionalFeature(feature)
-              }
-              onSetBaseTemplate={(baseTemplate) =>
-                this.setBaseTemplate(baseTemplate)
-              }
+              onToggleOptionalFeature={(feature) => this.toggleOptionalFeature(feature)}
+              onSetBaseTemplate={(baseTemplate) => this.setBaseTemplate(baseTemplate)}
               onSetAnalyticsSnippet={(analyticsSnippet) =>
                 this.setAnalyticsSnippet(analyticsSnippet)
               }
               getRepository={() => this.getRepository()}
-              onSaveGlobalVariables={(globalVariables) =>
-                this.saveGlobalVariables(globalVariables)
-              }
+              onSaveGlobalVariables={(globalVariables) => this.saveGlobalVariables(globalVariables)}
               onSetMonkeyInterval={(value) => this.setMonkeyInterval(value)}
               onDownloadAll={(event) => this.downloadAll(event)}
               onDeleteAll={(event) => this.deleteAll(event)}
               onReset={(event) => this.resetDemoMonkey(event)}
-              onRequestExtendedPermissions={(revoke) =>
-                this.requestExtendedPermissions(revoke)
-              }
+              onRequestExtendedPermissions={(revoke) => this.requestExtendedPermissions(revoke)}
               hasExtendedPermissions={this.hasExtendedPermissions()}
               isDarkMode={this._getDarkMode()}
               activeTab={segments[1]}
@@ -364,11 +338,7 @@ class App extends React.Component {
         case 'configuration':
           // If an unknown ID is selected, we throw an error.
           if (typeof configuration === 'undefined') {
-            return (
-              <ErrorBox
-                error={{ message: `Unknown Configuration ${segments[1]}` }}
-              />
-            )
+            return <ErrorBox error={{ message: `Unknown Configuration ${segments[1]}` }} />
           }
           return (
             <Editor
@@ -377,45 +347,27 @@ class App extends React.Component {
               globalVariables={this.props.settings.globalVariables}
               autoSave={this.props.settings.optionalFeatures.autoSave}
               saveOnClose={this.props.settings.optionalFeatures.saveOnClose}
-              editorAutocomplete={
-                this.props.settings.optionalFeatures.editorAutocomplete
-              }
+              editorAutocomplete={this.props.settings.optionalFeatures.editorAutocomplete}
               keyboardHandler={
-                this.props.settings.optionalFeatures.keyboardHandlerVim
-                  ? 'vim'
-                  : null
+                this.props.settings.optionalFeatures.keyboardHandlerVim ? 'vim' : null
               }
-              onDownload={(configuration, _) =>
-                this.downloadConfiguration(configuration)
-              }
-              onSave={(_, configuration) =>
-                this.saveConfiguration(configuration)
-              }
+              onDownload={(configuration, _) => this.downloadConfiguration(configuration)}
+              onSave={(_, configuration) => this.saveConfiguration(configuration)}
               hasConfigurationWithSameName={(configuration) =>
                 this.hasConfigurationWithSameName(configuration)
               }
-              onCopy={(configuration, _) =>
-                this.copyConfiguration(configuration)
-              }
-              onDelete={(configuration, _) =>
-                this.deleteConfiguration(configuration)
-              }
-              toggleConfiguration={() =>
-                this.props.actions.toggleConfiguration(configuration.id)
-              }
+              onCopy={(configuration, _) => this.copyConfiguration(configuration)}
+              onDelete={(configuration, _) => this.deleteConfiguration(configuration)}
+              toggleConfiguration={() => this.props.actions.toggleConfiguration(configuration.id)}
               featureFlags={{
-                withEvalCommand:
-                  this.props.settings.optionalFeatures.withEvalCommand,
+                withEvalCommand: this.props.settings.optionalFeatures.withEvalCommand,
                 hookIntoAjax: this.props.settings.optionalFeatures.hookIntoAjax,
-                webRequestHook:
-                  this.props.settings.optionalFeatures.webRequestHook
+                webRequestHook: this.props.settings.optionalFeatures.webRequestHook
               }}
               isDarkMode={this._getDarkMode()}
               activeTab={segments[2]}
               onNavigate={(target) =>
-                this.navigateTo(
-                  'configuration/' + configuration.id + '/' + target
-                )
+                this.navigateTo('configuration/' + configuration.id + '/' + target)
               }
             />
           )
@@ -472,6 +424,22 @@ class App extends React.Component {
     }
   }
 
+  _renderWarningBox(withWarning) {
+    if (withWarning !== '') {
+      return (
+        <WarningBox
+          onDismiss={() => this.toggleOptionalFeature('noWarningForMissingPermissions')}
+          onRequestExtendedPermissions={() => this.requestExtendedPermissions()}
+        />
+      )
+    }
+    return (
+      <div id="has-extended-permissions" style={{ display: 'none' }}>
+        GRANTED
+      </div>
+    )
+  }
+
   render() {
     const activeItem =
       this.state.currentView.indexOf('configuration/') === -1
@@ -490,9 +458,7 @@ class App extends React.Component {
       let match
       c.tags = []
       while ((match = nsPattern.exec(c.content))) {
-        c.tags = c.tags.concat(
-          match[1].split(',').map((t) => t.trim().toLowerCase())
-        )
+        c.tags = c.tags.concat(match[1].split(',').map((t) => t.trim().toLowerCase()))
       }
       return c
     })
@@ -503,29 +469,12 @@ class App extends React.Component {
         preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode}
         syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
       >
-        {withWarning !== ''
-          ? (
-          <WarningBox
-            onDismiss={() =>
-              this.toggleOptionalFeature('noWarningForMissingPermissions')
-            }
-            onRequestExtendedPermissions={() =>
-              this.requestExtendedPermissions()
-            }
-          />
-            )
-          : (
-          <div id="has-extended-permissions" style={{ display: 'none' }}>
-            GRANTED
-          </div>
-            )}
+        {this._renderWarningBox(withWarning)}
         <div className="navigation">
           <Navigation
             onNavigate={(target) => this.navigateTo(target)}
             onUpload={(upload) => this.uploadConfiguration(upload)}
-            onDelete={(configuration) =>
-              this.deleteConfiguration(configuration)
-            }
+            onDelete={(configuration) => this.deleteConfiguration(configuration)}
             items={configurations}
             onDownloadAll={(event) => this.downloadAll(event)}
             active={activeItem}

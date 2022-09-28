@@ -124,8 +124,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     if (found != null && handle(found)) return 'handled'
 
     if (map.fallthrough) {
-      if (!Array.isArray(map.fallthrough))
-        return lookupKey(key, map.fallthrough, handle)
+      if (!Array.isArray(map.fallthrough)) return lookupKey(key, map.fallthrough, handle)
       for (var i = 0; i < map.fallthrough.length; i++) {
         var result = lookupKey(key, map.fallthrough[i], handle)
         if (result) return result
@@ -173,13 +172,10 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var curOp = (this.curOp = this.curOp || {})
       if (!curOp.cursorActivityHandlers)
         curOp.cursorActivityHandlers =
-          this._eventRegistry['cursorActivity'] &&
-          this._eventRegistry['cursorActivity'].slice()
+          this._eventRegistry['cursorActivity'] && this._eventRegistry['cursorActivity'].slice()
       this.curOp.cursorActivity = true
       if (this.ace.inMultiSelectMode) {
-        this.ace.keyBinding.removeKeyboardHandler(
-          multiSelectCommands.keyboardHandler
-        )
+        this.ace.keyBinding.removeKeyboardHandler(multiSelectCommands.keyboardHandler)
       }
     }
     this.operation = function (fn, force) {
@@ -200,8 +196,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var result = fn()
       if (this.ace.curOp && this.ace.curOp.command.name == 'vim') {
         this.ace.endOperation()
-        if (!curOp.cursorActivity && !curOp.lastChange && prevOp)
-          this.ace.prevOp = prevOp
+        if (!curOp.cursorActivity && !curOp.lastChange && prevOp) this.ace.prevOp = prevOp
       }
       if (force || !this.ace.curOp) {
         if (this.curOp) this.onBeforeEndOperation()
@@ -262,9 +257,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     this.listSelections = function (p) {
       var ranges = this.ace.multiSelect.rangeList.ranges
       if (!ranges.length || this.ace.inVirtualSelectionMode)
-        return [
-          { anchor: this.getCursor('anchor'), head: this.getCursor('head') }
-        ]
+        return [{ anchor: this.getCursor('anchor'), head: this.getCursor('head') }]
       return ranges.map(function (r) {
         return {
           anchor: this.clipPos(toCmPos(r.cursor == r.end ? r.start : r.end)),
@@ -390,20 +383,11 @@ function vimHandler(acequire, exports, module, writeHandler) {
         unit = 'line'
       }
       if (unit == 'line') {
-        var screenPos = this.ace.session.documentToScreenPosition(
-          start.line,
-          start.ch
-        )
+        var screenPos = this.ace.session.documentToScreenPosition(start.line, start.ch)
         if (goalColumn != null) screenPos.column = goalColumn
         screenPos.row += amount
-        screenPos.row = Math.min(
-          Math.max(0, screenPos.row),
-          this.ace.session.getScreenLength() - 1
-        )
-        var pos = this.ace.session.screenToDocumentPosition(
-          screenPos.row,
-          screenPos.column
-        )
+        screenPos.row = Math.min(Math.max(0, screenPos.row), this.ace.session.getScreenLength() - 1)
+        var pos = this.ace.session.screenToDocumentPosition(screenPos.row, screenPos.column)
         return toCmPos(pos)
       } else {
         debugger
@@ -490,13 +474,9 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var renderer = this.ace.renderer
       var config = renderer.layerConfig
       var maxHeight = config.maxHeight
-      maxHeight -=
-        (renderer.$size.scrollerHeight - renderer.lineHeight) *
-        renderer.$scrollPastEnd
-      if (y != null)
-        this.ace.session.setScrollTop(Math.max(0, Math.min(y, maxHeight)))
-      if (x != null)
-        this.ace.session.setScrollLeft(Math.max(0, Math.min(x, config.width)))
+      maxHeight -= (renderer.$size.scrollerHeight - renderer.lineHeight) * renderer.$scrollPastEnd
+      if (y != null) this.ace.session.setScrollTop(Math.max(0, Math.min(y, maxHeight)))
+      if (x != null) this.ace.session.setScrollLeft(Math.max(0, Math.min(x, config.width)))
     }
     this.scrollInfo = function () {
       return 0
@@ -516,16 +496,11 @@ function vimHandler(acequire, exports, module, writeHandler) {
       return this.ace.session.getLine(row)
     }
     this.getRange = function (s, e) {
-      return this.ace.session.getTextRange(
-        new Range(s.line, s.ch, e.line, e.ch)
-      )
+      return this.ace.session.getTextRange(new Range(s.line, s.ch, e.line, e.ch))
     }
     this.replaceRange = function (text, s, e) {
       if (!e) e = s
-      return this.ace.session.replace(
-        new Range(s.line, s.ch, e.line, e.ch),
-        text
-      )
+      return this.ace.session.replace(new Range(s.line, s.ch, e.line, e.ch), text)
     }
     this.replaceSelections = function (p) {
       var sel = this.ace.selection
@@ -536,8 +511,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       sel.inVirtualSelectionMode = true
       var ranges = sel.rangeList.ranges
       if (!ranges.length) ranges = [this.ace.multiSelect.getRange()]
-      for (var i = ranges.length; i--; )
-        this.ace.session.replace(ranges[i], p[i] || '')
+      for (var i = ranges.length; i--; ) this.ace.session.replace(ranges[i], p[i] || '')
       sel.inVirtualSelectionMode = false
     }
     this.getSelection = function () {
@@ -589,11 +563,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     }
     this.addOverlay = function (o) {
       if (!this.$searchHighlight || !this.$searchHighlight.session) {
-        var highlight = new SearchHighlight(
-          null,
-          'ace_highlight-marker',
-          'text'
-        )
+        var highlight = new SearchHighlight(null, 'ace_highlight-marker', 'text')
         var marker = this.ace.session.addDynamicMarker(highlight)
         highlight.id = marker.id
         highlight.session = this.ace.session
@@ -649,8 +619,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     }
     this.indentLine = function (line, method) {
       if (method === true) this.ace.session.indentRows(line, line, '\t')
-      else if (method === false)
-        this.ace.session.outdentRows(new Range(line, 0, line, 0))
+      else if (method === false) this.ace.session.outdentRows(new Range(line, 0, line, 0))
     }
     this.indexFromPos = function (pos) {
       return this.ace.session.doc.positionToIndex(toAcePos(pos))
@@ -670,11 +639,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     this.scanForBracket = function (pos, dir, _, options) {
       var re = options.bracketRegex.source
       if (dir == 1) {
-        var m = this.ace.session.$findClosingBracket(
-          re.slice(1, 2),
-          toAcePos(pos),
-          /paren|text/
-        )
+        var m = this.ace.session.$findClosingBracket(re.slice(1, 2), toAcePos(pos), /paren|text/)
       } else {
         var m = this.ace.session.$findOpeningBracket(
           re.slice(-2, -1),
@@ -847,114 +812,97 @@ function vimHandler(acequire, exports, module, writeHandler) {
       cm.state.currentNotificationClose = newVal
     }
 
-    CodeMirror.defineExtension(
-      'openDialog',
-      function (template, callback, options) {
-        if (this.virtualSelectionMode()) return
-        if (!options) options = {}
+    CodeMirror.defineExtension('openDialog', function (template, callback, options) {
+      if (this.virtualSelectionMode()) return
+      if (!options) options = {}
 
-        closeNotification(this, null)
+      closeNotification(this, null)
 
-        var dialog = dialogDiv(this, template, options.bottom)
-        var closed = false,
-          me = this
-        function close(newVal) {
-          if (typeof newVal == 'string') {
-            inp.value = newVal
-          } else {
-            if (closed) return
-            closed = true
-            dialog.parentNode.removeChild(dialog)
-            me.focus()
-
-            if (options.onClose) options.onClose(dialog)
-          }
-        }
-
-        var inp = dialog.getElementsByTagName('input')[0],
-          button
-        if (inp) {
-          if (options.value) {
-            inp.value = options.value
-            if (options.select !== false) inp.select()
-          }
-
-          if (options.onInput)
-            CodeMirror.on(inp, 'input', function (e) {
-              options.onInput(e, inp.value, close)
-            })
-          if (options.onKeyUp)
-            CodeMirror.on(inp, 'keyup', function (e) {
-              options.onKeyUp(e, inp.value, close)
-            })
-
-          CodeMirror.on(inp, 'keydown', function (e) {
-            if (
-              options &&
-              options.onKeyDown &&
-              options.onKeyDown(e, inp.value, close)
-            ) {
-              return
-            }
-            if (
-              e.keyCode == 27 ||
-              (options.closeOnEnter !== false && e.keyCode == 13)
-            ) {
-              inp.blur()
-              CodeMirror.e_stop(e)
-              close()
-            }
-            if (e.keyCode == 13) callback(inp.value)
-          })
-
-          if (options.closeOnBlur !== false) CodeMirror.on(inp, 'blur', close)
-
-          inp.focus()
-        } else if ((button = dialog.getElementsByTagName('button')[0])) {
-          CodeMirror.on(button, 'click', function () {
-            close()
-            me.focus()
-          })
-
-          if (options.closeOnBlur !== false)
-            CodeMirror.on(button, 'blur', close)
-
-          button.focus()
-        }
-        return close
-      }
-    )
-
-    CodeMirror.defineExtension(
-      'openNotification',
-      function (template, options) {
-        if (this.virtualSelectionMode()) return
-        closeNotification(this, close)
-        var dialog = dialogDiv(this, template, options && options.bottom)
-        var closed = false,
-          doneTimer
-        var duration =
-          options && typeof options.duration !== 'undefined'
-            ? options.duration
-            : 5000
-
-        function close() {
+      var dialog = dialogDiv(this, template, options.bottom)
+      var closed = false,
+        me = this
+      function close(newVal) {
+        if (typeof newVal == 'string') {
+          inp.value = newVal
+        } else {
           if (closed) return
           closed = true
-          clearTimeout(doneTimer)
           dialog.parentNode.removeChild(dialog)
+          me.focus()
+
+          if (options.onClose) options.onClose(dialog)
+        }
+      }
+
+      var inp = dialog.getElementsByTagName('input')[0],
+        button
+      if (inp) {
+        if (options.value) {
+          inp.value = options.value
+          if (options.select !== false) inp.select()
         }
 
-        CodeMirror.on(dialog, 'click', function (e) {
-          CodeMirror.e_preventDefault(e)
-          close()
+        if (options.onInput)
+          CodeMirror.on(inp, 'input', function (e) {
+            options.onInput(e, inp.value, close)
+          })
+        if (options.onKeyUp)
+          CodeMirror.on(inp, 'keyup', function (e) {
+            options.onKeyUp(e, inp.value, close)
+          })
+
+        CodeMirror.on(inp, 'keydown', function (e) {
+          if (options && options.onKeyDown && options.onKeyDown(e, inp.value, close)) {
+            return
+          }
+          if (e.keyCode == 27 || (options.closeOnEnter !== false && e.keyCode == 13)) {
+            inp.blur()
+            CodeMirror.e_stop(e)
+            close()
+          }
+          if (e.keyCode == 13) callback(inp.value)
         })
 
-        if (duration) doneTimer = setTimeout(close, duration)
+        if (options.closeOnBlur !== false) CodeMirror.on(inp, 'blur', close)
 
-        return close
+        inp.focus()
+      } else if ((button = dialog.getElementsByTagName('button')[0])) {
+        CodeMirror.on(button, 'click', function () {
+          close()
+          me.focus()
+        })
+
+        if (options.closeOnBlur !== false) CodeMirror.on(button, 'blur', close)
+
+        button.focus()
       }
-    )
+      return close
+    })
+
+    CodeMirror.defineExtension('openNotification', function (template, options) {
+      if (this.virtualSelectionMode()) return
+      closeNotification(this, close)
+      var dialog = dialogDiv(this, template, options && options.bottom)
+      var closed = false,
+        doneTimer
+      var duration = options && typeof options.duration !== 'undefined' ? options.duration : 5000
+
+      function close() {
+        if (closed) return
+        closed = true
+        clearTimeout(doneTimer)
+        dialog.parentNode.removeChild(dialog)
+      }
+
+      CodeMirror.on(dialog, 'click', function (e) {
+        CodeMirror.e_preventDefault(e)
+        close()
+      })
+
+      if (duration) doneTimer = setTimeout(close, duration)
+
+      return close
+    })
   })()
 
   var defaultKeymap = [
@@ -1728,24 +1676,18 @@ function vimHandler(acequire, exports, module, writeHandler) {
   }
 
   function detachVimMap(cm, next) {
-    if (this == CodeMirror.keyMap.vim)
-      CodeMirror.rmClass(cm.getWrapperElement(), 'cm-fat-cursor')
+    if (this == CodeMirror.keyMap.vim) CodeMirror.rmClass(cm.getWrapperElement(), 'cm-fat-cursor')
 
     if (!next || next.attach != attachVimMap) leaveVimMode(cm, false)
   }
   function attachVimMap(cm, prev) {
-    if (this == CodeMirror.keyMap.vim)
-      CodeMirror.addClass(cm.getWrapperElement(), 'cm-fat-cursor')
+    if (this == CodeMirror.keyMap.vim) CodeMirror.addClass(cm.getWrapperElement(), 'cm-fat-cursor')
 
     if (!prev || prev.attach != attachVimMap) enterVimMode(cm)
   }
   CodeMirror.defineOption('vimMode', false, function (cm, val, prev) {
     if (val && cm.getOption('keyMap') != 'vim') cm.setOption('keyMap', 'vim')
-    else if (
-      !val &&
-      prev != CodeMirror.Init &&
-      /^vim/.test(cm.getOption('keyMap'))
-    )
+    else if (!val && prev != CodeMirror.Init && /^vim/.test(cm.getOption('keyMap')))
       cm.setOption('keyMap', 'default')
   })
 
@@ -1774,11 +1716,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     var lastPiece = pieces[pieces.length - 1]
     if (pieces.length == 1 && pieces[0].length == 1) {
       return false
-    } else if (
-      pieces.length == 2 &&
-      pieces[0] == 'Shift' &&
-      lastPiece.length == 1
-    ) {
+    } else if (pieces.length == 2 && pieces[0] == 'Shift' && lastPiece.length == 1) {
       return false
     }
     var hasCharacter = false
@@ -1837,16 +1775,14 @@ function vimHandler(acequire, exports, module, writeHandler) {
   var upperCaseAlphabet = makeKeyRange(65, 26)
   var lowerCaseAlphabet = makeKeyRange(97, 26)
   var numbers = makeKeyRange(48, 10)
-  var validMarks = [].concat(upperCaseAlphabet, lowerCaseAlphabet, numbers, [
-    '<',
-    '>'
+  var validMarks = [].concat(upperCaseAlphabet, lowerCaseAlphabet, numbers, ['<', '>'])
+  var validRegisters = [].concat(upperCaseAlphabet, lowerCaseAlphabet, numbers, [
+    '-',
+    '"',
+    '.',
+    ':',
+    '/'
   ])
-  var validRegisters = [].concat(
-    upperCaseAlphabet,
-    lowerCaseAlphabet,
-    numbers,
-    ['-', '"', '.', ':', '/']
-  )
 
   function isLine(cm, line) {
     return line >= cm.firstLine() && line <= cm.lastLine()
@@ -2060,11 +1996,9 @@ function vimHandler(acequire, exports, module, writeHandler) {
         register.clear()
         this.latestRegister = registerName
         if (cm.openDialog) {
-          this.onRecordingDone = cm.openDialog(
-            '(recording)[' + registerName + ']',
-            null,
-            { bottom: true }
-          )
+          this.onRecordingDone = cm.openDialog('(recording)[' + registerName + ']', null, {
+            bottom: true
+          })
         }
         this.isRecording = true
       }
@@ -2209,12 +2143,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         }
         var keys = (vim.inputState.keyBuffer = vim.inputState.keyBuffer + key)
         var keysAreChars = key.length == 1
-        var match = commandDispatcher.matchCommand(
-          keys,
-          defaultKeymap,
-          vim.inputState,
-          'insert'
-        )
+        var match = commandDispatcher.matchCommand(keys, defaultKeymap, vim.inputState, 'insert')
         while (keys.length > 1 && match.type != 'full') {
           var keys = (vim.inputState.keyBuffer = keys.slice(1))
           var thisMatch = commandDispatcher.matchCommand(
@@ -2249,12 +2178,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           var selections = cm.listSelections()
           for (var i = 0; i < selections.length; i++) {
             var here = selections[i].head
-            cm.replaceRange(
-              '',
-              offsetCursor(here, 0, -(keys.length - 1)),
-              here,
-              '+input'
-            )
+            cm.replaceRange('', offsetCursor(here, 0, -(keys.length - 1)), here, '+input')
           }
           vimGlobalState.macroModeState.lastInsertModeChanges.changes.pop()
         }
@@ -2313,8 +2237,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         }
       } else {
         return function () {
-          if ((command.operator || command.isEdit) && cm.getOption('readOnly'))
-            return // ace_patch
+          if ((command.operator || command.isEdit) && cm.getOption('readOnly')) return // ace_patch
           return cm.operation(function () {
             cm.curOp.isVimOp = true
             try {
@@ -2449,9 +2372,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       if (linewise && text.charAt(text.length - 1) !== '\n') {
         text += '\n'
       }
-      var register = this.isValidRegister(registerName)
-        ? this.getRegister(registerName)
-        : null
+      var register = this.isValidRegister(registerName) ? this.getRegister(registerName) : null
       if (!register) {
         switch (operator) {
           case 'yank':
@@ -2507,11 +2428,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var historyBuffer = this.historyBuffer
       var dir = up ? -1 : 1
       if (this.initialPrefix === null) this.initialPrefix = input
-      for (
-        var i = this.iterator + dir;
-        up ? i >= 0 : i < historyBuffer.length;
-        i += dir
-      ) {
+      for (var i = this.iterator + dir; up ? i >= 0 : i < historyBuffer.length; i += dir) {
         var element = historyBuffer[i]
         for (var j = 0; j <= element.length; j++) {
           if (this.initialPrefix == element.substring(0, j)) {
@@ -2690,8 +2607,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           up
         if (keyName == 'Up' || keyName == 'Down') {
           up = keyName == 'Up' ? true : false
-          query =
-            vimGlobalState.searchHistoryController.nextMatch(query, up) || ''
+          query = vimGlobalState.searchHistoryController.nextMatch(query, up) || ''
           close(query)
         } else {
           if (
@@ -2705,12 +2621,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         }
         var parsedQuery
         try {
-          parsedQuery = updateSearchQuery(
-            cm,
-            query,
-            true /** ignoreCase */,
-            true /** smartCase */
-          )
+          parsedQuery = updateSearchQuery(cm, query, true /** ignoreCase */, true /** smartCase */)
         } catch (e) {}
         if (parsedQuery) {
           cm.scrollIntoView(findNext(cm, !forward, parsedQuery), 30)
@@ -2779,9 +2690,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           if (!word) {
             return
           }
-          var query = cm
-            .getLine(word.start.line)
-            .substring(word.start.ch, word.end.ch)
+          var query = cm.getLine(word.start.line).substring(word.start.ch, word.end.ch)
           if (isKeyword && wholeWordOnly) {
             query = '\\b' + query + '\\b'
           } else {
@@ -2818,8 +2727,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         }
         if (keyName == 'Up' || keyName == 'Down') {
           up = keyName == 'Up' ? true : false
-          input =
-            vimGlobalState.exCommandHistoryController.nextMatch(input, up) || ''
+          input = vimGlobalState.exCommandHistoryController.nextMatch(input, up) || ''
           close(input)
         } else if (keyName == 'Ctrl-U') {
           CodeMirror.e_stop(e)
@@ -2863,14 +2771,10 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var registerName = inputState.registerName
       var sel = vim.sel
       var origHead = copyCursor(
-        vim.visualMode
-          ? clipCursorToContent(cm, sel.head)
-          : cm.getCursor('head')
+        vim.visualMode ? clipCursorToContent(cm, sel.head) : cm.getCursor('head')
       )
       var origAnchor = copyCursor(
-        vim.visualMode
-          ? clipCursorToContent(cm, sel.anchor)
-          : cm.getCursor('anchor')
+        vim.visualMode ? clipCursorToContent(cm, sel.anchor) : cm.getCursor('anchor')
       )
       var oldHead = copyCursor(origHead)
       var oldAnchor = copyCursor(origAnchor)
@@ -2886,16 +2790,12 @@ function vimHandler(acequire, exports, module, writeHandler) {
       }
       if (repeat > 0 && motionArgs.explicitRepeat) {
         motionArgs.repeatIsExplicit = true
-      } else if (
-        motionArgs.noRepeat ||
-        (!motionArgs.explicitRepeat && repeat === 0)
-      ) {
+      } else if (motionArgs.noRepeat || (!motionArgs.explicitRepeat && repeat === 0)) {
         repeat = 1
         motionArgs.repeatIsExplicit = false
       }
       if (inputState.selectedCharacter) {
-        motionArgs.selectedCharacter = operatorArgs.selectedCharacter =
-          inputState.selectedCharacter
+        motionArgs.selectedCharacter = operatorArgs.selectedCharacter = inputState.selectedCharacter
       }
       motionArgs.repeat = repeat
       clearInputState(cm)
@@ -2937,18 +2837,8 @@ function vimHandler(acequire, exports, module, writeHandler) {
           sel.anchor = newAnchor
           sel.head = newHead
           updateCmSelection(cm)
-          updateMark(
-            cm,
-            vim,
-            '<',
-            cursorIsBefore(newAnchor, newHead) ? newAnchor : newHead
-          )
-          updateMark(
-            cm,
-            vim,
-            '>',
-            cursorIsBefore(newAnchor, newHead) ? newHead : newAnchor
-          )
+          updateMark(cm, vim, '<', cursorIsBefore(newAnchor, newHead) ? newAnchor : newHead)
+          updateMark(cm, vim, '>', cursorIsBefore(newAnchor, newHead) ? newHead : newAnchor)
         } else if (!operator) {
           newHead = clipCursorToContent(cm, newHead)
           cm.setCursor(newHead.line, newHead.ch)
@@ -3041,13 +2931,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         operatorArgs.repeat = repeat // For indent in visual mode.
         operatorArgs.registerName = registerName
         operatorArgs.linewise = linewise
-        var operatorMoveTo = operators[operator](
-          cm,
-          operatorArgs,
-          cmSel.ranges,
-          oldAnchor,
-          newHead
-        )
+        var operatorMoveTo = operators[operator](cm, operatorArgs, cmSel.ranges, oldAnchor, newHead)
         if (vim.visualMode) {
           exitVisualMode(cm, operatorMoveTo != null)
         }
@@ -3152,10 +3036,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       }
 
       if (motionArgs.linewise) {
-        best = Pos(
-          best.line,
-          findFirstNonWhiteSpaceCharacter(cm.getLine(best.line))
-        )
+        best = Pos(best.line, findFirstNonWhiteSpaceCharacter(cm.getLine(best.line)))
       }
       return best
     },
@@ -3183,10 +3064,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var line = motionArgs.forward ? cur.line + repeat : cur.line - repeat
       var first = cm.firstLine()
       var last = cm.lastLine()
-      if (
-        (line < first && cur.line == first) ||
-        (line > last && cur.line == last)
-      ) {
+      if ((line < first && cur.line == first) || (line > last && cur.line == last)) {
         return
       }
       var fold = cm.ace.session.getFoldLine(line)
@@ -3217,12 +3095,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           vim.lastHSPos = cm.charCoords(cur, 'div').left
       }
       var repeat = motionArgs.repeat
-      var res = cm.findPosV(
-        cur,
-        motionArgs.forward ? repeat : -repeat,
-        'line',
-        vim.lastHSPos
-      )
+      var res = cm.findPosV(cur, motionArgs.forward ? repeat : -repeat, 'line', vim.lastHSPos)
       if (res.hitSide) {
         if (motionArgs.forward) {
           var lastCharCoords = cm.charCoords(res, 'div')
@@ -3240,11 +3113,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     moveByPage: function (cm, head, motionArgs) {
       var curStart = head
       var repeat = motionArgs.repeat
-      return cm.findPosV(
-        curStart,
-        motionArgs.forward ? repeat : -repeat,
-        'page'
-      )
+      return cm.findPosV(curStart, motionArgs.forward ? repeat : -repeat, 'page')
     },
     moveByParagraph: function (cm, head, motionArgs) {
       var dir = motionArgs.forward ? 1 : -1
@@ -3279,12 +3148,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     },
     moveTillCharacter: function (cm, _head, motionArgs) {
       var repeat = motionArgs.repeat
-      var curEnd = moveToCharacter(
-        cm,
-        repeat,
-        motionArgs.forward,
-        motionArgs.selectedCharacter
-      )
+      var curEnd = moveToCharacter(cm, repeat, motionArgs.forward, motionArgs.selectedCharacter)
       var increment = motionArgs.forward ? -1 : 1
       recordLastCharacterSearch(increment, motionArgs)
       if (!curEnd) return null
@@ -3294,25 +3158,11 @@ function vimHandler(acequire, exports, module, writeHandler) {
     moveToCharacter: function (cm, head, motionArgs) {
       var repeat = motionArgs.repeat
       recordLastCharacterSearch(0, motionArgs)
-      return (
-        moveToCharacter(
-          cm,
-          repeat,
-          motionArgs.forward,
-          motionArgs.selectedCharacter
-        ) || head
-      )
+      return moveToCharacter(cm, repeat, motionArgs.forward, motionArgs.selectedCharacter) || head
     },
     moveToSymbol: function (cm, head, motionArgs) {
       var repeat = motionArgs.repeat
-      return (
-        findSymbol(
-          cm,
-          repeat,
-          motionArgs.forward,
-          motionArgs.selectedCharacter
-        ) || head
-      )
+      return findSymbol(cm, repeat, motionArgs.forward, motionArgs.selectedCharacter) || head
     },
     moveToColumn: function (cm, head, motionArgs, vim) {
       var repeat = motionArgs.repeat
@@ -3331,10 +3181,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     },
     moveToFirstNonWhiteSpaceCharacter: function (cm, head) {
       var cursor = head
-      return Pos(
-        cursor.line,
-        findFirstNonWhiteSpaceCharacter(cm.getLine(cursor.line))
-      )
+      return Pos(cursor.line, findFirstNonWhiteSpaceCharacter(cm.getLine(cursor.line)))
     },
     moveToMatchedSymbol: function (cm, head) {
       var cursor = head
@@ -3393,19 +3240,9 @@ function vimHandler(acequire, exports, module, writeHandler) {
       } else if (selfPaired[character]) {
         tmp = findBeginningAndEnd(cm, head, character, inclusive)
       } else if (character === 'W') {
-        tmp = expandWordUnderCursor(
-          cm,
-          inclusive,
-          true /** forward */,
-          true /** bigWord */
-        )
+        tmp = expandWordUnderCursor(cm, inclusive, true /** forward */, true /** bigWord */)
       } else if (character === 'w') {
-        tmp = expandWordUnderCursor(
-          cm,
-          inclusive,
-          true /** forward */,
-          false /** bigWord */
-        )
+        tmp = expandWordUnderCursor(cm, inclusive, true /** forward */, false /** bigWord */)
       } else if (character === 'p') {
         tmp = findParagraph(cm, head, motionArgs.repeat, 0, inclusive)
         motionArgs.linewise = true
@@ -3438,12 +3275,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var increment = (lastSearch.increment ? 1 : 0) * (forward ? -1 : 1)
       cm.moveH(-increment, 'char')
       motionArgs.inclusive = forward ? true : false
-      var curEnd = moveToCharacter(
-        cm,
-        repeat,
-        forward,
-        lastSearch.selectedCharacter
-      )
+      var curEnd = moveToCharacter(cm, repeat, forward, lastSearch.selectedCharacter)
       if (!curEnd) {
         cm.moveH(increment, 'char')
         return head
@@ -3468,8 +3300,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     change: function (cm, args, ranges) {
       var finalHead, text
       var vim = cm.state.vim
-      vimGlobalState.macroModeState.lastInsertModeChanges.inVisualBlock =
-        vim.visualBlock
+      vimGlobalState.macroModeState.lastInsertModeChanges.inVisualBlock = vim.visualBlock
       if (!vim.visualMode) {
         var anchor = ranges[0].anchor,
           head = ranges[0].head
@@ -3554,9 +3385,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     indent: function (cm, args, ranges) {
       var vim = cm.state.vim
       var startLine = ranges[0].anchor.line
-      var endLine = vim.visualBlock
-        ? ranges[ranges.length - 1].anchor.line
-        : ranges[0].head.line
+      var endLine = vim.visualBlock ? ranges[ranges.length - 1].anchor.line : ranges[0].head.line
       var repeat = vim.visualMode ? args.repeat : 1
       if (args.linewise) {
         endLine--
@@ -3582,9 +3411,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         } else {
           for (var i = 0; i < toSwap.length; i++) {
             var character = toSwap.charAt(i)
-            text += isUpperCase(character)
-              ? character.toLowerCase()
-              : character.toUpperCase()
+            text += isUpperCase(character) ? character.toLowerCase() : character.toUpperCase()
           }
         }
         swapped.push(text)
@@ -3608,12 +3435,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var vim = cm.state.vim
       var text = cm.getSelection()
       var endPos = vim.visualMode
-        ? cursorMin(
-            vim.sel.anchor,
-            vim.sel.head,
-            ranges[0].head,
-            ranges[0].anchor
-          )
+        ? cursorMin(vim.sel.anchor, vim.sel.head, ranges[0].head, ranges[0].anchor)
         : oldAnchor
       vimGlobalState.registerController.pushText(
         args.registerName,
@@ -3673,10 +3495,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           cursor.line = Math.floor(cursor.line)
           cm.setCursor(cursor)
           cursorCoords = cm.charCoords(cursor, 'local')
-          cm.scrollTo(
-            null,
-            cursorCoords.bottom - cm.getScrollInfo().clientHeight
-          )
+          cm.scrollTo(null, cursorCoords.bottom - cm.getScrollInfo().clientHeight)
         } else {
           cm.scrollTo(null, newPos)
         }
@@ -3741,10 +3560,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
             head = Pos(sel.anchor.line, 0)
           }
         } else {
-          head = Pos(
-            Math.min(sel.head.line, sel.anchor.line),
-            Math.min(sel.head.ch, sel.anchor.ch)
-          )
+          head = Pos(Math.min(sel.head.line, sel.anchor.line), Math.min(sel.head.ch, sel.anchor.ch))
           height = Math.abs(sel.head.line - sel.anchor.line) + 1
         }
       } else if (insertAt == 'endOfSelectedArea') {
@@ -3804,28 +3620,17 @@ function vimHandler(acequire, exports, module, writeHandler) {
         }
         CodeMirror.signal(cm, 'vim-mode-change', {
           mode: 'visual',
-          subMode: vim.visualLine
-            ? 'linewise'
-            : vim.visualBlock
-            ? 'blockwise'
-            : ''
+          subMode: vim.visualLine ? 'linewise' : vim.visualBlock ? 'blockwise' : ''
         })
         updateCmSelection(cm)
         updateMark(cm, vim, '<', cursorMin(anchor, head))
         updateMark(cm, vim, '>', cursorMax(anchor, head))
-      } else if (
-        vim.visualLine ^ actionArgs.linewise ||
-        vim.visualBlock ^ actionArgs.blockwise
-      ) {
+      } else if (vim.visualLine ^ actionArgs.linewise || vim.visualBlock ^ actionArgs.blockwise) {
         vim.visualLine = !!actionArgs.linewise
         vim.visualBlock = !!actionArgs.blockwise
         CodeMirror.signal(cm, 'vim-mode-change', {
           mode: 'visual',
-          subMode: vim.visualLine
-            ? 'linewise'
-            : vim.visualBlock
-            ? 'blockwise'
-            : ''
+          subMode: vim.visualLine ? 'linewise' : vim.visualBlock ? 'blockwise' : ''
         })
         updateCmSelection(cm)
       } else {
@@ -3855,11 +3660,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         updateMark(cm, vim, '>', cursorMax(anchor, head))
         CodeMirror.signal(cm, 'vim-mode-change', {
           mode: 'visual',
-          subMode: vim.visualLine
-            ? 'linewise'
-            : vim.visualBlock
-            ? 'blockwise'
-            : ''
+          subMode: vim.visualLine ? 'linewise' : vim.visualBlock ? 'blockwise' : ''
         })
       }
     },
@@ -3877,10 +3678,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       } else {
         var repeat = Math.max(actionArgs.repeat, 2)
         curStart = cm.getCursor()
-        curEnd = clipCursorToContent(
-          cm,
-          Pos(curStart.line + repeat - 1, Infinity)
-        )
+        curEnd = clipCursorToContent(cm, Pos(curStart.line + repeat - 1, Infinity))
       }
       var finalCh = 0
       for (var i = curStart.line; i < curEnd.line; i++) {
@@ -3915,9 +3713,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     },
     paste: function (cm, actionArgs, vim) {
       var cur = copyCursor(cm.getCursor())
-      var register = vimGlobalState.registerController.getRegister(
-        actionArgs.registerName
-      )
+      var register = vimGlobalState.registerController.getRegister(actionArgs.registerName)
       var text = register.toString()
       if (!text) {
         return
@@ -3954,9 +3750,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var blockwise = register.blockwise
       if (linewise && !blockwise) {
         if (vim.visualMode) {
-          text = vim.visualLine
-            ? text.slice(0, -1)
-            : '\n' + text.slice(0, text.length - 1) + '\n'
+          text = vim.visualLine ? text.slice(0, -1) : '\n' + text.slice(0, text.length - 1) + '\n'
         } else if (actionArgs.after) {
           text = '\n' + text.slice(0, text.length - 1)
           cur.ch = lineLength(cm, cur.line)
@@ -3989,10 +3783,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         vimGlobalState.registerController.unnamedRegister.setText(selectedText)
         if (blockwise) {
           cm.replaceSelections(emptyStrings)
-          selectionEnd = Pos(
-            selectionStart.line + text.length - 1,
-            selectionStart.ch
-          )
+          selectionEnd = Pos(selectionStart.line + text.length - 1, selectionStart.ch)
           cm.setCursor(selectionStart)
           selectBlock(cm, selectionEnd)
           cm.replaceSelections(text)
@@ -4004,9 +3795,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           curPosFinal = selectionStart
         } else {
           cm.replaceRange(text, selectionStart, selectionEnd)
-          curPosFinal = cm.posFromIndex(
-            cm.indexFromPos(selectionStart) + text.length - 1
-          )
+          curPosFinal = cm.posFromIndex(cm.indexFromPos(selectionStart) + text.length - 1)
         }
         if (lastSelectionCurEnd) {
           vim.lastSelection.headMark = cm.setBookmark(lastSelectionCurEnd)
@@ -4039,10 +3828,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
               findFirstNonWhiteSpaceCharacter(cm.getLine(cur.line + 1))
             )
           } else if (linewise && !actionArgs.after) {
-            curPosFinal = Pos(
-              cur.line,
-              findFirstNonWhiteSpaceCharacter(cm.getLine(cur.line))
-            )
+            curPosFinal = Pos(cur.line, findFirstNonWhiteSpaceCharacter(cm.getLine(cur.line)))
           } else if (!linewise && actionArgs.after) {
             idx = cm.indexFromPos(cur)
             curPosFinal = cm.posFromIndex(idx + text.length - 1)
@@ -4234,11 +4020,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         ? 'partial'
         : false
     } else {
-      return pressed == mapped
-        ? 'full'
-        : mapped.indexOf(pressed) == 0
-        ? 'partial'
-        : false
+      return pressed == mapped ? 'full' : mapped.indexOf(pressed) == 0 ? 'partial' : false
     }
   }
   function lastChar(keys) {
@@ -4282,19 +4064,13 @@ function vimHandler(acequire, exports, module, writeHandler) {
   }
   function cursorMin(cur1, cur2) {
     if (arguments.length > 2) {
-      cur2 = cursorMin.apply(
-        undefined,
-        Array.prototype.slice.call(arguments, 1)
-      )
+      cur2 = cursorMin.apply(undefined, Array.prototype.slice.call(arguments, 1))
     }
     return cursorIsBefore(cur1, cur2) ? cur1 : cur2
   }
   function cursorMax(cur1, cur2) {
     if (arguments.length > 2) {
-      cur2 = cursorMax.apply(
-        undefined,
-        Array.prototype.slice.call(arguments, 1)
-      )
+      cur2 = cursorMax.apply(undefined, Array.prototype.slice.call(arguments, 1))
     }
     return cursorIsBefore(cur1, cur2) ? cur2 : cur1
   }
@@ -4328,10 +4104,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     var isClipped = !cursorEqual(selectionEnd, head)
     var curHead = cm.getCursor('head')
     var primIndex = getIndex(ranges, curHead)
-    var wasClipped = cursorEqual(
-      ranges[primIndex].head,
-      ranges[primIndex].anchor
-    )
+    var wasClipped = cursorEqual(ranges[primIndex].head, ranges[primIndex].anchor)
     var max = ranges.length - 1
     var index = max - primIndex > primIndex ? max : 0
     var base = ranges[index].anchor
@@ -4394,12 +4167,8 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var selections = cm.listSelections()
       var start = selections[0]
       var end = selections[selections.length - 1]
-      var selectionStart = cursorIsBefore(start.anchor, start.head)
-        ? start.anchor
-        : start.head
-      var selectionEnd = cursorIsBefore(end.anchor, end.head)
-        ? end.head
-        : end.anchor
+      var selectionStart = cursorIsBefore(start.anchor, start.head) ? start.anchor : start.head
+      var selectionEnd = cursorIsBefore(end.anchor, end.head) ? end.head : end.anchor
       return [selectionStart, selectionEnd]
     }
     var getLastSelectedAreaRange = function () {
@@ -4409,10 +4178,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       if (block) {
         var width = block.width
         var height = block.height
-        selectionEnd = Pos(
-          selectionStart.line + height,
-          selectionStart.ch + width
-        )
+        selectionEnd = Pos(selectionStart.line + height, selectionStart.ch + width)
         var selections = []
         for (var i = selectionStart.line; i < selectionEnd.line; i++) {
           var anchor = Pos(i, selectionStart.ch)
@@ -4432,10 +4198,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         }
         if (lastSelection.visualLine) {
           selectionStart = Pos(selectionStart.line, 0)
-          selectionEnd = Pos(
-            selectionEnd.line,
-            lineLength(cm, selectionEnd.line)
-          )
+          selectionEnd = Pos(selectionEnd.line, lineLength(cm, selectionEnd.line))
         }
         cm.setSelection(selectionStart, selectionEnd)
       }
@@ -4451,9 +4214,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     var anchor = vim.sel.anchor
     var head = vim.sel.head
     if (vim.lastPastedText) {
-      head = cm.posFromIndex(
-        cm.indexFromPos(anchor) + vim.lastPastedText.length
-      )
+      head = cm.posFromIndex(cm.indexFromPos(anchor) + vim.lastPastedText.length)
       vim.lastPastedText = null
     }
     vim.lastSelection = {
@@ -4492,8 +4253,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
   function updateCmSelection(cm, sel, mode) {
     var vim = cm.state.vim
     sel = sel || vim.sel
-    var mode =
-      mode || vim.visualLine ? 'line' : vim.visualBlock ? 'block' : 'char'
+    var mode = mode || vim.visualLine ? 'line' : vim.visualBlock ? 'block' : 'char'
     var cmSel = makeCmSelection(cm, sel, mode)
     cm.setSelections(cmSel.ranges, cmSel.primary)
     updateFakeCursor(cm)
@@ -4502,8 +4262,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     var head = copyCursor(sel.head)
     var anchor = copyCursor(sel.anchor)
     if (mode == 'char') {
-      var headOffset =
-        !exclusive && !cursorIsBefore(sel.head, sel.anchor) ? 1 : 0
+      var headOffset = !exclusive && !cursorIsBefore(sel.head, sel.anchor) ? 1 : 0
       var anchorOffset = cursorIsBefore(sel.head, sel.anchor) ? 1 : 0
       head = offsetCursor(sel.head, 0, headOffset)
       anchor = offsetCursor(sel.anchor, 0, anchorOffset)
@@ -4663,8 +4422,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
   function recordLastCharacterSearch(increment, args) {
     vimGlobalState.lastChararacterSearch.increment = increment
     vimGlobalState.lastChararacterSearch.forward = args.forward
-    vimGlobalState.lastChararacterSearch.selectedCharacter =
-      args.selectedCharacter
+    vimGlobalState.lastChararacterSearch.selectedCharacter = args.selectedCharacter
   }
 
   var symbolToMode = {
@@ -4755,9 +4513,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       lastCh: null,
       index: curCh,
       symb: symb,
-      reverseSymb: (forward ? { ')': '(', '}': '{' } : { '(': ')', '{': '}' })[
-        symb
-      ],
+      reverseSymb: (forward ? { ')': '(', '}': '{' } : { '(': ')', '{': '}' })[symb],
       forward: forward,
       depth: 0,
       curMoveThrough: false
@@ -4827,11 +4583,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
             }
             wordEnd = pos
             foundWord = wordStart != wordEnd
-            if (
-              wordStart == cur.ch &&
-              lineNum == cur.line &&
-              wordEnd == wordStart + dir
-            ) {
+            if (wordStart == cur.ch && lineNum == cur.line && wordEnd == wordStart + dir) {
               continue
             } else {
               return {
@@ -4867,9 +4619,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       if (!word) {
         var eodCh = lineLength(cm, cm.lastLine())
         words.push(
-          forward
-            ? { line: cm.lastLine(), from: eodCh, to: eodCh }
-            : { line: 0, from: 0, to: 0 }
+          forward ? { line: cm.lastLine(), from: eodCh, to: eodCh } : { line: 0, from: 0, to: 0 }
         )
         break
       }
@@ -4880,20 +4630,14 @@ function vimHandler(acequire, exports, module, writeHandler) {
     var firstWord = words[0]
     var lastWord = words.pop()
     if (forward && !wordEnd) {
-      if (
-        !shortCircuit &&
-        (firstWord.from != curStart.ch || firstWord.line != curStart.line)
-      ) {
+      if (!shortCircuit && (firstWord.from != curStart.ch || firstWord.line != curStart.line)) {
         lastWord = words.pop()
       }
       return Pos(lastWord.line, lastWord.from)
     } else if (forward && wordEnd) {
       return Pos(lastWord.line, lastWord.to - 1)
     } else if (!forward && wordEnd) {
-      if (
-        !shortCircuit &&
-        (firstWord.to != curStart.ch || firstWord.line != curStart.line)
-      ) {
+      if (!shortCircuit && (firstWord.to != curStart.ch || firstWord.line != curStart.line)) {
         lastWord = words.pop()
       }
       return Pos(lastWord.line, lastWord.to)
@@ -5054,10 +4798,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     start = start.pos
     end = end.pos
 
-    if (
-      (start.line == end.line && start.ch > end.ch) ||
-      start.line > end.line
-    ) {
+    if ((start.line == end.line && start.ch > end.ch) || start.line > end.line) {
       var tmp = start
       start = end
       end = tmp
@@ -5301,10 +5042,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     if (smartCase) {
       ignoreCase = /^[^A-Z]*$/.test(regexPart)
     }
-    var regexp = new RegExp(
-      regexPart,
-      ignoreCase || forceIgnoreCase ? 'i' : undefined
-    )
+    var regexp = new RegExp(regexPart, ignoreCase || forceIgnoreCase ? 'i' : undefined)
     return regexp
   }
   function showConfirm(cm, text) {
@@ -5430,10 +5168,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           found = cursor.find(prev)
         }
         if (!found) {
-          cursor = cm.getSearchCursor(
-            query,
-            prev ? Pos(cm.lastLine()) : Pos(cm.firstLine(), 0)
-          )
+          cursor = cm.getSearchCursor(query, prev ? Pos(cm.lastLine()) : Pos(cm.firstLine(), 0))
           if (!cursor.find(prev)) {
             return
           }
@@ -5486,8 +5221,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     },
     _processCommand: function (cm, input, opt_params) {
       var vim = cm.state.vim
-      var commandHistoryRegister =
-        vimGlobalState.registerController.getRegister(':')
+      var commandHistoryRegister = vimGlobalState.registerController.getRegister(':')
       var previousCommand = commandHistoryRegister.toString()
       if (vim.visualMode) {
         exitVisualMode(cm)
@@ -5666,10 +5400,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           throw Error('Mode not supported for ex mappings')
         }
         var commandName = lhs.substring(1)
-        if (
-          this.commandMap_[commandName] &&
-          this.commandMap_[commandName].user
-        ) {
+        if (this.commandMap_[commandName] && this.commandMap_[commandName].user) {
           delete this.commandMap_[commandName]
           return
         }
@@ -5760,8 +5491,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         value = false
       }
 
-      var optionIsBoolean =
-        options[optionName] && options[optionName].type == 'boolean'
+      var optionIsBoolean = options[optionName] && options[optionName].type == 'boolean'
       if (optionIsBoolean && value == undefined) {
         value = true
       }
@@ -5800,9 +5530,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         regArgs = regArgs.join('')
         for (var i = 0; i < regArgs.length; i++) {
           registerName = regArgs.charAt(i)
-          if (
-            !vimGlobalState.registerController.isValidRegister(registerName)
-          ) {
+          if (!vimGlobalState.registerController.isValidRegister(registerName)) {
             continue
           }
           var register = registers[registerName] || new Register()
@@ -5836,8 +5564,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
             if (decimal + hex + octal > 1) {
               return 'Invalid arguments'
             }
-            number =
-              (decimal && 'decimal') || (hex && 'hex') || (octal && 'octal')
+            number = (decimal && 'decimal') || (hex && 'hex') || (octal && 'octal')
           }
           if (args.match(/\/.*\//)) {
             return 'patterns not supported'
@@ -5865,14 +5592,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
           : number == 'octal'
           ? /([0-7]+)/
           : null
-      var radix =
-        number == 'decimal'
-          ? 10
-          : number == 'hex'
-          ? 16
-          : number == 'octal'
-          ? 8
-          : null
+      var radix = number == 'decimal' ? 10 : number == 'hex' ? 16 : number == 'octal' ? 8 : null
       var numPart = [],
         textPart = []
       if (number) {
@@ -5940,12 +5660,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       }
       if (regexPart) {
         try {
-          updateSearchQuery(
-            cm,
-            regexPart,
-            true /** ignoreCase */,
-            true /** smartCase */
-          )
+          updateSearchQuery(cm, regexPart, true /** ignoreCase */, true /** smartCase */)
         } catch (e) {
           showConfirm(cm, 'Invalid regex: ' + regexPart)
           return
@@ -6007,10 +5722,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
         trailing = tokens[2] ? tokens[2].split(' ') : []
       } else {
         if (argString && argString.length) {
-          showConfirm(
-            cm,
-            'Substitutions should be of the form ' + ':s/pattern/replace/'
-          )
+          showConfirm(cm, 'Substitutions should be of the form ' + ':s/pattern/replace/')
           return
         }
       }
@@ -6031,12 +5743,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       }
       if (regexPart) {
         try {
-          updateSearchQuery(
-            cm,
-            regexPart,
-            true /** ignoreCase */,
-            true /** smartCase */
-          )
+          updateSearchQuery(cm, regexPart, true /** ignoreCase */, true /** smartCase */)
         } catch (e) {
           showConfirm(cm, 'Invalid regex: ' + regexPart)
           return
@@ -6049,8 +5756,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       }
       var state = getSearchState(cm)
       var query = state.getQuery()
-      var lineStart =
-        params.line !== undefined ? params.line : cm.getCursor().line
+      var lineStart = params.line !== undefined ? params.line : cm.getCursor().line
       var lineEnd = params.lineEnd || lineStart
       if (lineStart == cm.firstLine() && lineEnd == cm.lastLine()) {
         lineEnd = Infinity
@@ -6098,20 +5804,14 @@ function vimHandler(acequire, exports, module, writeHandler) {
         var count = stream.pos
 
         if (!stream.match(/[a-zA-Z]/, false)) {
-          showConfirm(
-            cm,
-            'Invalid argument: ' + params.argString.substring(count)
-          )
+          showConfirm(cm, 'Invalid argument: ' + params.argString.substring(count))
           return
         }
 
         var sym = stream.next()
         if (stream.match('-', true)) {
           if (!stream.match(/[a-zA-Z]/, false)) {
-            showConfirm(
-              cm,
-              'Invalid argument: ' + params.argString.substring(count)
-            )
+            showConfirm(cm, 'Invalid argument: ' + params.argString.substring(count))
             return
           }
 
@@ -6124,10 +5824,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
             var start = startMark.charCodeAt(0)
             var finish = finishMark.charCodeAt(0)
             if (start >= finish) {
-              showConfirm(
-                cm,
-                'Invalid argument: ' + params.argString.substring(count)
-              )
+              showConfirm(cm, 'Invalid argument: ' + params.argString.substring(count))
               return
             }
             for (var j = 0; j <= finish - start; j++) {
@@ -6175,10 +5872,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       searchCursor.replace(newText)
     }
     function next() {
-      while (
-        searchCursor.findNext() &&
-        isInRange(searchCursor.from(), lineStart, lineEnd)
-      ) {
+      while (searchCursor.findNext() && isInRange(searchCursor.from(), lineStart, lineEnd)) {
         if (!global && lastPos && searchCursor.from().line == lastPos.line) {
           continue
         }
@@ -6263,15 +5957,12 @@ function vimHandler(acequire, exports, module, writeHandler) {
   function exitInsertMode(cm) {
     var vim = cm.state.vim
     var macroModeState = vimGlobalState.macroModeState
-    var insertModeChangeRegister =
-      vimGlobalState.registerController.getRegister('.')
+    var insertModeChangeRegister = vimGlobalState.registerController.getRegister('.')
     var isPlaying = macroModeState.isPlaying
     var lastChange = macroModeState.lastInsertModeChanges
     var text = []
     if (!isPlaying) {
-      var selLength = lastChange.inVisualBlock
-        ? vim.lastSelection.visualBlock.height
-        : 1
+      var selLength = lastChange.inVisualBlock ? vim.lastSelection.visualBlock.height : 1
       var changes = lastChange.changes
       var text = []
       var i = 0
@@ -6288,12 +5979,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       CodeMirror.off(cm.getInputField(), 'keydown', onKeyEventTargetKeyDown)
     }
     if (!isPlaying && vim.insertModeRepeat > 1) {
-      repeatLastEdit(
-        cm,
-        vim,
-        vim.insertModeRepeat - 1,
-        true /** repeatForInsert */
-      )
+      repeatLastEdit(cm, vim, vim.insertModeRepeat - 1, true /** repeatForInsert */)
       vim.lastEditInputState.repeatOverride = vim.insertModeRepeat
     }
     delete vim.insertModeRepeat
@@ -6329,8 +6015,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     'Ctrl-P': 'autocomplete',
     Enter: function (cm) {
       var fn =
-        CodeMirror.commands.newlineAndIndentContinueComment ||
-        CodeMirror.commands.newlineAndIndent
+        CodeMirror.commands.newlineAndIndentContinueComment || CodeMirror.commands.newlineAndIndent
       fn(cm)
     },
     fallthrough: ['default'],
@@ -6527,12 +6212,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       if (macroModeState.lastInsertModeChanges.changes.length > 0) {
         repeat = !vim.lastEditActionCommand ? 1 : repeat
         var changeObject = macroModeState.lastInsertModeChanges
-        repeatInsertModeChanges(
-          cm,
-          changeObject.changes,
-          repeat,
-          changeObject.overwrite
-        )
+        repeatInsertModeChanges(cm, changeObject.changes, repeat, changeObject.overwrite)
       }
     }
     vim.inputState = vim.lastEditInputState
@@ -6564,8 +6244,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       return true
     }
     var head = cm.getCursor('head')
-    var inVisualBlock =
-      vimGlobalState.macroModeState.lastInsertModeChanges.inVisualBlock
+    var inVisualBlock = vimGlobalState.macroModeState.lastInsertModeChanges.inVisualBlock
     if (inVisualBlock) {
       var vim = cm.state.vim
       var lastSel = vim.lastSelection
@@ -6651,8 +6330,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     Object.keys(state).forEach(function (key) {
       var o = state[key]
       if (Array.isArray(o)) o = o.slice()
-      else if (o && typeof o == 'object' && o.constructor != Object)
-        o = cloneVimState(o)
+      else if (o && typeof o == 'object' && o.constructor != Object) o = cloneVimState(o)
       n[key] = o
     })
     if (state.sel) {
@@ -6673,26 +6351,16 @@ function vimHandler(acequire, exports, module, writeHandler) {
       vim.wasInVisualBlock = true
     }
 
-    if (
-      key == '<Esc>' &&
-      !vim.insertMode &&
-      !vim.visualMode &&
-      cm.ace.inMultiSelectMode
-    ) {
+    if (key == '<Esc>' && !vim.insertMode && !vim.visualMode && cm.ace.inMultiSelectMode) {
       cm.ace.exitMultiSelectMode()
-    } else if (
-      visualBlock ||
-      !cm.ace.inMultiSelectMode ||
-      cm.ace.inVirtualSelectionMode
-    ) {
+    } else if (visualBlock || !cm.ace.inMultiSelectMode || cm.ace.inVirtualSelectionMode) {
       isHandled = Vim.handleKey(cm, key, origin)
     } else {
       var old = cloneVimState(vim)
       cm.operation(function () {
         cm.ace.forEachSelection(function () {
           var sel = cm.ace.selection
-          cm.state.vim.lastHPos =
-            sel.$desiredColumn == null ? sel.lead.column : sel.$desiredColumn
+          cm.state.vim.lastHPos = sel.$desiredColumn == null ? sel.lead.column : sel.$desiredColumn
           var head = cm.getCursor('head')
           var anchor = cm.getCursor('anchor')
           var headOffset = !cursorIsBefore(head, anchor) ? -1 : 0
@@ -6703,14 +6371,12 @@ function vimHandler(acequire, exports, module, writeHandler) {
           cm.state.vim.sel.anchor = anchor
 
           isHandled = handleKey(cm, key, origin)
-          sel.$desiredColumn =
-            cm.state.vim.lastHPos == -1 ? null : cm.state.vim.lastHPos
+          sel.$desiredColumn = cm.state.vim.lastHPos == -1 ? null : cm.state.vim.lastHPos
           if (cm.virtualSelectionMode()) {
             cm.state.vim = cloneVimState(old)
           }
         })
-        if (cm.curOp.cursorActivity && !isHandled)
-          cm.curOp.cursorActivity = false
+        if (cm.curOp.cursorActivity && !isHandled) cm.curOp.cursorActivity = false
       }, true)
     }
     return isHandled
@@ -6827,11 +6493,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
       if (hashId == -1) {
         data.inputChar = key
         data.lastEvent = 'input'
-      } else if (
-        data.inputChar &&
-        data.$lastHash == hashId &&
-        data.$lastKey == key
-      ) {
+      } else if (data.inputChar && data.$lastHash == hashId && data.$lastKey == key) {
         if (data.lastEvent == 'input') {
           data.lastEvent = 'input1'
         } else if (data.lastEvent == 'input1') {
@@ -6882,10 +6544,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
   }
   var renderVirtualNumbers = {
     getText: function (session, row) {
-      return (
-        (Math.abs(session.selection.lead.row - row) ||
-          row + 1 + (row < 9 ? '\xb7' : '')) + ''
-      )
+      return (Math.abs(session.selection.lead.row - row) || row + 1 + (row < 9 ? '\xb7' : '')) + ''
     },
     getWidth: function (session, lastLineNumber, config) {
       return session.getLength().toString().length * config.characterWidth
@@ -7012,8 +6671,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
   )
   actions.aceCommand = function (cm, actionArgs, vim) {
     cm.vimCmd = actionArgs
-    if (cm.ace.inVirtualSelectionMode)
-      cm.ace.on('beforeEndOperation', delayedExecAceCommand)
+    if (cm.ace.inVirtualSelectionMode) cm.ace.on('beforeEndOperation', delayedExecAceCommand)
     else delayedExecAceCommand(null, cm.ace)
   }
   function delayedExecAceCommand(op, ace) {

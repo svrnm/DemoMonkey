@@ -43,10 +43,7 @@ class DropDownMenu extends Component {
   }
 
   handleClick(event) {
-    if (
-      this.buttonNode.contains(event.target) ||
-      this.menuNode.contains(event.target)
-    ) {
+    if (this.buttonNode.contains(event.target) || this.menuNode.contains(event.target)) {
       return
     }
     this.setState({ visible: false })

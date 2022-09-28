@@ -30,17 +30,11 @@ describe('Json2Ini', function () {
     })
 
     it('should support trailing commas', function () {
-      assert.strictEqual(
-        Json2Ini.parse('{"a":"b", "x":"y",}'),
-        'a = b\r\nx = y'
-      )
+      assert.strictEqual(Json2Ini.parse('{"a":"b", "x":"y",}'), 'a = b\r\nx = y')
     })
 
     it('should support comments', function () {
-      assert.strictEqual(
-        Json2Ini.parse('{//test\r\n"a":"b",\r\nx:"y"}'),
-        'a = b\r\nx = y'
-      )
+      assert.strictEqual(Json2Ini.parse('{//test\r\n"a":"b",\r\nx:"y"}'), 'a = b\r\nx = y')
     })
 
     it('should return a = b for object {a:{x:"y"}}', function () {

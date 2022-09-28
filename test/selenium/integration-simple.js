@@ -39,10 +39,7 @@ describe('Integration (Simple)', function () {
       return base.disableOptionalFeature('editorAutocomplete')
     })
     it('allows to create new configurations', function () {
-      return base.createConfig(
-        'testape',
-        'DemoMonkey = testape\n@include = /.*/\n'
-      )
+      return base.createConfig('testape', 'DemoMonkey = testape\n@include = /.*/\n')
     })
     it('has toggle buttons on the popup menu', function () {
       return base.enableConfig('testape')

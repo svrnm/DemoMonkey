@@ -77,26 +77,14 @@ class NetRequestManager {
         )
       })
       if (existingRule) {
-        this.logger(
-          'debug',
-          'Use existing rule for tab',
-          tabId,
-          'and rule ',
-          description
-        ).write()
+        this.logger('debug', 'Use existing rule for tab', tabId, 'and rule ', description).write()
         existingRule.condition.tabIds.push(tabId)
         this.declarativeNetRequest.updateSessionRules({
           addRules: [existingRule],
           removeRuleIds: [existingRule.id] // remove existing rule and then have it re-added
         })
       } else {
-        this.logger(
-          'debug',
-          'Add a new rule for tab',
-          tabId,
-          'and rule ',
-          description
-        ).write()
+        this.logger('debug', 'Add a new rule for tab', tabId, 'and rule ', description).write()
         const rule = {
           id: rules.length + 1,
           priority: 1,
@@ -124,13 +112,7 @@ class NetRequestManager {
   remove(description, tabId) {
     this.declarativeNetRequest.getSessionRules((rules) => {
       const resourceTypes = this._getResourceType(description.type)
-      this.logger(
-        'debug',
-        'Remove web hook from tab',
-        tabId,
-        ':',
-        description
-      ).write()
+      this.logger('debug', 'Remove web hook from tab', tabId, ':', description).write()
       const existingRule = rules.find(({ action, condition }) => {
         return (
           action.type === description.action &&
@@ -141,9 +123,7 @@ class NetRequestManager {
         )
       })
       if (existingRule) {
-        existingRule.condition.tabIds = existingRule.condition.tabIds.filter(
-          (id) => id !== tabId
-        )
+        existingRule.condition.tabIds = existingRule.condition.tabIds.filter((id) => id !== tabId)
         if (existingRule.condition.tabIds.length > 0) {
           this.declarativeNetRequest.updateSessionRules({
             addRules: [existingRule],
@@ -161,9 +141,7 @@ class NetRequestManager {
   removeTab(tabId) {
     this.declarativeNetRequest.getSessionRules((rules) => {
       const newRules = rules.reduce((result, current) => {
-        current.condition.tabIds = current.condition.tabIds.filter(
-          (id) => id !== tabId
-        )
+        current.condition.tabIds = current.condition.tabIds.filter((id) => id !== tabId)
         if (current.condition.tabIds.length > 0) {
           result.push(current)
         }

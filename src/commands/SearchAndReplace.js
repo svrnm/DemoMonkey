@@ -20,16 +20,7 @@ const functions = {
     return target.replace(search, replace)
   },
   hash: (target, search, replace = '') => {
-    const algs = [
-      'MD5',
-      'SHA1',
-      'SHA256',
-      'SHA224',
-      'SHA512',
-      'SHA384',
-      'SHA3',
-      'RIPEMD160'
-    ]
+    const algs = ['MD5', 'SHA1', 'SHA256', 'SHA224', 'SHA512', 'SHA384', 'SHA3', 'RIPEMD160']
     let alg = 'SHA256'
     if (algs.includes(replace.toUpperCase())) {
       alg = replace.toUpperCase()
@@ -69,8 +60,7 @@ class SearchAndReplace extends Command {
 
   _checkLocation() {
     return (
-      typeof this.location === 'object' &&
-      this.location.toString().includes(this.locationFilter)
+      typeof this.location === 'object' && this.location.toString().includes(this.locationFilter)
     )
   }
 
@@ -119,11 +109,7 @@ class SearchAndReplace extends Command {
       return this._replaceByProperty(target)
     }
 
-    if (
-      key.startsWith('data-') &&
-      typeof target.dataset === 'object' &&
-      target.dataset !== null
-    ) {
+    if (key.startsWith('data-') && typeof target.dataset === 'object' && target.dataset !== null) {
       target = target.dataset
       key = key.substr(5)
     }

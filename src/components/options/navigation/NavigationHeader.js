@@ -29,6 +29,17 @@ class NavigationHeader extends React.Component {
     this.props.onNavigate(target)
   }
 
+  _renderLogsButton() {
+    if (this.props.showLogs) {
+      return (
+        <a href="#logs" onClick={(event) => this.handleClick(event, 'logs')}>
+          Logs
+        </a>
+      )
+    }
+    return ''
+  }
+
   render() {
     return (
       <ul className="actions">
@@ -49,10 +60,7 @@ class NavigationHeader extends React.Component {
           <ConfigurationUpload onUpload={this.props.onUpload} id="upload" />
         </li>
         <li>
-          <a
-            href="#settings"
-            onClick={(event) => this.handleClick(event, 'settings')}
-          >
+          <a href="#settings" onClick={(event) => this.handleClick(event, 'settings')}>
             Settings
           </a>
         </li>
@@ -61,20 +69,7 @@ class NavigationHeader extends React.Component {
             Backup
           </a>
         </li>
-        <li>
-          {this.props.showLogs
-            ? (
-            <a
-              href="#logs"
-              onClick={(event) => this.handleClick(event, 'logs')}
-            >
-              Logs
-            </a>
-              )
-            : (
-                ''
-              )}
-        </li>
+        <li>{this._renderLogsButton()}</li>
       </ul>
     )
   }

@@ -15,10 +15,7 @@ import merge from 'deepmerge'
 
 function arrayMerge(dst, src, opt) {
   const i = dst.findIndex(
-    (e) =>
-      e.name === src[0].name &&
-      e.nodeType === src[0].nodeType &&
-      e.nodeType === 'directory'
+    (e) => e.name === src[0].name && e.nodeType === src[0].nodeType && e.nodeType === 'directory'
   )
   if (i !== -1) {
     dst[i] = merge(dst[i], src[0], { arrayMerge })

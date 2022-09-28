@@ -49,19 +49,14 @@ class App extends React.Component {
   render() {
     const manifest = this.props.manifest
     const configurations = this.props.configurations.filter(
-      (config) =>
-        typeof config.deleted_at === 'undefined' &&
-        typeof config._deleted === 'undefined'
+      (config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined'
     )
     return (
       <Page
         preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode}
         syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
       >
-        <Tabs
-          activeTab={this.state.activeTab}
-          onNavigate={(e) => this.updateActiveTab(e)}
-        >
+        <Tabs activeTab={this.state.activeTab} onNavigate={(e) => this.updateActiveTab(e)}>
           <Pane label="Apply" name="apply">
             <ConfigurationList
               currentUrl={this.props.currentUrl}

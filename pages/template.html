@@ -8,16 +8,12 @@
   <body>
     <% if (htmlWebpackPlugin.options.appname) { %>
     <div id="backup-message" class="alert-box">
-      If you see this message, DemoMonkey is broken. You can access your scripts
-      to backup by opening the <a href="backup.html">backup page</a>. <br />
-      If you want to fix this issue, open the console of the developer toolbar
-      for this page and the background script to check for JavaScript errors.
+      If you see this message, DemoMonkey is broken. You can access your scripts to backup by
+      opening the <a href="backup.html">backup page</a>. <br />
+      If you want to fix this issue, open the console of the developer toolbar for this page and the
+      background script to check for JavaScript errors.
     </div>
-    <div
-      id="app"
-      class="app-container"
-      data-app="<%= htmlWebpackPlugin.options.appname %>"
-    ></div>
+    <div id="app" class="app-container" data-app="<%= htmlWebpackPlugin.options.appname %>"></div>
     <div
       id="message-box"
       class="fade-to-hidden"

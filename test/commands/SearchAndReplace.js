@@ -78,17 +78,11 @@ describe('SearchAndReplace', function () {
         }
       }
 
-      new SearchAndReplace('a', 'b', 'xyz', '', '', '', location).apply(
-        node,
-        'value'
-      )
+      new SearchAndReplace('a', 'b', 'xyz', '', '', '', location).apply(node, 'value')
 
       assert.equal(node.value, 'asdf')
 
-      new SearchAndReplace('a', 'b', 'asdf', '', '', '', location).apply(
-        node,
-        'value'
-      )
+      new SearchAndReplace('a', 'b', 'asdf', '', '', '', location).apply(node, 'value')
 
       assert.equal(node.value, 'bsdf')
     })

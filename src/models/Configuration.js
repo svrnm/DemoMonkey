@@ -76,18 +76,18 @@ class Configuration {
   }
 
   getTextAttributes() {
-    const ta = this.getOptions().textAttributes
-    const d = ['placeholder']
+    const textAttributes = this.getOptions().textAttributes
+    const placeholder = ['placeholder']
     // the chain after ta makes sure that lists are split by comma and spaces are removed.
-    const result = !Array.isArray(ta)
-      ? d
-      : ta
-        .map((e) => e.split(','))
-        .flat()
-        .map((e) => e.trim())
-        .filter((e) => e !== '')
-        .concat(d)
-    return result
+    if (!Array.isArray(textAttributes)) {
+      return placeholder
+    }
+    return textAttributes
+      .map((e) => e.split(','))
+      .flat()
+      .map((e) => e.trim())
+      .filter((e) => e !== '')
+      .concat(placeholder)
   }
 
   isTagBlockListed(node) {
@@ -112,15 +112,11 @@ class Configuration {
         return (
           typeof node.parentNode !== 'undefined' &&
           node.parentNode !== null &&
-          blocklist
-            .map((tag) => tag.toLowerCase())
-            .includes(node.parentNode.nodeName.toLowerCase())
+          blocklist.map((tag) => tag.toLowerCase()).includes(node.parentNode.nodeName.toLowerCase())
         )
       // ELEMENT_NODE
       case 1:
-        return blocklist
-          .map((tag) => tag.toLowerCase())
-          .includes(node.nodeName.toLowerCase())
+        return blocklist.map((tag) => tag.toLowerCase()).includes(node.nodeName.toLowerCase())
     }
 
     return false
@@ -195,11 +191,7 @@ class Configuration {
 
             const option = key.substring(1)
 
-            if (
-              content[key] !== true ||
-              option === 'template' ||
-              option === 'deprecated'
-            ) {
+            if (content[key] !== true || option === 'template' || option === 'deprecated') {
               if (
                 Object.prototype.hasOwnProperty.call(result, option) &&
                 Array.isArray(result[option])
@@ -213,18 +205,12 @@ class Configuration {
           }
 
           if (typeof content[key] === 'object' && content[key] !== null) {
-            return Object.keys(content[key]).reduce(
-              filterOption(content[key], key),
-              result
-            )
+            return Object.keys(content[key]).reduce(filterOption(content[key], key), result)
           }
           return result
         }
       }
-      this.options = Object.keys(this.content).reduce(
-        filterOption(this.content, ''),
-        {}
-      )
+      this.options = Object.keys(this.content).reduce(filterOption(this.content, ''), {})
     }
     return this.options
   }
@@ -243,10 +229,7 @@ class Configuration {
 
         if (typeof content[key] === 'object' && content[key] !== null) {
           return result.concat(
-            Object.keys(content[key]).reduce(
-              filterImport(content[key], depth++),
-              []
-            )
+            Object.keys(content[key]).reduce(filterImport(content[key], depth++), [])
           )
         }
 
@@ -283,25 +266,19 @@ class Configuration {
                   // add an empty comment
                   return ar.concat('')
                 })(content[key])
-          result.push(
-            new Variable(key.substring(1), t[0], t[1] ? t[1] : '', owner)
-          )
+          result.push(new Variable(key.substring(1), t[0], t[1] ? t[1] : '', owner))
           localNames.push(key.substring(1))
           return result
         }
 
         if (typeof this.repository === 'object' && key.charAt(0) === '+') {
           return result.concat(
-            this.repository
-              .findByName(key.substring(1))
-              .getVariables(key.substring(1), false)
+            this.repository.findByName(key.substring(1)).getVariables(key.substring(1), false)
           )
         }
 
         if (typeof content[key] === 'object' && content[key] !== null) {
-          return result.concat(
-            Object.keys(content[key]).reduce(filterVariable(content[key]), [])
-          )
+          return result.concat(Object.keys(content[key]).reduce(filterVariable(content[key]), []))
         }
 
         return result
@@ -313,9 +290,7 @@ class Configuration {
     const variables = Object.keys(this.content)
       .reduce(
         filterVariable(this.content),
-        this.globalVariables.map(
-          (v) => new Variable(v.key, v.value, '', 'global')
-        )
+        this.globalVariables.map((v) => new Variable(v.key, v.value, '', 'global'))
       )
       .sort((a, b) => {
         return b.name.length - a.name.length
@@ -385,10 +360,7 @@ class Configuration {
 
           if (typeof content[key] === 'object' && content[key] !== null) {
             return result.concat(
-              Object.keys(content[key]).reduce(
-                filterConfiguration(content[key]),
-                []
-              )
+              Object.keys(content[key]).reduce(filterConfiguration(content[key]), [])
             )
           }
 
@@ -401,10 +373,7 @@ class Configuration {
         }
       }
 
-      this.patterns = Object.keys(this.content).reduce(
-        filterConfiguration(this.content),
-        []
-      )
+      this.patterns = Object.keys(this.content).reduce(filterConfiguration(this.content), [])
     }
 
     return this.patterns

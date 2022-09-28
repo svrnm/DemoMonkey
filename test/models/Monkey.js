@@ -84,10 +84,7 @@ const scope = {
     evaluate: function (xpath) {
       return {
         snapshotItem: function (i) {
-          if (
-            xpath === '//body//text()[ normalize-space(.) != ""]' &&
-            i === 0
-          ) {
+          if (xpath === '//body//text()[ normalize-space(.) != ""]' && i === 0) {
             return node
           }
           return null

@@ -19,14 +19,7 @@ class InsertHTML extends Command {
   // Using '' as locationFilter and location as {} works with _checkLocation
   // since every string includes ''
   // cssFilter is not yet implemented
-  constructor(
-    position,
-    search,
-    insert,
-    nthParent = 1,
-    locationFilter = '',
-    location = {}
-  ) {
+  constructor(position, search, insert, nthParent = 1, locationFilter = '', location = {}) {
     super()
     this.nthParent = nthParent
     this.position = position
@@ -39,8 +32,7 @@ class InsertHTML extends Command {
 
   _checkLocation() {
     return (
-      typeof this.location === 'object' &&
-      this.location.toString().includes(this.locationFilter)
+      typeof this.location === 'object' && this.location.toString().includes(this.locationFilter)
     )
   }
 
@@ -63,16 +55,8 @@ class InsertHTML extends Command {
       const parentElement = this._walk(target, this.nthParent)
       if (parentElement && !parentElement.innerHTML.includes(this.marker)) {
         const original = parentElement.innerHTML
-        parentElement.insertAdjacentHTML(
-          this.position,
-          this._addMarker(this.insert)
-        )
-        return new UndoElement(
-          parentElement,
-          'innerHTML',
-          original,
-          parentElement.innerHTML
-        )
+        parentElement.insertAdjacentHTML(this.position, this._addMarker(this.insert))
+        return new UndoElement(parentElement, 'innerHTML', original, parentElement.innerHTML)
       }
     }
     return false

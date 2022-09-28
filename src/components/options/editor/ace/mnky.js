@@ -2,20 +2,12 @@
 /* global ace */
 ace.define(
   'ace/mode/mnky_highlight_rules',
-  [
-    'require',
-    'exports',
-    'module',
-    'ace/lib/oop',
-    'ace/mode/text_highlight_rules'
-  ],
+  ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text_highlight_rules'],
   function (acequire, exports, module) {
     'use strict'
 
     var oop = acequire('../lib/oop')
-    var TextHighlightRules = acequire(
-      './text_highlight_rules'
-    ).TextHighlightRules
+    var TextHighlightRules = acequire('./text_highlight_rules').TextHighlightRules
 
     var escapeRe = '\\\\(?:[\\\\0abtrn;#=:]|x[a-fA-F\\d]{4})'
 
@@ -96,11 +88,7 @@ ace.define(
             regex: '(\\${[^(}]+\\(.*?\\)})|(\\${[^(}]+})|(\\$(?!{)\\S+)'
           },
           {
-            token: [
-              'constant.library.mnky',
-              'text',
-              'punctuation.separator.key-value.mnky'
-            ],
+            token: ['constant.library.mnky', 'text', 'punctuation.separator.key-value.mnky'],
             regex: '^(@[^=]+)(\\s*)(=)?'
           },
           {
@@ -119,11 +107,7 @@ ace.define(
             regex: '^(![^=]+)(\\()([^)]*)(\\))(\\s*)(=)?'
           },
           {
-            token: [
-              'entity.name.function.mnky',
-              'text',
-              'punctuation.separator.key-value.mnky'
-            ],
+            token: ['entity.name.function.mnky', 'text', 'punctuation.separator.key-value.mnky'],
             regex: '^(![^=]+)(\\s*)(=)'
           },
           {
@@ -207,14 +191,7 @@ ace.define(
 
 ace.define(
   'ace/mode/folding/mnky',
-  [
-    'require',
-    'exports',
-    'module',
-    'ace/lib/oop',
-    'ace/range',
-    'ace/mode/folding/fold_mode'
-  ],
+  ['require', 'exports', 'module', 'ace/lib/oop', 'ace/range', 'ace/mode/folding/fold_mode'],
   function (acequire, exports, module) {
     'use strict'
 

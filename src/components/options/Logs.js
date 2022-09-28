@@ -69,37 +69,28 @@ class Logs extends React.Component {
               {this.props.entries
                 .slice()
                 .reverse()
-                .map(
-                  (
-                    { timestamp, source, level, message, tabId, repeated },
-                    index
-                  ) => {
-                    const time = moment(timestamp)
-                    return (
-                      <tr key={index} className={`row-${level}`}>
-                        <td>
-                          <time dateTime={time.format()} title={time.format()}>
-                            {time.fromNow(true)}
-                          </time>
-                        </td>
-                        <td>
-                          {source} {this.renderTabButton(tabId)}
-                        </td>
-                        <td>{level}</td>
-                        <td>
-                          {message.map((m, k) => {
-                            return <span key={k}>{this.renderElement(m)} </span>
-                          })}
-                          <i>
-                            {repeated > 0
-                              ? ` (message repeated ${repeated} times)`
-                              : ''}
-                          </i>
-                        </td>
-                      </tr>
-                    )
-                  }
-                )}
+                .map(({ timestamp, source, level, message, tabId, repeated }, index) => {
+                  const time = moment(timestamp)
+                  return (
+                    <tr key={index} className={`row-${level}`}>
+                      <td>
+                        <time dateTime={time.format()} title={time.format()}>
+                          {time.fromNow(true)}
+                        </time>
+                      </td>
+                      <td>
+                        {source} {this.renderTabButton(tabId)}
+                      </td>
+                      <td>{level}</td>
+                      <td>
+                        {message.map((m, k) => {
+                          return <span key={k}>{this.renderElement(m)} </span>
+                        })}
+                        <i>{repeated > 0 ? ` (message repeated ${repeated} times)` : ''}</i>
+                      </td>
+                    </tr>
+                  )
+                })}
             </tbody>
           </table>
         </div>

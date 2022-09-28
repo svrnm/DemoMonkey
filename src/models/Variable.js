@@ -85,39 +85,30 @@ class Variable {
         if (index % 2 === 0 || !['random', 'string'].includes(current)) {
           return current + result
         }
-        return result.replace(
-          /([a-zA-Z0-9_-]*)(?:\((.*?)\))?}/,
-          (match, p1, p2) => {
-            let args
-            try {
-              args = json5.parse(p2)
-            } catch (e) {
-              // Treat argument as string
-              args = p2 + ''
-            }
-            if (
-              current === 'random' &&
-              typeof randomGenerator[p1] === 'function'
-            ) {
-              try {
-                return randomGenerator[p1](args)
-              } catch (e) {
-                return match
-              }
-            } else if (
-              current === 'string' &&
-              typeof stringFunctions[p1] === 'function'
-            ) {
-              try {
-                return stringFunctions[p1](args)
-              } catch (e) {
-                console.log(e)
-                return match
-              }
-            }
-            return match
+        return result.replace(/([a-zA-Z0-9_-]*)(?:\((.*?)\))?}/, (match, p1, p2) => {
+          let args
+          try {
+            args = json5.parse(p2)
+          } catch (e) {
+            // Treat argument as string
+            args = p2 + ''
           }
-        )
+          if (current === 'random' && typeof randomGenerator[p1] === 'function') {
+            try {
+              return randomGenerator[p1](args)
+            } catch (e) {
+              return match
+            }
+          } else if (current === 'string' && typeof stringFunctions[p1] === 'function') {
+            try {
+              return stringFunctions[p1](args)
+            } catch (e) {
+              console.log(e)
+              return match
+            }
+          }
+          return match
+        })
       }, [])
     )
   }
@@ -126,9 +117,7 @@ class Variable {
     if (typeof value !== 'string') {
       return value
     }
-    return value
-      .replaceAll('$' + this.name, this.value)
-      .replace('${' + this.name + '}', this.value)
+    return value.replaceAll('$' + this.name, this.value).replace('${' + this.name + '}', this.value)
   }
 }
 

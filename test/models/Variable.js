@@ -66,10 +66,7 @@ describe('Variable', function () {
         ),
         'My magic numbers are 7 and 17'
       )
-      assert.strictEqual(
-        Variable.evaluateFunctions('${random.character({pool: "b"})}'),
-        'b'
-      )
+      assert.strictEqual(Variable.evaluateFunctions('${random.character({pool: "b"})}'), 'b')
       assert(
         ['false', 'null', 'undefined', '0', 'NaN', ''].includes(
           Variable.evaluateFunctions('${random.falsy()}')
@@ -82,10 +79,7 @@ describe('Variable', function () {
         '${lots} of $variables and symb$ols} { ) ) } { } $'
       )
       // string
-      assert.strictEqual(
-        Variable.evaluateFunctions('${string.toUpperCase(b)}'),
-        'B'
-      )
+      assert.strictEqual(Variable.evaluateFunctions('${string.toUpperCase(b)}'), 'B')
       assert.strictEqual(
         Variable.evaluateFunctions(
           '${string.slice({string: "${string.headerCase(${string.toUpperCase(this is a test)})}", start: 0, stop: 10 })}'
@@ -104,17 +98,9 @@ describe('Variable', function () {
         new Variable('prefix', 'WWW', 'description'),
         new Variable('suffix', 'example', 'description'),
         new Variable('tld', 'com', 'description'),
-        new Variable(
-          'name',
-          '${string.toLowerCase($prefix)}.$suffix',
-          'description'
-        ),
+        new Variable('name', '${string.toLowerCase($prefix)}.$suffix', 'description'),
         new Variable('domain', '$name.$tld', 'description'),
-        new Variable(
-          'argument',
-          '${string.camelCase(demo monkey test)}',
-          'description'
-        ),
+        new Variable('argument', '${string.camelCase(demo monkey test)}', 'description'),
         new Variable(
           'path',
           '${random.integer({min: $number, max: ${random.integer({min: $c, max: 37})} })}'

@@ -76,9 +76,7 @@ class Variable extends React.Component {
             reader.result.startsWith('data:text/') ||
             reader.result.startsWith('data:application/json;')
           ) {
-            this.updateVariable(
-              Base64.decode(reader.result.split('base64,')[1])
-            )
+            this.updateVariable(Base64.decode(reader.result.split('base64,')[1]))
           } else {
             this.updateVariable(reader.result)
           }
@@ -91,31 +89,61 @@ class Variable extends React.Component {
     upload.click()
   }
 
+  _renderVaribleName(variable) {
+    if (this.props.isGlobal) {
+      return (
+        <React.Fragment>
+          <input
+            type="text"
+            value={variable.name}
+            onChange={(e) => this.props.onUpdate(e.target.value, variable.value)}
+          />
+          &nbsp;
+        </React.Fragment>
+      )
+    }
+
+    return (
+      <React.Fragment>
+        {variable.name}&nbsp;
+        {variable.owner === '' ? '' : `(from: ${variable.owner})`}&nbsp;
+      </React.Fragment>
+    )
+  }
+
+  _renderDeleteOrReset() {
+    if (this.props.isGlobal) {
+      return (
+        <small>
+          <a href="#" onClick={(e) => this.deleteVariable(e)}>
+            (delete)
+          </a>
+        </small>
+      )
+    }
+    return (
+      <small>
+        <a href="#" onClick={(e) => this.resetVariable(e)}>
+          (reset value)
+        </a>
+      </small>
+    )
+  }
+
+  _renderImage(variable) {
+    if (typeof variable.value === 'string' && variable.value.startsWith('data:image')) {
+      return <img src={variable.value} style={{ height: '100px' }} />
+    }
+    return ''
+  }
+
   render() {
     const variable = this.props.variable
 
     return (
       <div className="variable-box">
         <label htmlFor="variable-1">
-          {this.props.isGlobal
-            ? (
-            <React.Fragment>
-              <input
-                type="text"
-                value={variable.name}
-                onChange={(e) =>
-                  this.props.onUpdate(e.target.value, variable.value)
-                }
-              />
-              &nbsp;
-            </React.Fragment>
-              )
-            : (
-            <React.Fragment>
-              {variable.name}&nbsp;
-              {variable.owner === '' ? '' : `(from: ${variable.owner})`}&nbsp;
-            </React.Fragment>
-              )}
+          {this._renderVaribleName(variable)}
           <form style={{ display: 'none' }}>
             <input multiple ref={this.filePicker} type="file" />
           </form>
@@ -125,32 +153,14 @@ class Variable extends React.Component {
             </a>
             &nbsp;
           </small>
-          <input
-            ref={this.colorPicker}
-            type="color"
-            style={{ display: 'none' }}
-          />
+          <input ref={this.colorPicker} type="color" style={{ display: 'none' }} />
           <small>
             <a href="#" onClick={(e) => this.showColorDialog(e)}>
               (from color)
             </a>
             &nbsp;
           </small>
-          {this.props.isGlobal
-            ? (
-            <small>
-              <a href="#" onClick={(e) => this.deleteVariable(e)}>
-                (delete)
-              </a>
-            </small>
-              )
-            : (
-            <small>
-              <a href="#" onClick={(e) => this.resetVariable(e)}>
-                (reset value)
-              </a>
-            </small>
-              )}
+          {this._renderDeleteOrReset()}
         </label>
         <AceEditor
           height={'150px'}
@@ -181,16 +191,7 @@ class Variable extends React.Component {
           editorProps={{ $blockScrolling: 'Infinity' }}
         />
         <div className="help">{variable.description}</div>
-        <div>
-          {typeof variable.value === 'string' &&
-          variable.value.startsWith('data:image')
-            ? (
-            <img src={variable.value} style={{ height: '100px' }} />
-              )
-            : (
-                ''
-              )}
-        </div>
+        <div>{this._renderImage(variable)}</div>
       </div>
     )
   }

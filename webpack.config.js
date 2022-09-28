@@ -81,10 +81,7 @@ module.exports = (env) => {
                 content
                   .toString()
                   .replace(/"name": "([^"]*)"/g, '"name": "$1 (dev-channel)"')
-                  .replace(
-                    /"(default_icon|16|48|128)": "([^_]*)([^"]*)"/g,
-                    '"$1": "$2-dev$3"'
-                  )
+                  .replace(/"(default_icon|16|48|128)": "([^_]*)([^"]*)"/g, '"$1": "$2-dev$3"')
               )
             }
             return content

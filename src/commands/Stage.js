@@ -33,10 +33,7 @@ class Stage extends Command {
   apply(target, key = 'value') {
     const currentStage = target['demomonkey-current-stage']
     const currentStageTime = target['demomonkey-current-stage-time']
-    if (
-      currentStage !== this.name &&
-      this._match(target.location, target.title)
-    ) {
+    if (currentStage !== this.name && this._match(target.location, target.title)) {
       if (typeof currentStage !== 'undefined') {
         const time = Math.round((Date.now() - currentStageTime) / 1000)
         logger(

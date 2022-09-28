@@ -35,10 +35,7 @@ describe('Integration', function () {
 
     it('will create a test configurations', async function () {
       await base.getDriver().sleep(500)
-      await base.createConfig(
-        'GermanCities',
-        'San Francisco = Berlin\nSeattle = Köln'
-      )
+      await base.createConfig('GermanCities', 'San Francisco = Berlin\nSeattle = Köln')
       await base.createConfig(
         'Test Config',
         '+GermanCities\n@include = /.*/\n!replaceUrl(*demomonkey*) = https://github.com/Appdynamics/api-commandline-tool'
@@ -64,25 +61,15 @@ describe('Integration', function () {
       await driver.findElement(By.id('input')).sendKeys('San Francisco')
       await driver.wait(until.elementsLocated(By.id('later')))
       await driver.wait(
-        until.elementsLocated(
-          By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon')
-        )
+        until.elementsLocated(By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon'))
       )
       await base.getDriver().sleep(2000)
-      expect(await driver.findElement(By.id('static')).getText()).to.include(
-        'Berlin'
-      )
-      expect(await driver.findElement(By.id('later')).getText()).to.include(
-        'Köln'
-      )
-      expect(await driver.findElement(By.id('ajax')).getText()).to.include(
-        'Command Line Tool'
-      )
+      expect(await driver.findElement(By.id('static')).getText()).to.include('Berlin')
+      expect(await driver.findElement(By.id('later')).getText()).to.include('Köln')
+      expect(await driver.findElement(By.id('ajax')).getText()).to.include('Command Line Tool')
       expect(
         await driver
-          .findElement(
-            By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon')
-          )
+          .findElement(By.css('#APPLICATION_COMPONENT108_3f47 image.adsFlowNodeTypeIcon'))
           .getAttribute('xlink:href')
       ).to.include('images/icon_nodetype_php_100x100.png')
       expect(
