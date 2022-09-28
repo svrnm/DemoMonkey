@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "mocha",
+    "test-no-ui": "mocha --exclude='*/selenium/*.js'",
     "start": "webpack watch --mode=development",
     "build": "webpack",
     "release": "webpack --mode=production --env RELEASE=stable && rm -r ./build-release",
