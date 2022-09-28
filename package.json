@@ -108,5 +108,6 @@
     "*.js": "eslint --cache --fix",
     "*.less": "stylelint --cache --fix",
     "*.md": "npx markdownlint-cli --fix --config .markdownlint.jsonc"
-  }
+  },
+  "version": "8.2.0"
 }
