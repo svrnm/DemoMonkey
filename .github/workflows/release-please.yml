@@ -8,6 +8,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/release-please-action@v3
+        id: release
         with:
           release-type: node
           package-name: release-please-action
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - name: 'Cache node_modules'
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            package-lock.json
+          key: ${{ runner.os }}-node-v16-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-v16-
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Build
+        run: npm run release
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./DemoMonkey-{{ steps.release.outputs.major }}.{{ steps.release.outputs.minor }}.{{ steps.release.outputs.patch }}-stable.zip
+          asset_name: DemoMonkey-{{ steps.release.outputs.major }}.{{ steps.release.outputs.minor }}.{{ steps.release.outputs.patch }}-stable.zip
+          asset_content_type: application/zip

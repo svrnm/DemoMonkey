@@ -30,7 +30,7 @@ jobs:
             ${{ runner.os }}-node-v16-
       - name: Install Dependencies
         run: npm install
-      - name: Run All Node.js Tests
+      - name: Run Build
         run: npm run build
-      - name: Run All Node.js Tests
+      - name: Run Non-Ui Tests
         run: npm run test-no-ui
