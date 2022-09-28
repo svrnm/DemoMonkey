@@ -1,5 +1,24 @@
 # Changelog
 
+## [8.2.1](https://github.com/svrnm/DemoMonkey/compare/v8.2.0...v8.2.1) (2022-09-28)
+
+
+### Features
+
+* add build command ([f48ab79](https://github.com/svrnm/DemoMonkey/commit/f48ab79f932834f176034cd1c53f031bd32b3d42))
+* add test-no-ui npm script ([23a7bf6](https://github.com/svrnm/DemoMonkey/commit/23a7bf616cd354c2039e97ab8230c7c35a75a1dc))
+* add tests to github workflows ([f1c61f4](https://github.com/svrnm/DemoMonkey/commit/f1c61f4c99f4cb82f79eb9cdc1811d6a571b1611))
+
+
+### Bug Fixes
+
+* make changelog pretty ([6aa8af5](https://github.com/svrnm/DemoMonkey/commit/6aa8af50b9e40478612c8cb6eb3c0b9f30f6ef05))
+
+
+### version
+
+* release 8.2.1 ([fa1bc8b](https://github.com/svrnm/DemoMonkey/commit/fa1bc8b9adcfcd6db6cd452aaa80851793eefd0c))
+
 ## [8.2.0](https://github.com/svrnm/DemoMonkey/compare/v8.0.1...v8.2.0) (2022-09-28)
 
 ### Features
