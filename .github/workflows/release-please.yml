@@ -12,3 +12,33 @@ jobs:
         with:
           release-type: node
           package-name: release-please-action
+      - uses: actions/setup-node@v1
+        if: ${{ steps.release.outputs.releases_created }}
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+        if: ${{ steps.release.outputs.releases_created }}
+      - name: 'Cache node_modules'
+        if: ${{ steps.release.outputs.releases_created }}
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            package-lock.json
+          key: ${{ runner.os }}-node-v16-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-v16-
+      - name: Install Dependencies
+        if: ${{ steps.release.outputs.releases_created }}
+        run: npm install
+      - name: Run Build
+        if: ${{ steps.release.outputs.releases_created }}
+        run: npm run release
+      - name: Upload Release Asset
+        if: ${{ steps.release.outputs.releases_created }}
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./DemoMonkey-${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}-stable.zip
+          asset_name: DemoMonkey-${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}.zip
+          asset_content_type: application/zip
