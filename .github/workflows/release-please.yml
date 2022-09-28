@@ -37,6 +37,8 @@ jobs:
       - name: Upload Release Asset
         if: ${{ steps.release.outputs.releases_created }}
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
           asset_path: ./DemoMonkey-${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}-stable.zip
