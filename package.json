@@ -67,7 +67,7 @@
     "@commitlint/config-conventional": "^17.1.0",
     "babel-loader": "^8.2.3",
     "chai": "^4.3.4",
-    "chromedriver": "^105.0.0",
+    "chromedriver": "^105.0.1",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.5.1",
     "eslint": "^8.23.1",
