@@ -88,7 +88,7 @@
     "markdownlint-cli": "^0.32.1",
     "mini-css-extract-plugin": "^2.4.5",
     "mocha": "^10.0.0",
-    "postcss": "^8.4.16",
+    "postcss": "^8.4.17",
     "raw-loader": "^4.0.2",
     "responsive-loader": "^3.1.1",
     "selenium-webdriver": "^4.4.0",
