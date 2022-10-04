@@ -52,7 +52,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4",
     "redux": "^4.1.2",
-    "sharp": "^0.31.0",
+    "sharp": "^0.31.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
