@@ -319,7 +319,7 @@ class Editor extends React.Component {
 
     const hotkeyOptions = Array.from(Array(9).keys())
 
-    const currentHotkeys = current.hotkeys.filter((e) => e !== null)
+    const currentHotkeys = current.hotkeys ? current.hotkeys.filter((e) => e !== null) : []
 
     console.log('CH', currentHotkeys)
 
