@@ -1,41 +1,58 @@
-@import 'colors';
+@import "colors";
 
 .editor {
-  height: 100%;
+  height: calc(100% - 58px);
+  color: var(--mode-text-color);
 
   .editor-box {
-    height: calc(100% - 80px);
-  }
+    height: 100%;
 
-  .tabs {
-    margin: 8px;
+    & > .ace_editor {
+      background-color: var(--editor-ace-background);
+      height: 100%;
+      border-radius: 10px;
+
+      & > .ace_gutter {
+        background-color: var(--editor-ace-gutter-background);
+      }
+    }
   }
 
   .title {
     background-color: var(--editor-title-background);
-    border-bottom: 1px solid var(--darker-base-color);
     color: var(--mode-text-color);
     display: flex;
     padding: 3px 8px;
+    border-radius: 10px;
+    box-shadow: 0.1rem 0.1rem 0.2rem 0 var(--box-shadow);
 
     b {
-      background-color: var(--navigation-background);
-      border: 1px solid var(--darker-base-color);
-      border-bottom-left-radius: 4px;
-      border-right: 0;
-      border-top-left-radius: 4px;
       color: var(--base-text-color);
       display: block;
       font-size: 120%;
       height: 100%;
       margin-bottom: 8px;
-      margin-top: 8px;
+      margin-top: 10px;
       padding: 8px;
     }
 
     .select-hotkeys {
       flex-grow: 1;
       margin: 8px 8px 8px 0;
+
+      & > div > div {
+        border-radius: 7px;
+        border: none;
+        background-color: var(--input-background-color);
+      }
+
+      & #react-select-2-listbox > div > div {
+        background-color: var(--input-background-color) !important;
+
+        &:hover {
+          background-color: var(--input-focus-visible) !important;
+        }
+      }
     }
 
     .toggle-configuration {
@@ -44,20 +61,24 @@
 
     input.text-input {
       background: var(--input-background-color);
-      color: var(--mode-text-color);
-      border: 1px solid var(--darker-base-color);
-      border-bottom-right-radius: 4px;
-      border-top-right-radius: 4px;
+      color: var(--mode-text);
+      border-radius: 7px;
       flex-grow: 3;
       font-size: 110%;
       margin: 8px 8px 9px 0;
       padding: 8px;
+      border: none;
+
+      &:focus-visible {
+        outline: none;
+        background-color: var(--input-focus-visible);
+      }
     }
   }
 
   .variable-box {
     label::before {
-      content: '$';
+      content: "$";
     }
   }
 }

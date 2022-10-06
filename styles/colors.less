@@ -1,7 +1,154 @@
-@base: #284907;
-@success: #284907;
+@base: #efefef;
+@success: #067f84;
 @danger: #952613;
 @warning: #ff9632;
 @download: #d8caa8;
+@darkBase: #1a1e33;
+@navigationBase: #141728;
+@scrollBackround: #141728;
 
-@darkBase: #000000;
+.light-mode {
+  /* Main Theme */
+  --mode-color: #000;
+  --mode-text-color: @darkBase;
+  --base-color: #fff;
+  --base-link-color: #1e8179;
+  --hover-link-color: #11c8b6;
+  --highlight-background-color: #444;
+
+  /* Scroll Bar */
+
+  --scroll-bar-color: #1aa89c;
+  --scroll-border-color: @base;
+  --scroll-background: @base;
+  --navigation-scroll-bar-color: #1aa89c;
+  --navigation-scroll-border-color: #111041;
+  --navigation-scroll-background: @scrollBackround;
+
+  /* Box */
+  --box-background: #e3e3e3;
+  --box-shadow: #ccc;
+
+  /* Navigation */
+  --navigation-background: @navigationBase;
+  --navigation-read-only: lighten(@darkBase, 20%);
+  --navigation-item-color: #222;
+  --navigation-active-color: #161e38;
+  --navigation-hover-color: #1e2849;
+  --navigation-text-color: #eee;
+  --navigation-subtitle-text: #3a4374;
+  --help-text-color: #aaa;
+  --warning-color: @warning;
+  --danger-color: lighten(@danger, 20%);
+  --warning-background-color: darken(@warning, 37%);
+  --success-color: lighten(@success, 20%);
+  --navigation-button-background-color: @darkBase;
+
+  /* Button */
+  --button-background-color: #d5d5d5;
+  --button-active-color: #067f84;
+  --button-hover-text-color: #efefef;
+  --button-hover-color: #2b3555;
+
+  /* Input */
+  --input-focus-visible: #b9b3b3;
+  --input-background-color: #d5d5d5;
+
+  /* Search */
+  --navigation-search-background-color: #1b1e32;
+  --navigation-search-focus-visible: #222741;
+  --navigation-search-text-color: #ccc;
+  --popup-search-background-color: #d5d5d5;
+  --popup-search-focus-visible: #b9b3b3;
+  --popup-search-text-color: #1b1e32;
+
+  /* Editor */
+  --editor-title-background: @base;
+  --editor-tabs-background: @base;
+  --editor-ace-background: @base;
+  --editor-ace-gutter-background: #ccc;
+  --editor-comment-color: #a50;
+  --editor-group-color: #a00;
+  --editor-option-color: #f50;
+  --editor-search-color: #00f;
+  --editor-function-color: #708;
+  --editor-import-color: #31b404;
+  --editor-variable-color: #bf00ff;
+  --editor-disabled-color: #f3f3f3;
+  --editor-string-url-color: #0cc8ed;
+  --table-header-color: #ccc;
+  --table-2n-color: #f0f0f0;
+}
+
+.dark-mode {
+  /* Main Theme */
+  --mode-color: #000;
+  --mode-text-color: #eee;
+  --base-color: @darkBase;
+  --base-link-color: #17c9b7;
+  --hover-link-color: #1e8179;
+  --highlight-background-color: #444;
+
+  /* Scroll Bar */
+  --scroll-bar-color: #1aa89c;
+  --scroll-border-color: #111041;
+  --scroll-background: @scrollBackround;
+  --navigation-scroll-bar-color: #1aa89c;
+  --navigation-scroll-border-color: #111041;
+  --navigation-scroll-background: @scrollBackround;
+
+  /* Box */
+  --box-background: #222741;
+  --box-shadow: #0a0c1b;
+
+  /* Navigation */
+  --navigation-background: @navigationBase;
+  --navigation-read-only: lighten(@darkBase, 20%);
+  --navigation-item-color: #222;
+  --navigation-active-color: #161e38;
+  --navigation-hover-color: #1e2849;
+  --navigation-text-color: #eee;
+  --navigation-subtitle-text: #3a4374;
+  --help-text-color: #aaa;
+  --warning-color: @warning;
+  --danger-color: lighten(@danger, 20%);
+  --warning-background-color: darken(@warning, 37%);
+  --success-color: lighten(@success, 20%);
+
+  /* Button */
+  --button-background-color: #161e38;
+  --button-active-color: #067f84;
+  --button-hover-color: #2b3555;
+
+  /* Input */
+  --input-focus-visible: #222741;
+  --input-background-color: #1b1e32;
+
+  /* Search */
+  --search-background-color: #1b1e32;
+  --search-focus-visible: #222741;
+  --search-text-color: #ccc;
+  --navigation-search-background-color: #1b1e32;
+  --navigation-search-focus-visible: #222741;
+  --navigation-search-text-color: #ccc;
+  --popup-search-background-color: #1b1e32;
+  --popup-search-focus-visible: #222741;
+  --popup-search-text-color: #ccc;
+
+  /* Editor */
+  --editor-title-background: @navigationBase;
+  --editor-tabs-background: @navigationBase;
+  --editor-ace-background: @navigationBase;
+  --editor-ace-gutter-background: #141b32;
+  --editor-comment-color: #09ffe7;
+  --editor-group-color: #0b0;
+  --editor-option-color: spin(#f50, 180);
+  --editor-search-color: spin(#00f, 180);
+  --editor-function-color: #f79580;
+  --editor-import-color: #d060f8;
+  --editor-variable-color: spin(#bf00ff, 180);
+  --editor-disabled-color: spin(#f3f3f3, 180);
+  --editor-url-color: #0cc8ed;
+  --table-header-color: #666;
+  --table-2n-color: #333;
+}

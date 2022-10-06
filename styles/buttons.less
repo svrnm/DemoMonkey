@@ -1,14 +1,11 @@
-@import 'colors';
+@import "colors";
 
 button {
   background-color: white;
-  border: 1px solid #ccc;
-  margin: 8px 1px;
-
-  &:focus,
-  &:hover {
-    box-shadow: 0 0 10px lighten(@base, 20%);
-  }
+  border: none;
+  margin: 10px 2px;
+  border-radius: 7px;
+  padding: 10px 15px;
 }
 
 .save-button {
@@ -22,7 +19,7 @@ button {
 
 .sync-button,
 .share-button {
-  background-color: lighten(@success, 5%);
+  background-color: var(--button-active-color);
   color: #fff;
 
   &.left {
@@ -43,7 +40,7 @@ button {
 }
 
 .copy-button {
-  background-color: lighten(@success, 10%);
+  background-color: var(--button-active-color);
   color: #fff;
 
   &:hover {
@@ -59,16 +56,16 @@ button {
   &:hover {
     background: lighten(@danger, 5%);
     border-color: #ccc;
-    box-shadow: 0 0 5px lighten(@danger, 20%);
+    box-shadow: 0 0 3px lighten(@danger, 20%);
   }
 }
 
 .download-button {
-  background-color: lighten(@success, 15%);
+  background-color: var(--button-active-color);
   color: #fff;
 
   &:hover {
-    background-color: lighten(@success, 20%);
+    background-color: lighten(@success, 10%);
   }
 }
 
@@ -92,7 +89,7 @@ button.disabled {
   right: 0;
   background-color: white;
   font-weight: bold;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 16px 0 #333;
   z-index: 9999999;
 
   & button {

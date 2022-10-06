@@ -1,11 +1,11 @@
-// lesshint idSelector: false
 #welcome-installation {
   display: none;
 }
 
 .welcome {
-  margin-left: 24px;
-  max-width: 800px;
+  overflow-y: auto;
+  height: 100%;
+  padding: 10px 20px;
 
   p {
     line-height: 130%;
@@ -15,20 +15,17 @@
   h2 {
     border-bottom: 1px solid var(--highlight-background-color);
     padding-bottom: 8px;
+    font-size: 120%;
   }
 
   code {
-    background: var(--highlight-background-color);
+    background: var(--box-background);
   }
-
-  /* code.language-ini {
-
-  } */
 
   pre code {
     display: block;
-    margin: 1em;
     margin-right: 0;
     padding: 1em;
+    border-radius: 7px;
   }
 }
