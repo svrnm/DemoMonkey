@@ -339,11 +339,13 @@ class Editor extends React.Component {
             />
           </div>
           <b>Name</b>
-          <input
-            type="text"
-            className="text-input"
-            id="configuration-title"
+          <TextField
+            sx={{ flex: 7 }}
+            id="outlined-basic"
+            label="Please provide a name"
+            variant="outlined"
             placeholder="Please provide a name. You can use slashes (/) in it to create folders."
+            type="text"
             value={current.name}
             onChange={(event) => this.handleUpdate('name', event.target.value, event)}
           />
