@@ -88,7 +88,7 @@ class CodeEditor extends React.Component {
             this._updateAnnotations()
           }}
           width="100%"
-          height="calc(100% - 40px)"
+          height="100%"
           theme={this.props.isDarkMode ? 'merbivore' : 'xcode'}
           mode="mnky"
           readOnly={this.props.readOnly === true}
