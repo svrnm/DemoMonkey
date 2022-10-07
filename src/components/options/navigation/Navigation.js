@@ -23,7 +23,7 @@ import TreeView from '@mui/lab/TreeView'
 import TreeItem from '@mui/lab/TreeItem'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { TextField } from '@mui/material'
+import { createTheme, TextField, ThemeProvider } from '@mui/material'
 
 class Navigation extends React.Component {
   static propTypes = {
@@ -183,6 +183,12 @@ class Navigation extends React.Component {
     }
     */
 
+    const theme = createTheme({
+      palette: {
+        mode: 'dark'
+      }
+    })
+
     return (
       <div>
         <div className="navigation-header">
@@ -193,16 +199,18 @@ class Navigation extends React.Component {
             showLogs={this.props.showLogs}
           />
           <div className="searchBox">
-            <TextField
-              id="outlined-basic"
-              sx={{ width: '100%' }}
-              label="Search"
-              variant="outlined"
-              type="text"
-              onChange={(event) => this.handleSearchUpdate(event)}
-              value={this.state.search}
-              placeholder="Search..."
-            />
+            <ThemeProvider theme={theme}>
+              <TextField
+                id="outlined-basic"
+                sx={{ width: '100%' }}
+                label="Search"
+                variant="outlined"
+                type="text"
+                onChange={(event) => this.handleSearchUpdate(event)}
+                value={this.state.search}
+                placeholder="Search..."
+              />
+            </ThemeProvider>
           </div>
         </div>
         <div className="tree items">{this._safeRenderTree()}</div>
