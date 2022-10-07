@@ -117,17 +117,20 @@ class ItemHeader extends React.Component {
           this.node = node
         }}
       >
-        <div style={style.title}>
-          {/* the onclick event is disabled since the interaction is managed by the navigation */}
-          <a
-            href={'#configuration/' + this.props.node.id}
-            onClick={(event) => event.preventDefault()}
-          >
-            {label}
-          </a>
-        </div>
-        <div className="configuration-updated-at" style={style.timestamp}>
-          {this._renderTimeStamp(updatedAt)}
+        <div className="title-group">
+          <div style={style.title}>
+            {/* the onclick event is disabled since the interaction is managed by the navigation */}
+            <a
+              href={'#configuration/' + this.props.node.id}
+              onClick={(event) => event.preventDefault()}
+            >
+              {label}
+            </a>
+          </div>
+
+          <div className="configuration-updated-at" style={style.timestamp}>
+            {this._renderTimeStamp(updatedAt)}
+          </div>
         </div>
         <div
           className="configuration-options"

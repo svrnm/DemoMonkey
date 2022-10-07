@@ -19,7 +19,7 @@ export default {
   tree: {
     base: {
       listStyle: 'none',
-      backgroundColor: 'var(--navigation-item-color)',
+      backgroundColor: 'unset',
       margin: 0,
       padding: 0,
       color: '#284907'
@@ -30,29 +30,29 @@ export default {
       },
       link: {
         cursor: 'pointer',
-        position: 'relative',
-        padding: '4px',
+        borderRadius: '7px',
+        padding: '10px',
         width: '100%',
-        display: 'block',
-        borderBottom: '1px solid var(--navigation-active-color)'
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center'
       },
       activeLink: {
-        background: 'var(--navigation-active-color)'
+        background: 'var(--button-active-color)'
       },
       toggle: {
         base: {
-          position: 'relative',
-          display: 'inline-block',
-          verticalAlign: 'top',
           marginLeft: '-5px',
+          marginRight: '5px',
           height: '24px',
-          width: '24px'
+          width: '24px',
+          display: 'flex',
+          justifyContent: 'center'
         },
         wrapper: {
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          margin: '-7px 0 0 -7px',
+          display: 'flex',
+          alignSelf: 'center',
+          marginTop: '4px',
           height: '14px'
         },
         height: 14,
@@ -64,14 +64,9 @@ export default {
       },
       header: {
         folder: {
-          display: 'inline-block',
-          verticalAlign: 'top',
-          color: 'var(--navigation-text-color)',
-          width: 'calc(100% - 24px)'
+          color: 'var(--navigation-text-color)'
         },
         item: {
-          display: 'inline-block',
-          verticalAlign: 'top',
           color: 'var(--navigation-text-color)',
           width: '100%'
         },
@@ -86,16 +81,11 @@ export default {
         },
         title: {
           lineHeight: '24px',
-          verticalAlign: 'middle',
-          display: 'inline-block',
-          width: 'calc(100% - 80px)'
+          verticalAlign: 'middle'
         },
         timestamp: {
           color: '#888888',
-          fontSize: '80%',
-          display: 'inline-block',
-          textAlign: 'right',
-          width: '68px'
+          fontSize: '80%'
         }
       },
       loading: {
