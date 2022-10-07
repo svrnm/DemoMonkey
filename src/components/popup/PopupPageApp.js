@@ -54,7 +54,15 @@ class App extends React.Component {
     )
     const theme = createTheme({
       palette: {
-        mode: this.state.isDarkMode ? 'dark' : 'light'
+        mode: this.state.isDarkMode ? 'dark' : 'light',
+        primary: {
+          main: '#0971f1',
+          darker: '#053e85'
+        },
+        neutral: {
+          main: '#64748B',
+          contrastText: '#fff'
+        }
       }
     })
     return (

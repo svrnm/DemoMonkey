@@ -28,7 +28,7 @@ import WarningBox from '../shared/WarningBox'
 import Page from '../shared/Page'
 import JSZip from 'jszip'
 import { logger } from '../../helpers/logger'
-import { createTheme, ThemeProvider } from '@mui/material'
+import { colors, createTheme, ThemeProvider } from '@mui/material'
 
 /* The OptionsPageApp will be defined below */
 class App extends React.Component {
@@ -464,7 +464,7 @@ class App extends React.Component {
       return c
     })
 
-    const theme = createTheme({
+    let theme = createTheme({
       palette: {
         mode: this.state.isDarkMode ? 'dark' : 'light'
       }
