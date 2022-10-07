@@ -15,6 +15,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import ConfigurationUpload from '../../shared/ConfigurationUpload'
+import { Button } from '@mui/material'
 
 class NavigationHeader extends React.Component {
   static propTypes = {
@@ -29,47 +30,42 @@ class NavigationHeader extends React.Component {
     this.props.onNavigate(target)
   }
 
-  _renderLogsButton() {
-    if (this.props.showLogs) {
-      return (
-        <a href="#logs" onClick={(event) => this.handleClick(event, 'logs')}>
-          Logs
-        </a>
-      )
-    }
-    return ''
-  }
-
   render() {
     return (
       <ul className="actions">
         <li>
-          <a href="#help" onClick={(event) => this.handleClick(event, 'help')}>
+          <Button href="#help" onClick={(event) => this.handleClick(event, 'help')}>
             Help
-          </a>
+          </Button>
         </li>
         <li>
-          <a
+          <Button
             href={'#' + 'configuration/new'}
             onClick={(event) => this.handleClick(event, 'configuration/new')}
           >
             Create
-          </a>
+          </Button>
         </li>
         <li>
           <ConfigurationUpload onUpload={this.props.onUpload} id="upload" />
         </li>
         <li>
-          <a href="#settings" onClick={(event) => this.handleClick(event, 'settings')}>
+          <Button href="#settings" onClick={(event) => this.handleClick(event, 'settings')}>
             Settings
-          </a>
+          </Button>
         </li>
         <li>
-          <a href="#backup" onClick={this.props.onDownloadAll}>
+          <Button href="#backup" onClick={this.props.onDownloadAll}>
             Backup
-          </a>
+          </Button>
         </li>
-        <li>{this._renderLogsButton()}</li>
+        <li>
+          {this.props.showLogs && (
+            <Button href="#logs" onClick={(event) => this.handleClick(event, 'logs')}>
+              Logs
+            </Button>
+          )}
+        </li>
       </ul>
     )
   }
