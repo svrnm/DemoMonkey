@@ -26,6 +26,7 @@ import FormControl from '@mui/material/FormControl'
 import CommandBuilder from '../../../commands/CommandBuilder'
 import ErrorCommand from '../../../commands/ErrorCommand'
 import Switch from '@mui/material/Switch'
+import { Autocomplete, TextField } from '@mui/material'
 
 class Editor extends React.Component {
   static propTypes = {
@@ -93,9 +94,8 @@ class Editor extends React.Component {
     })
   }
 
-  handleHotkeysChange(event) {
-    console.log(event)
-    this.handleUpdate('hotkeys', event.target.value, null)
+  handleHotkeysChange(value) {
+    this.handleUpdate('hotkeys', value, null)
   }
 
   updateVariable(id, value) {
@@ -349,25 +349,23 @@ class Editor extends React.Component {
           />
           <div className="select-hotkeys">
             <FormControl sx={{ m: 1, width: '95%' }} size="small">
-              <Select
-                renderValue={(selected) => {
-                  if (selected.length === 0) {
-                    return <em>Shortcut Groups...</em>
-                  }
-                  return selected.map((e) => '#' + e).join(', ')
-                }}
-                displayEmpty
-                value={currentHotkeys}
+              <Autocomplete
                 multiple
-                width="100%"
-                onChange={(event) => this.handleHotkeysChange(event)}
-              >
-                {hotkeyOptions.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    <span>#{value}</span>
-                  </MenuItem>
-                ))}
-              </Select>
+                limitTags={2}
+                id="multiple-limit-tags"
+                options={hotkeyOptions}
+                getOptionLabel={(option) => option}
+                defaultValue={[]}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Shortcut Groups..."
+                    placeholder="Shortcut Selection"
+                  />
+                )}
+                sx={{ width: '100%' }}
+                onChange={(event, value) => this.handleHotkeysChange(value)}
+              />
             </FormControl>
           </div>
           <button
