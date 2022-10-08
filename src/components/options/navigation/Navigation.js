@@ -191,15 +191,15 @@ class Navigation extends React.Component {
 
     return (
       <div>
-        <div className="navigation-header">
-          <NavigationHeader
-            onUpload={this.props.onUpload}
-            onDownloadAll={this.props.onDownloadAll}
-            onNavigate={this.props.onNavigate}
-            showLogs={this.props.showLogs}
-          />
-          <div className="searchBox">
-            <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <div className="navigation-header">
+            <NavigationHeader
+              onUpload={this.props.onUpload}
+              onDownloadAll={this.props.onDownloadAll}
+              onNavigate={this.props.onNavigate}
+              showLogs={this.props.showLogs}
+            />
+            <div className="searchBox">
               <TextField
                 id="outlined-basic"
                 sx={{ width: '100%' }}
@@ -210,10 +210,10 @@ class Navigation extends React.Component {
                 value={this.state.search}
                 placeholder="Search..."
               />
-            </ThemeProvider>
+            </div>
           </div>
-        </div>
-        <div className="tree items">{this._safeRenderTree()}</div>
+          <div className="tree items">{this._safeRenderTree()}</div>
+        </ThemeProvider>
       </div>
     )
   }
