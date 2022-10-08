@@ -159,8 +159,8 @@ class Navigation extends React.Component {
     try {
       return (
         <TreeView
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
+          defaultCollapseIcon={<ExpandMoreIcon color="action" />}
+          defaultExpandIcon={<ChevronRightIcon color="action" />}
           onNodeToggle={(event, nodeId) => this.onToggle('toggle', nodeId)}
           onNodeSelect={(event, nodeId) => this.onToggle('select', nodeId)}
         >
