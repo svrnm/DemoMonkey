@@ -88,20 +88,21 @@ try {
       }
       scope.chrome.tabs.get(tabId, (tab) => {
         if (tab.url) {
-          logger('debug', 'Trying to inject for', tabId, tab.url).write()
-          scope.chrome.scripting.executeScript(
-            {
-              target: { tabId, allFrames: true },
-              files: ['js/monkey.js'],
-              injectImmediately: true
-            },
-            () => {
-              logger('debug', 'Injection completed for', tabId, tab.url).write()
-            }
-          )
-        } else {
-          logger('warn', 'Did not inject into tab ', tabId, ': Permission denied').write()
-          badge.updateDemoCounter('!')
+          if (!tab.url.includes('chrome://')) {
+            scope.chrome.scripting.executeScript(
+              {
+                target: { tabId, allFrames: true },
+                files: ['js/monkey.js'],
+                injectImmediately: true
+              },
+              () => {
+                logger('debug', 'Injection completed for', tabId, tab.url).write()
+              }
+            )
+          } else {
+            logger('warn', 'Did not inject into tab ', tabId, ': Permission denied').write()
+            badge.updateDemoCounter('!')
+          }
         }
       })
     })
