@@ -13,6 +13,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Button } from '@mui/material'
 
 class Tabs extends React.Component {
   static propTypes = {
@@ -46,18 +47,31 @@ class Tabs extends React.Component {
       if (child.props.link) {
         return (
           <li key={index} style={child.props.style}>
-            <a className="link" href="#" onClick={child.props.link}>
+            <Button
+              sx={{ textTransform: 'none' }}
+              href="#"
+              onClick={child.props.link}
+              variant="contained"
+            >
               {child.props.label}
-            </a>
+            </Button>
           </li>
         )
       } else {
-        const activeClass = this._getSelected() === index ? 'active' : ''
+        const activeClass = this._getSelected() === index ? true : false
         return (
           <li key={index} id={child.props.id} style={child.props.style}>
-            <a href="#" className={activeClass} onClick={this.handleClick.bind(this, index)}>
+            <Button
+              sx={{
+                textTransform: 'none'
+              }}
+              href="#"
+              onClick={this.handleClick.bind(this, index)}
+              variant="contained"
+              color={activeClass ? 'success' : 'primary'}
+            >
               {child.props.label}
-            </a>
+            </Button>
           </li>
         )
       }

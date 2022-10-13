@@ -376,6 +376,7 @@ class Editor extends React.Component {
               onClick={() => this.onBeforeSave()}
               disabled={!this.state.unsavedChanges}
               variant="contained"
+              color="success"
               sx={{ textTransform: 'none' }}
             >
               Save
