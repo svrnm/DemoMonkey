@@ -15,6 +15,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import Popup from '../../shared/Popup'
+import { Button } from '@mui/material'
 
 class ItemHeader extends React.Component {
   static propTypes = {
@@ -138,9 +139,9 @@ class ItemHeader extends React.Component {
             visibility: this.state.optionsVisible ? 'visible' : 'hidden'
           }}
         >
-          <button className="delete-configuration" onClick={() => this.onBeforeDelete()}>
+          <Button className="delete-configuration" onClick={() => this.onBeforeDelete()}>
             x
-          </button>
+          </Button>
         </div>
         <ul
           className="context-menu"
