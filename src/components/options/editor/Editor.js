@@ -357,7 +357,8 @@ class Editor extends React.Component {
                 limitTags={2}
                 id="multiple-limit-tags"
                 options={hotkeyOptions}
-                getOptionLabel={(option) => option}
+                value={currentHotkeys}
+                getOptionLabel={(option) => option.toString()}
                 defaultValue={[]}
                 renderInput={(params) => (
                   <TextField
