@@ -371,7 +371,7 @@ class Editor extends React.Component {
               />
             </FormControl>
           </div>
-          <Stack spacing={1} direction="row">
+          <Stack spacing={1} direction="row" sx={{ pl: 1 }}>
             <Button
               onClick={() => this.onBeforeSave()}
               disabled={!this.state.unsavedChanges}
