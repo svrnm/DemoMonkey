@@ -116,10 +116,6 @@ try {
       // TODO: netRequestManager & badge cleanup
     })
 
-    scope.chrome.tabs.onActivated.addListener(function (tab) {
-      scope.chrome.tabs.sendMessage(tab.tabId, { active: tab.tabId })
-    })
-
     scope.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.receiver && request.receiver === 'background') {
         if (
@@ -203,7 +199,6 @@ try {
           state.log = []
           run(state)
           isInitialized = true
-          scope.chrome.runtime.sendMessage({ type: 'STORE_INITIALIZED' })
         }
       })
     }
