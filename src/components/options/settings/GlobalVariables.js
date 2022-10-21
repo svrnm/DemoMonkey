@@ -16,10 +16,6 @@ import PropTypes from 'prop-types'
 import Variable from '../../../models/Variable'
 import VariableEditor from '../../shared/Variable'
 
-import 'ace-builds/src-noconflict/theme-xcode'
-import 'ace-builds/src-noconflict/theme-merbivore'
-import 'ace-builds/src-noconflict/mode-html'
-
 class GlobalVariables extends React.Component {
   static propTypes = {
     onSaveGlobalVariables: PropTypes.func.isRequired,

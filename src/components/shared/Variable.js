@@ -16,7 +16,6 @@ import VariableModel from '../../models/Variable'
 import PropTypes from 'prop-types'
 import AceEditor from 'react-ace'
 import { Base64 } from 'js-base64'
-
 import 'ace-builds/src-noconflict/theme-xcode'
 import 'ace-builds/src-noconflict/theme-merbivore'
 import 'ace-builds/src-noconflict/mode-html'
@@ -189,6 +188,7 @@ class Variable extends React.Component {
             this.updateVariable(v)
           }}
           editorProps={{ $blockScrolling: 'Infinity' }}
+          setOptions={{ useWorker: false }}
         />
         <div className="help">{variable.description}</div>
         <div>{this._renderImage(variable)}</div>
