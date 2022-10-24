@@ -16,6 +16,14 @@ import Json2Ini from '../../models/Json2Ini'
 import PropTypes from 'prop-types'
 import Dialog from '@mui/material/Dialog'
 import JSZip from 'jszip'
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField
+} from '@mui/material'
 
 class Prompt extends React.Component {
   static propTypes = {
@@ -70,6 +78,16 @@ class ConfigurationUpload extends React.Component {
     onUpload: PropTypes.func.isRequired
   }
 
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      value: '',
+      open: false,
+      file: null
+    }
+  }
+
   getIni(result, extension) {
     switch (extension) {
       case 'json':
@@ -90,6 +108,8 @@ class ConfigurationUpload extends React.Component {
       for (let i = 0; i < files.length; i++) {
         const file = files.item(i)
 
+        this.setState({ file: file })
+
         const extension = file.name.split('.').pop()
         if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
           reader.onloadend = () => {
@@ -107,51 +127,7 @@ class ConfigurationUpload extends React.Component {
           const promptChange = (value) => {
             folderName = value
           }
-
-          Dialog.create({
-            title: 'Batch upload into folder.',
-            content: <Prompt onChange={promptChange} placeholder="Please provide a folder name." />,
-            buttons: {
-              left: ['cancel'],
-              right: [
-                {
-                  text: 'Save',
-                  key: '⌘+s',
-                  className: 'success',
-                  action: () => {
-                    console.log(folderName)
-                    Dialog.close()
-                    JSZip.loadAsync(file).then((zip) => {
-                      const zipPromises = []
-                      zip.forEach((relativePath, zipEntry) => {
-                        const extension = zipEntry.name.split('.').pop()
-                        if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
-                          zipPromises.push(
-                            zipEntry.async('string').then((content) => {
-                              return {
-                                name: (
-                                  folderName.replace(/\/$/, '') +
-                                  '/' +
-                                  zipEntry.name.replace(new RegExp('\\.' + extension + '$'), '')
-                                ).replace(/^\//, ''),
-                                content: this.getIni(content, extension),
-                                test: '',
-                                enabled: false,
-                                id: 'new'
-                              }
-                            })
-                          )
-                        }
-                      })
-                      Promise.all(zipPromises).then((results) => {
-                        this.props.onUpload(results)
-                      })
-                    })
-                  }
-                }
-              ]
-            }
-          })
+          this.setState({ open: true })
         } else {
           window.alert(
             'Unknown extension: ' + extension + '! Please specify a .mnky or .json file!'
@@ -164,14 +140,83 @@ class ConfigurationUpload extends React.Component {
   }
 
   render() {
+    const handleZipFileProcess = () => {
+      // return console.log(this.state.file)
+      const file = this.state.file
+      const folderName = this.state.value
+      try {
+        JSZip.loadAsync(file).then((zip) => {
+          const zipPromises = []
+          zip.forEach((relativePath, zipEntry) => {
+            const extension = zipEntry.name.split('.').pop()
+            if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
+              zipPromises.push(
+                zipEntry.async('string').then((content) => {
+                  return {
+                    name: (
+                      folderName.replace(/\/$/, '') +
+                      '/' +
+                      zipEntry.name.replace(new RegExp('\\.' + extension + '$'), '')
+                    ).replace(/^\//, ''),
+                    content: this.getIni(content, extension),
+                    test: '',
+                    enabled: false,
+                    id: 'new'
+                  }
+                })
+              )
+            }
+          })
+          Promise.all(zipPromises).then((results) => {
+            this.props.onUpload(results)
+            this.setState({ open: false })
+          })
+        })
+      } catch (error) {
+        window.alert('Unable to process the uploaded file!')
+      }
+    }
+
+    const handleOnChange = (e) => {
+      this.setState({ value: e.target.value })
+    }
+    const handleClose = (e) => {
+      this.setState({ open: false })
+    }
     return (
       <div>
         <form id={this.props.id + 'Form'} className="upload-form">
           <input multiple id={this.props.id} type="file" />
         </form>
-        <a href={'#configuration/upload'} onClick={(event) => this.showUploadDialog(event)}>
+
+        <Button href={'#configuration/upload'} onClick={(event) => this.showUploadDialog(event)}>
           Upload
-        </a>
+        </Button>
+
+        <Dialog open={this.state.open} onClose={handleClose}>
+          <DialogTitle>Batch upload into folder.</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              In which folder do you want to upload these configurations? Leave empty to put them on
+              the top level.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Folder Name"
+              type="text"
+              fullWidth
+              variant="standard"
+              onChange={handleOnChange}
+              value={this.state.value}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleZipFileProcess}>Save</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     )
   }
