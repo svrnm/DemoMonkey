@@ -24,7 +24,7 @@
     "@mui/icons-material": "^5.10.6",
     "@mui/lab": "^5.0.0-alpha.101",
     "@mui/material": "^5.10.7",
-    "ace-builds": "^1.12.1",
+    "ace-builds": "^1.12.3",
     "axios": "^0.27.2",
     "chance": "^1.1.8",
     "change-case": "^4.1.2",
