@@ -89,7 +89,13 @@ class NetRequestManager {
         // see https://github.com/svrnm/DemoMonkey/issues/63
         this.nextId = this.nextId === -1 ? rules.length + 1 : this.nextId + 1
 
-        this.logger('debug', 'Add a new rule with id ' + this.nextId + ' for tab', tabId, 'and rule ', description).write()
+        this.logger(
+          'debug',
+          'Add a new rule with id ' + this.nextId + ' for tab',
+          tabId,
+          'and rule ',
+          description
+        ).write()
 
         const rule = {
           id: this.nextId,
@@ -163,11 +169,13 @@ class NetRequestManager {
   clear() {
     this.logger('debug', 'Clear all web hooks').write()
     this.declarativeNetRequest.getSessionRules((rules) => {
-      this.declarativeNetRequest.updateSessionRules({
-        removeRuleIds: rules.map((rule) => rule.id)
-      }).then(() => {
-        this.nextId = -1
-      })
+      this.declarativeNetRequest
+        .updateSessionRules({
+          removeRuleIds: rules.map((rule) => rule.id)
+        })
+        .then(() => {
+          this.nextId = -1
+        })
     })
   }
 }
