@@ -88,6 +88,11 @@ function renderPopupPageApp(root, store, manifest) {
   })
 }
 
+document.getElementById('reload-now-button').onclick = () => {
+  console.log('Reload...')
+  window.chrome.runtime.reload()
+}
+
 const store = new Store({
   portName: 'DEMO_MONKEY_STORE' // communication port name
 })
