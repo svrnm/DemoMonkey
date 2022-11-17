@@ -25,53 +25,6 @@ import {
   TextField
 } from '@mui/material'
 
-class Prompt extends React.Component {
-  static propTypes = {
-    placeholder: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
-  }
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      value: ''
-    }
-
-    this.onChange = (e) => this._onChange(e)
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.value !== this.state.value) {
-      this.props.onChange(this.state.value)
-    }
-  }
-
-  _onChange(e) {
-    const value = e.target.value
-
-    this.setState({ value })
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <label>
-          In which folder do you want to upload these configurations? Leave empty to put them on the
-          top level.
-        </label>
-        <input
-          className="text-input"
-          type="text"
-          placeholder={this.props.placeholder}
-          value={this.state.value}
-          onChange={this.onChange}
-        />
-      </React.Fragment>
-    )
-  }
-}
-
 class ConfigurationUpload extends React.Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
@@ -108,7 +61,7 @@ class ConfigurationUpload extends React.Component {
       for (let i = 0; i < files.length; i++) {
         const file = files.item(i)
 
-        this.setState({ file: file })
+        this.setState({ file })
 
         const extension = file.name.split('.').pop()
         if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
@@ -123,10 +76,6 @@ class ConfigurationUpload extends React.Component {
           }
           reader.readAsText(file)
         } else if (extension === 'zip') {
-          let folderName = ''
-          const promptChange = (value) => {
-            folderName = value
-          }
           this.setState({ open: true })
         } else {
           window.alert(
@@ -189,7 +138,11 @@ class ConfigurationUpload extends React.Component {
           <input multiple id={this.props.id} type="file" />
         </form>
 
-        <Button href={'#configuration/upload'} onClick={(event) => this.showUploadDialog(event)}>
+        <Button
+          style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
+          href={'#configuration/upload'}
+          onClick={(event) => this.showUploadDialog(event)}
+        >
           Upload
         </Button>
 

@@ -15,6 +15,7 @@ class NetRequestManager {
   constructor(declarativeNetRequest, logger, onSave) {
     this.declarativeNetRequest = declarativeNetRequest
     this.logger = logger
+    this.nextId = -1
   }
 
   load(list, tabs, index) {
@@ -84,9 +85,20 @@ class NetRequestManager {
           removeRuleIds: [existingRule.id] // remove existing rule and then have it re-added
         })
       } else {
-        this.logger('debug', 'Add a new rule for tab', tabId, 'and rule ', description).write()
+        // It happens that rules are not persistent before the next one is created
+        // see https://github.com/svrnm/DemoMonkey/issues/63
+        this.nextId = this.nextId === -1 ? rules.length + 1 : this.nextId + 1
+
+        this.logger(
+          'debug',
+          'Add a new rule with id ' + this.nextId + ' for tab',
+          tabId,
+          'and rule ',
+          description
+        ).write()
+
         const rule = {
-          id: rules.length + 1,
+          id: this.nextId,
           priority: 1,
           action: {
             type: description.action
@@ -157,9 +169,13 @@ class NetRequestManager {
   clear() {
     this.logger('debug', 'Clear all web hooks').write()
     this.declarativeNetRequest.getSessionRules((rules) => {
-      this.declarativeNetRequest.updateSessionRules({
-        removeRuleIds: rules.map((rule) => rule.id)
-      })
+      this.declarativeNetRequest
+        .updateSessionRules({
+          removeRuleIds: rules.map((rule) => rule.id)
+        })
+        .then(() => {
+          this.nextId = -1
+        })
     })
   }
 }

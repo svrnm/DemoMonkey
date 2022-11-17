@@ -34,7 +34,9 @@ function updateCurrentView(v) {
 }
 
 function renderOptionsPageApp(root, store) {
+  console.log('Render options page.')
   window.chrome.permissions.getAll(function (permissions) {
+    console.log('All permissions fetched.')
     root.render(
       <Provider store={store}>
         <OptionsPageApp
@@ -103,62 +105,69 @@ fetch(window.chrome.runtime.getURL('COMMITHASH'))
     console.log(e)
   })
   .finally(() => {
-    store.ready().then(() => {
-      document.getElementById('backup-message').remove()
-      const rootElement = document.getElementById('app')
+    console.log('Loading redux store')
+    store
+      .ready()
+      .then(() => {
+        console.log('Store loaded.')
+        document.getElementById('backup-message').remove()
+        const rootElement = document.getElementById('app')
 
-      window.store = store
+        window.store = store
 
-      const app = rootElement.getAttribute('data-app')
+        const app = rootElement.getAttribute('data-app')
 
-      const root = createRoot(rootElement)
+        const root = createRoot(rootElement)
 
-      if (store.getState().settings.optionalFeatures.writeLogs) {
-        connectLogger(store, { source: 'monkey.js' })
-      }
+        if (store.getState().settings.optionalFeatures.writeLogs) {
+          connectLogger(store, { source: 'monkey.js' })
+        }
 
-      // updateCurrentPage()
+        // updateCurrentPage()
 
-      const manifest = new Manifest(window.chrome, commitHash)
+        const manifest = new Manifest(window.chrome, commitHash)
 
-      logger('debug', `DemoMonkey ${manifest.version()}`).write()
+        logger('debug', `DemoMonkey ${manifest.version()}`).write()
 
-      const protocolHandler = new ProtocolHandler('web+mnky:')
-      protocolHandler
-        .handle(window.location.search)
-        .catch((error) => {
-          logger('error', error).write()
-          window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname + window.location.hash
-          )
-        })
-        .then((configuration) => {
-          if (configuration) {
-            const configurations = store.getState().configurations
-            store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
-              const latest = configurations[configurations.length - 1]
-              store.dispatch({
-                type: 'SET_CURRENT_VIEW',
-                view: `configuration/${latest.id}`
-              })
-            })
+        const protocolHandler = new ProtocolHandler('web+mnky:')
+        protocolHandler
+          .handle(window.location.search)
+          .catch((error) => {
+            logger('error', error).write()
             window.history.replaceState(
               {},
               document.title,
               window.location.pathname + window.location.hash
             )
-          }
-        })
-        .finally(() => {
-          switch (app) {
-            case 'OptionsPageApp':
-              renderOptionsPageApp(root, store)
-              break
-            default:
-              renderPopupPageApp(root, store, manifest)
-          }
-        })
-    })
+          })
+          .then((configuration) => {
+            if (configuration) {
+              const configurations = store.getState().configurations
+              store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
+                const latest = configurations[configurations.length - 1]
+                store.dispatch({
+                  type: 'SET_CURRENT_VIEW',
+                  view: `configuration/${latest.id}`
+                })
+              })
+              window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname + window.location.hash
+              )
+            }
+          })
+          .finally(() => {
+            switch (app) {
+              case 'OptionsPageApp':
+                renderOptionsPageApp(root, store)
+                break
+              default:
+                renderPopupPageApp(root, store, manifest)
+            }
+          })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
   })
