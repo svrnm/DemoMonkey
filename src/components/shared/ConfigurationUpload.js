@@ -138,7 +138,11 @@ class ConfigurationUpload extends React.Component {
           <input multiple id={this.props.id} type="file" />
         </form>
 
-        <Button style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }} href={'#configuration/upload'} onClick={(event) => this.showUploadDialog(event)}>
+        <Button
+          style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
+          href={'#configuration/upload'}
+          onClick={(event) => this.showUploadDialog(event)}
+        >
           Upload
         </Button>
 
