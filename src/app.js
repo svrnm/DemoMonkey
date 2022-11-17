@@ -34,7 +34,9 @@ function updateCurrentView(v) {
 }
 
 function renderOptionsPageApp(root, store) {
+  console.log('Render options page.')
   window.chrome.permissions.getAll(function (permissions) {
+    console.log('All permissions fetched.')
     root.render(
       <Provider store={store}>
         <OptionsPageApp
@@ -103,7 +105,9 @@ fetch(window.chrome.runtime.getURL('COMMITHASH'))
     console.log(e)
   })
   .finally(() => {
+    console.log('Loading redux store')
     store.ready().then(() => {
+      console.log('Store loaded.')
       document.getElementById('backup-message').remove()
       const rootElement = document.getElementById('app')
 
@@ -160,5 +164,7 @@ fetch(window.chrome.runtime.getURL('COMMITHASH'))
               renderPopupPageApp(root, store, manifest)
           }
         })
+    }).catch(e => {
+      console.log(e)
     })
   })
