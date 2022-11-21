@@ -65,7 +65,7 @@
     "@babel/register": "^7.16.7",
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
-    "babel-loader": "^8.2.3",
+    "babel-loader": "^9.1.0",
     "chai": "^4.3.4",
     "chromedriver": "^107.0.3",
     "copy-webpack-plugin": "^11.0.0",
