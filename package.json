@@ -19,7 +19,7 @@
   "description": "Tamper your Web UI to demo almost anything",
   "dependencies": {
     "@eduardoac-skimlinks/webext-redux": "^3.0.1-release-candidate",
-    "@emotion/react": "^11.10.4",
+    "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.6",
     "@mui/lab": "^5.0.0-alpha.101",
