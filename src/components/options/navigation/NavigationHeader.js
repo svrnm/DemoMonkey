@@ -15,6 +15,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import ConfigurationUpload from '../../shared/ConfigurationUpload'
+import { Button } from '@mui/material'
 
 class NavigationHeader extends React.Component {
   static propTypes = {
@@ -32,9 +33,13 @@ class NavigationHeader extends React.Component {
   _renderLogsButton() {
     if (this.props.showLogs) {
       return (
-        <a href="#logs" onClick={(event) => this.handleClick(event, 'logs')}>
+        <Button
+          style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
+          href="#logs"
+          onClick={(event) => this.handleClick(event, 'logs')}
+        >
           Logs
-        </a>
+        </Button>
       )
     }
     return ''
@@ -44,30 +49,43 @@ class NavigationHeader extends React.Component {
     return (
       <ul className="actions">
         <li>
-          <a href="#help" onClick={(event) => this.handleClick(event, 'help')}>
+          <Button
+            style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
+            href="#help"
+            onClick={(event) => this.handleClick(event, 'help')}
+          >
             Help
-          </a>
+          </Button>
         </li>
         <li>
-          <a
+          <Button
+            style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
             href={'#' + 'configuration/new'}
             onClick={(event) => this.handleClick(event, 'configuration/new')}
           >
             Create
-          </a>
+          </Button>
         </li>
         <li>
           <ConfigurationUpload onUpload={this.props.onUpload} id="upload" />
         </li>
         <li>
-          <a href="#settings" onClick={(event) => this.handleClick(event, 'settings')}>
+          <Button
+            style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
+            href="#settings"
+            onClick={(event) => this.handleClick(event, 'settings')}
+          >
             Settings
-          </a>
+          </Button>
         </li>
         <li>
-          <a href="#backup" onClick={this.props.onDownloadAll}>
+          <Button
+            style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
+            href="#backup"
+            onClick={this.props.onDownloadAll}
+          >
             Backup
-          </a>
+          </Button>
         </li>
         <li>{this._renderLogsButton()}</li>
       </ul>
