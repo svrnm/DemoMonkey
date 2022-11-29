@@ -89,7 +89,6 @@ function renderPopupPageApp(root, store, manifest) {
 }
 
 document.getElementById('reload-now-button').onclick = () => {
-  console.log('Reload...')
   window.chrome.runtime.reload()
 }
 
