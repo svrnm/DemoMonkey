@@ -2,17 +2,16 @@
 
 ## [8.2.6](https://github.com/svrnm/DemoMonkey/compare/v8.2.5...v8.2.6) (2022-11-17)
 
-
 ### Bug Fixes
 
-* [#42](https://github.com/svrnm/DemoMonkey/issues/42), resolves the upload configuration ([a1533e8](https://github.com/svrnm/DemoMonkey/commit/a1533e85054f4529e71252f2ac77aa6e428eb63b))
-* [#48](https://github.com/svrnm/DemoMonkey/issues/48) check if hotkeys is defined ([421a2e2](https://github.com/svrnm/DemoMonkey/commit/421a2e258327f7609ece4166e1bff2abe920282b))
-* [#57](https://github.com/svrnm/DemoMonkey/issues/57), remove error in background.js that receiving end does not exist ([4858c3e](https://github.com/svrnm/DemoMonkey/commit/4858c3e422b18b9b16ed8ec35aa2566cd03e4d4b))
-* [#63](https://github.com/svrnm/DemoMonkey/issues/63), change id mechanism for adding declartive net requests ([0941557](https://github.com/svrnm/DemoMonkey/commit/09415573ca2b60c8b8b6e6be5e0e04760db4fa47))
-* disable ace service workers to fix [#58](https://github.com/svrnm/DemoMonkey/issues/58) ([273df06](https://github.com/svrnm/DemoMonkey/commit/273df06a60f218cacdfe8147aa5c4c6bc9575b9a))
-* minor fixes for linting and style ([b16f3ed](https://github.com/svrnm/DemoMonkey/commit/b16f3ed79200748e29e5c9fd90d98fbb9f5a4ff7))
-* prettier fixes ([10a3ac2](https://github.com/svrnm/DemoMonkey/commit/10a3ac293a75f5c60185da23cf96690dbd2a61ce))
-* prettier run ([2ff3bc5](https://github.com/svrnm/DemoMonkey/commit/2ff3bc5d29ec9cfbb9c7d83d229a69a553f28ef5))
+- [#42](https://github.com/svrnm/DemoMonkey/issues/42), resolves the upload configuration ([a1533e8](https://github.com/svrnm/DemoMonkey/commit/a1533e85054f4529e71252f2ac77aa6e428eb63b))
+- [#48](https://github.com/svrnm/DemoMonkey/issues/48) check if hotkeys is defined ([421a2e2](https://github.com/svrnm/DemoMonkey/commit/421a2e258327f7609ece4166e1bff2abe920282b))
+- [#57](https://github.com/svrnm/DemoMonkey/issues/57), remove error in background.js that receiving end does not exist ([4858c3e](https://github.com/svrnm/DemoMonkey/commit/4858c3e422b18b9b16ed8ec35aa2566cd03e4d4b))
+- [#63](https://github.com/svrnm/DemoMonkey/issues/63), change id mechanism for adding declartive net requests ([0941557](https://github.com/svrnm/DemoMonkey/commit/09415573ca2b60c8b8b6e6be5e0e04760db4fa47))
+- disable ace service workers to fix [#58](https://github.com/svrnm/DemoMonkey/issues/58) ([273df06](https://github.com/svrnm/DemoMonkey/commit/273df06a60f218cacdfe8147aa5c4c6bc9575b9a))
+- minor fixes for linting and style ([b16f3ed](https://github.com/svrnm/DemoMonkey/commit/b16f3ed79200748e29e5c9fd90d98fbb9f5a4ff7))
+- prettier fixes ([10a3ac2](https://github.com/svrnm/DemoMonkey/commit/10a3ac293a75f5c60185da23cf96690dbd2a61ce))
+- prettier run ([2ff3bc5](https://github.com/svrnm/DemoMonkey/commit/2ff3bc5d29ec9cfbb9c7d83d229a69a553f28ef5))
 
 ## [8.2.5](https://github.com/svrnm/DemoMonkey/compare/v8.2.4...v8.2.5) (2022-09-28)
 
