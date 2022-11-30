@@ -350,6 +350,10 @@ class Editor extends React.Component {
           <div className="select-hotkeys">
             <FormControl sx={{ m: 1, width: '95%' }} size="small">
               <Select
+                style={{
+                  background: 'var(--input-background-color)',
+                  color: 'var(--mode-text-color)'
+                }}
                 renderValue={(selected) => {
                   if (selected.length === 0) {
                     return <em>Shortcut Groups...</em>
