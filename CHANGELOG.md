@@ -1,5 +1,21 @@
 # Changelog
 
+## [8.3.0](https://github.com/svrnm/DemoMonkey/compare/v8.2.6...v8.3.0) (2022-11-30)
+
+
+### Features
+
+* [#41](https://github.com/svrnm/DemoMonkey/issues/41), update the navigation buttons to mui components ([a12546b](https://github.com/svrnm/DemoMonkey/commit/a12546b01f1ace00dcd96164ba5dc94c6127c38e))
+* add a reset button to broken DM message ([c4f865e](https://github.com/svrnm/DemoMonkey/commit/c4f865ef36944a10df7ac2e56ab17c0dfceab7a6))
+
+
+### Bug Fixes
+
+* **#39:** some MUI Components not changing in Dark Mode ([#94](https://github.com/svrnm/DemoMonkey/issues/94)) ([d38e607](https://github.com/svrnm/DemoMonkey/commit/d38e6077d5b65e47ee6c068afc18d1985cb8dbdb))
+* **#89:** remove double scrollbar in popup ([#95](https://github.com/svrnm/DemoMonkey/issues/95)) ([0991eaa](https://github.com/svrnm/DemoMonkey/commit/0991eaac71deb1d7337aa35e4b96788d986821e9))
+* add a link to raise an issue in the html template ([7bddc98](https://github.com/svrnm/DemoMonkey/commit/7bddc989d24af8a9646d809d8da7666497ea4fad))
+* minor fix for editor UI ([024d409](https://github.com/svrnm/DemoMonkey/commit/024d409075f296104c4c4eda5a874a54c94b3c80))
+
 ## [8.2.6](https://github.com/svrnm/DemoMonkey/compare/v8.2.5...v8.2.6) (2022-11-17)
 
 ### Bug Fixes
