@@ -48,7 +48,7 @@
   --base-color: @darkBase;
   --base-link-color: #eee;
   --hover-link-color: #aaa;
-  --lighter-base-color: lighten(@darkBase, 75%);
+  --lighter-base-color: lighten(@darkBase, 25%);
   --darker-base-color: lighten(@darkBase, 20%);
   --highlight-background-color: #444;
   --input-background-color: #444;
@@ -132,8 +132,9 @@ label {
   }
 
   .configurations-list {
-    max-height: 430px;
+    max-height: 360px;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   label {
