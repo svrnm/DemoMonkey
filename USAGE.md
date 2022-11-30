@@ -6,7 +6,7 @@ into a personalized experience for your audience.**
 
 **Curious how this works? Read on to learn how you can use DemoMonkey, to tamper your web application to demo almost anything.**
 
-Running into an issue? Having a suggestion to make DemoMonkey better? 
+Running into an issue? Having a suggestion to make DemoMonkey better?
 <a href="https://github.com/svrnm/DemoMonkey/issues/new/choose" rel="noopener noreferrer">Raise an issue.</a>
 
 - [Configurations](#configurations)
