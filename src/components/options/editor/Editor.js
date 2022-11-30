@@ -26,6 +26,7 @@ import FormControl from '@mui/material/FormControl'
 import CommandBuilder from '../../../commands/CommandBuilder'
 import ErrorCommand from '../../../commands/ErrorCommand'
 import Switch from '@mui/material/Switch'
+import { Button, Stack } from '@mui/material'
 
 class Editor extends React.Component {
   static propTypes = {
@@ -304,6 +305,7 @@ class Editor extends React.Component {
   renderConfiguration() {
     const current = this.state.currentConfiguration
     const hiddenIfNew = current.id === 'new' ? { display: 'none' } : {}
+    const hideButtons = current.id === 'new' ? true : false
     const tmpConfig = new Configuration(
       current.content,
       this.props.getRepository(),
@@ -320,8 +322,6 @@ class Editor extends React.Component {
     const hotkeyOptions = Array.from(Array(9).keys())
 
     const currentHotkeys = current.hotkeys ? current.hotkeys.filter((e) => e !== null) : []
-
-    console.log('CH', currentHotkeys)
 
     const autosave = current.id === 'new' ? false : this.props.autoSave
 
@@ -374,12 +374,46 @@ class Editor extends React.Component {
               </Select>
             </FormControl>
           </div>
-          <button
-            className={'save-button ' + (this.state.unsavedChanges ? '' : 'disabled')}
-            onClick={() => this.onBeforeSave()}
-          >
-            Save
-          </button>
+          <Stack spacing={1} direction="row" alignItems={'center'}>
+            <Button
+              onClick={() => this.onBeforeSave()}
+              disabled={!this.state.unsavedChanges}
+              variant="contained"
+              sx={{ textTransform: 'none' }}
+              color="success"
+            >
+              Save
+            </Button>
+
+            {!hideButtons && (
+              <>
+                <Button
+                  sx={{ textTransform: 'none' }}
+                  variant="contained"
+                  onClick={(event) => this.handleClick(event, 'copy')}
+                  color="primary"
+                >
+                  Duplicate
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{ textTransform: 'none' }}
+                  onClick={(event) => this.handleClick(event, 'download')}
+                  color="primary"
+                >
+                  Download
+                </Button>
+                <Button
+                  sx={{ textTransform: 'none' }}
+                  variant="contained"
+                  onClick={(event) => this.onBeforeDelete()}
+                  color="error"
+                >
+                  Delete
+                </Button>
+              </>
+            )}
+          </Stack>
           <Popup
             open={this.state.showSavePopup}
             onCancel={(event) => this.onCancelSave(event)}
@@ -392,27 +426,6 @@ class Editor extends React.Component {
               </span>
             }
           />
-          <button
-            className="copy-button"
-            style={hiddenIfNew}
-            onClick={(event) => this.handleClick(event, 'copy')}
-          >
-            Duplicate
-          </button>
-          <button
-            className="download-button"
-            style={hiddenIfNew}
-            onClick={(event) => this.handleClick(event, 'download')}
-          >
-            Download
-          </button>
-          <button
-            className="delete-button"
-            style={hiddenIfNew}
-            onClick={(event) => this.onBeforeDelete()}
-          >
-            Delete
-          </button>
           <Popup
             open={this.state.showDeletePopup}
             onCancel={(event) => this.onCancelDelete(event)}
