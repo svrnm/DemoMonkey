@@ -19,6 +19,7 @@ import Manifest from '../../models/Manifest'
 import { connect } from 'react-redux'
 import ConfigurationList from './ConfigurationList'
 import PropTypes from 'prop-types'
+import { createTheme, ThemeProvider } from '@mui/material'
 
 /* The PopupPageApp will be defined below */
 class App extends React.Component {
@@ -34,7 +35,8 @@ class App extends React.Component {
     super(props)
     this.state = {
       activeTab: 'apply',
-      commitHash: false
+      commitHash: false,
+      isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches
     }
   }
 
@@ -51,51 +53,60 @@ class App extends React.Component {
     const configurations = this.props.configurations.filter(
       (config) => typeof config.deleted_at === 'undefined' && typeof config._deleted === 'undefined'
     )
+
+    const theme = createTheme({
+      palette: {
+        mode: this.state.isDarkMode ? 'dark' : 'light'
+      }
+    })
+
     return (
-      <Page
-        preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode}
-        syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
-      >
-        <Tabs activeTab={this.state.activeTab} onNavigate={(e) => this.updateActiveTab(e)}>
-          <Pane label="Apply" name="apply">
-            <ConfigurationList
-              currentUrl={this.props.currentUrl}
-              configurations={configurations}
-              settings={this.props.settings}
-              actions={this.props.actions}
+      <ThemeProvider theme={theme}>
+        <Page
+          preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode}
+          syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
+        >
+          <Tabs activeTab={this.state.activeTab} onNavigate={(e) => this.updateActiveTab(e)}>
+            <Pane label="Apply" name="apply">
+              <ConfigurationList
+                currentUrl={this.props.currentUrl}
+                configurations={configurations}
+                settings={this.props.settings}
+                actions={this.props.actions}
+              />
+            </Pane>
+            <Pane label="Help" name="help">
+              <div>
+                <b>Author:&nbsp;</b>
+                {manifest.author()}
+              </div>
+              <div>
+                <b>Homepage:&nbsp;</b>
+                {manifest.homepage()}
+              </div>
+              <div>
+                <b>Version:&nbsp;</b>
+                {manifest.version()}
+              </div>
+              <div>
+                <b>Build from </b>
+                {manifest.buildFromLink()}
+              </div>
+              <div>
+                <b>Report bugs at </b>
+                {manifest.supportLink()}
+              </div>
+            </Pane>
+            <Pane
+              link={(e) => {
+                e.preventDefault()
+                window.chrome.runtime.openOptionsPage()
+              }}
+              label="Dashboard"
             />
-          </Pane>
-          <Pane label="Help" name="help">
-            <div>
-              <b>Author:&nbsp;</b>
-              {manifest.author()}
-            </div>
-            <div>
-              <b>Homepage:&nbsp;</b>
-              {manifest.homepage()}
-            </div>
-            <div>
-              <b>Version:&nbsp;</b>
-              {manifest.version()}
-            </div>
-            <div>
-              <b>Build from </b>
-              {manifest.buildFromLink()}
-            </div>
-            <div>
-              <b>Report bugs at </b>
-              {manifest.supportLink()}
-            </div>
-          </Pane>
-          <Pane
-            link={(e) => {
-              e.preventDefault()
-              window.chrome.runtime.openOptionsPage()
-            }}
-            label="Dashboard"
-          />
-        </Tabs>
-      </Page>
+          </Tabs>
+        </Page>
+      </ThemeProvider>
     )
   }
 }
