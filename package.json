@@ -35,7 +35,7 @@
     "deep-is": "^0.1.4",
     "deepmerge": "^4.2.2",
     "fast-json-patch": "^3.1.0",
-    "fast-xml-parser": "^4.0.9",
+    "fast-xml-parser": "^4.0.15",
     "highlight.js": "^11.3.1",
     "ini": "^3.0.1",
     "js-base64": "^3.7.3",
