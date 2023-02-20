@@ -21,7 +21,7 @@
     "@eduardoac-skimlinks/webext-redux": "^3.0.1-release-candidate",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
-    "@mui/icons-material": "^5.10.6",
+    "@mui/icons-material": "^5.11.9",
     "@mui/lab": "^5.0.0-alpha.101",
     "@mui/material": "^5.10.15",
     "ace-builds": "^1.13.0",
