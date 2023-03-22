@@ -92,86 +92,89 @@ document.getElementById('reload-now-button').onclick = () => {
   window.chrome.runtime.reload()
 }
 
-const store = new Store({
-  portName: 'DEMO_MONKEY_STORE' // communication port name
-})
+const rootElement = document.getElementById('app')
+const app = rootElement.getAttribute('data-app')
+const root = createRoot(rootElement)
 
-let commitHash = ''
-fetch(window.chrome.runtime.getURL('COMMITHASH'))
-  .then((r) => {
-    return r.text()
+const initPopup = () => {
+  const store = new Store({
+    portName: 'DEMO_MONKEY_STORE' // communication port name
   })
-  .then((r) => {
-    commitHash = r
-  })
-  .catch((e) => {
-    // Could not fetch COMMITHASH, that should never happen, but we have a safeguard here.
-    console.log(e)
-  })
-  .finally(() => {
-    console.log('Loading redux store')
-    store
-      .ready()
-      .then(() => {
-        console.log('Store loaded.')
-        document.getElementById('backup-message').remove()
-        const rootElement = document.getElementById('app')
-
-        window.store = store
-
-        const app = rootElement.getAttribute('data-app')
-
-        const root = createRoot(rootElement)
-
-        if (store.getState().settings.optionalFeatures.writeLogs) {
-          connectLogger(store, { source: 'monkey.js' })
-        }
-
-        // updateCurrentPage()
-
-        const manifest = new Manifest(window.chrome, commitHash)
-
-        logger('debug', `DemoMonkey ${manifest.version()}`).write()
-
-        const protocolHandler = new ProtocolHandler('web+mnky:')
-        protocolHandler
-          .handle(window.location.search)
-          .catch((error) => {
-            logger('error', error).write()
-            window.history.replaceState(
-              {},
-              document.title,
-              window.location.pathname + window.location.hash
-            )
-          })
-          .then((configuration) => {
-            if (configuration) {
-              const configurations = store.getState().configurations
-              store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
-                const latest = configurations[configurations.length - 1]
-                store.dispatch({
-                  type: 'SET_CURRENT_VIEW',
-                  view: `configuration/${latest.id}`
-                })
-              })
+  let commitHash = ''
+  fetch(window.chrome.runtime.getURL('COMMITHASH'))
+    .then((r) => {
+      return r.text()
+    })
+    .then((r) => {
+      commitHash = r
+    })
+    .catch((e) => {
+      // Could not fetch COMMITHASH, that should never happen, but we have a safeguard here.
+      console.log(e)
+    })
+    .finally(() => {
+      console.log('Loading redux store')
+      store
+        .ready()
+        .then(() => {
+          console.log('Store loaded.')
+          document.getElementById('backup-message') && document.getElementById('backup-message').remove()
+          window.store = store
+          if (store.getState().settings.optionalFeatures.writeLogs) {
+            connectLogger(store, { source: 'monkey.js' })
+          }
+          // updateCurrentPage()
+          const manifest = new Manifest(window.chrome, commitHash)
+          logger('debug', `DemoMonkey ${manifest.version()}`).write()
+          const protocolHandler = new ProtocolHandler('web+mnky:')
+          protocolHandler
+            .handle(window.location.search)
+            .catch((error) => {
+              logger('error', error).write()
               window.history.replaceState(
                 {},
                 document.title,
                 window.location.pathname + window.location.hash
               )
-            }
-          })
-          .finally(() => {
-            switch (app) {
-              case 'OptionsPageApp':
-                renderOptionsPageApp(root, store)
-                break
-              default:
-                renderPopupPageApp(root, store, manifest)
-            }
-          })
-      })
-      .catch((e) => {
-        console.log(e)
-      })
-  })
+            })
+            .then((configuration) => {
+              if (configuration) {
+                const configurations = store.getState().configurations
+                store.dispatch({ type: 'ADD_CONFIGURATION', configuration }).then(() => {
+                  const latest = configurations[configurations.length - 1]
+                  store.dispatch({
+                    type: 'SET_CURRENT_VIEW',
+                    view: `configuration/${latest.id}`
+                  })
+                })
+                window.history.replaceState(
+                  {},
+                  document.title,
+                  window.location.pathname + window.location.hash
+                )
+              }
+            })
+            .finally(() => {
+              switch (app) {
+                case 'OptionsPageApp':
+                  renderOptionsPageApp(root, store)
+                  break
+                default:
+                  renderPopupPageApp(root, store, manifest)
+              }
+            })
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    })
+}
+
+initPopup()
+
+window.chrome.runtime.onMessage.addListener((req) => {
+  if (req.type === 'STORE_INITIALIZED') {
+    // Initializes the popup and options logic
+    initPopup()
+  }
+})

@@ -200,6 +200,7 @@ try {
           run(state)
           isInitialized = true
         }
+        scope.chrome.runtime.sendMessage({ type: 'STORE_INITIALIZED' })
       })
     }
     init()
