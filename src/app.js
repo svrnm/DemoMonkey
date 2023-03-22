@@ -92,6 +92,10 @@ document.getElementById('reload-now-button').onclick = () => {
   window.chrome.runtime.reload()
 }
 
+const rootElement = document.getElementById('app')
+const app = rootElement.getAttribute('data-app')
+const root = createRoot(rootElement)
+
 const initPopup = () => {
   const store = new Store({
     portName: 'DEMO_MONKEY_STORE' // communication port name
@@ -114,11 +118,8 @@ const initPopup = () => {
         .ready()
         .then(() => {
           console.log('Store loaded.')
-          document.getElementById('backup-message').remove()
-          const rootElement = document.getElementById('app')
+          document.getElementById('backup-message') && document.getElementById('backup-message').remove()
           window.store = store
-          const app = rootElement.getAttribute('data-app')
-          const root = createRoot(rootElement)
           if (store.getState().settings.optionalFeatures.writeLogs) {
             connectLogger(store, { source: 'monkey.js' })
           }
