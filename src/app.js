@@ -118,7 +118,8 @@ const initPopup = () => {
         .ready()
         .then(() => {
           console.log('Store loaded.')
-          document.getElementById('backup-message') && document.getElementById('backup-message').remove()
+          document.getElementById('backup-message') &&
+            document.getElementById('backup-message').remove()
           window.store = store
           if (store.getState().settings.optionalFeatures.writeLogs) {
             connectLogger(store, { source: 'monkey.js' })

@@ -655,7 +655,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     this.getMode = function () {
       return { name: this.getOption('mode') }
     }
-  }.call(CodeMirror.prototype))
+  }).call(CodeMirror.prototype)
   function toAcePos(cmPos) {
     return { row: cmPos.line, column: cmPos.ch }
   }
