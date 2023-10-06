@@ -1,5 +1,17 @@
 # <img src="icons/monkey.png" alt="DemoMonkey Icon" width="28" height=""> DemoMonkey
 
+> [!IMPORTANT] 
+> DemoMonkey needs your help!
+> 
+> Since switching from Manifest V2 to Manifest V3, DemoMonkey is experiencing an ongoing issue with storing configurations.
+> We explored multiple options to fix this issue, but none of them worked out.
+>
+> It looks like the only way to fix this issue is to overhaul the whole the storage mechanism as the current implementation
+> is not compatible with Manifest V3. This is a huge effort and we need your help to make it happen.
+>
+> If you have bandwidth, experience with JavaScript (and maybe even building Chrome Extensions) and the interest to help, please let us now
+> by commenting on [this issue](https://github.com/svrnm/DemoMonkey/issues/131).
+
 ## About
 
 DemoMonkey allows you to turn your software demo in a fully tailored demo for your prospect in minutes:
