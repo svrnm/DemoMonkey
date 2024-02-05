@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.0.1](https://github.com/svrnm/DemoMonkey/compare/v9.0.0...v9.0.1) (2024-02-05)
+
+
+### Bug Fixes
+
+* **#131:** reinitialise the store in options ([#136](https://github.com/svrnm/DemoMonkey/issues/136)) ([52b50fb](https://github.com/svrnm/DemoMonkey/commit/52b50fbb4b465f9f9d37103c5a69f7f072d46e13))
+
 ## [8.3.0](https://github.com/svrnm/DemoMonkey/compare/v8.2.6...v8.3.0) (2022-11-30)
 
 
