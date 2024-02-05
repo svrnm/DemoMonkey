@@ -11,7 +11,7 @@
     "test": "mocha",
     "test-no-ui": "mocha --exclude='*/selenium/*.js'",
     "start": "webpack watch --mode=development",
-    "build": "webpack",
+    "build": "webpack --mode=development",
     "release": "webpack --mode=production --env RELEASE=stable && rm -r ./build-release",
     "dev-release": "webpack --mode=production --env RELEASE=dev-channel && rm -r ./build-release",
     "prepare": "husky install"
@@ -28,7 +28,7 @@
     "ace-builds": "^1.32.5",
     "axios": "^1.6.7",
     "chance": "^1.1.11",
-    "change-case": "^5.4.2",
+    "change-case": "^4.1.2",
     "color": "^4.1.0",
     "color-name": "^2.0.0",
     "color-string": "^1.9.0",
