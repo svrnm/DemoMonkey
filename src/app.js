@@ -18,7 +18,7 @@ import '../icons/monkey-dev.png'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
-import { Store } from '@eduardoac-skimlinks/webext-redux'
+import { Store } from 'webext-redux'
 import OptionsPageApp from './components/options/OptionsPageApp'
 import PopupPageApp from './components/popup/PopupPageApp'
 import Manifest from './models/Manifest'
@@ -118,7 +118,8 @@ const initPopup = () => {
         .ready()
         .then(() => {
           console.log('Store loaded.')
-          document.getElementById('backup-message') && document.getElementById('backup-message').remove()
+          document.getElementById('backup-message') &&
+            document.getElementById('backup-message').remove()
           window.store = store
           if (store.getState().settings.optionalFeatures.writeLogs) {
             connectLogger(store, { source: 'monkey.js' })

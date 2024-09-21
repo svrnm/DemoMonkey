@@ -1,8 +1,8 @@
 # <img src="icons/monkey.png" alt="DemoMonkey Icon" width="28" height=""> DemoMonkey
 
-> [!IMPORTANT] 
+> [!IMPORTANT]
 > DemoMonkey needs your help!
-> 
+>
 > Since switching from Manifest V2 to Manifest V3, DemoMonkey is experiencing an ongoing issue with storing configurations.
 > We explored multiple options to fix this issue, but none of them worked out.
 >

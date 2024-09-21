@@ -233,7 +233,7 @@ ace.define(
           return new Range(startRow, startColumn, endRow, endColumn)
         }
       }
-    }.call(FoldMode.prototype))
+    }).call(FoldMode.prototype)
   }
 )
 
@@ -266,7 +266,7 @@ ace.define(
       this.lineCommentStart = ';'
       this.blockComment = null
       this.$id = 'ace/mode/mnky'
-    }.call(Mode.prototype))
+    }).call(Mode.prototype)
 
     exports.Mode = Mode
   }
