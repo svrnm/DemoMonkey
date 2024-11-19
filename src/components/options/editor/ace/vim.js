@@ -250,8 +250,8 @@ function vimHandler(acequire, exports, module, writeHandler) {
             ? sel.lead
             : sel.anchor
           : p == 'head' || !p
-          ? sel.lead
-          : sel.getRange()[p]
+            ? sel.lead
+            : sel.getRange()[p]
       return toCmPos(pos)
     }
     this.listSelections = function (p) {
@@ -655,7 +655,7 @@ function vimHandler(acequire, exports, module, writeHandler) {
     this.getMode = function () {
       return { name: this.getOption('mode') }
     }
-  }.call(CodeMirror.prototype))
+  }).call(CodeMirror.prototype)
   function toAcePos(cmPos) {
     return { row: cmPos.line, column: cmPos.ch }
   }
@@ -4017,8 +4017,8 @@ function vimHandler(acequire, exports, module, writeHandler) {
       return pressedPrefix == mappedPrefix && pressed.length > prefixLen
         ? 'full'
         : mappedPrefix.indexOf(pressedPrefix) == 0
-        ? 'partial'
-        : false
+          ? 'partial'
+          : false
     } else {
       return pressed == mapped ? 'full' : mapped.indexOf(pressed) == 0 ? 'partial' : false
     }
@@ -5588,10 +5588,10 @@ function vimHandler(acequire, exports, module, writeHandler) {
         number == 'decimal'
           ? /(-?)([\d]+)/
           : number == 'hex'
-          ? /(-?)(?:0x)?([0-9a-f]+)/i
-          : number == 'octal'
-          ? /([0-7]+)/
-          : null
+            ? /(-?)(?:0x)?([0-9a-f]+)/i
+            : number == 'octal'
+              ? /([0-7]+)/
+              : null
       var radix = number == 'decimal' ? 10 : number == 'hex' ? 16 : number == 'octal' ? 8 : null
       var numPart = [],
         textPart = []

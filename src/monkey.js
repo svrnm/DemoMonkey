@@ -17,7 +17,7 @@ import Settings from './models/Settings'
 import Manifest from './models/Manifest'
 import InlineRuleManager from './models/InlineRuleManager'
 import UrlManager from './models/UrlManager'
-import { Store } from '@eduardoac-skimlinks/webext-redux'
+import { Store } from 'webext-redux'
 import { logger, connectLogger } from './helpers/logger'
 
 // Firefox does not display errors in the console, so we catch them ourselves and print them to console.

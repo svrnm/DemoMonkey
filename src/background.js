@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 import { createStore } from 'redux'
-import { wrapStore } from '@eduardoac-skimlinks/webext-redux'
+import { createWrapStore } from 'webext-redux'
 import reducers from './reducers'
 import { v4 as uuidV4 } from 'uuid'
 import Configuration from './models/Configuration'
@@ -227,6 +227,7 @@ try {
 
     function run(state) {
       const store = createStore(reducers, state)
+      const wrapStore = createWrapStore()
       wrapStore(store, { portName: 'DEMO_MONKEY_STORE' })
 
       // Make the store accessible from dev console.
