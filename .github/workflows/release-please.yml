@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ steps.release.outputs.releases_created }}
         with:
-          node-version: '16'
+          node-version: '22'
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.releases_created }}
       - name: 'Cache node_modules'
@@ -25,9 +25,9 @@ jobs:
           path: |
             node_modules
             package-lock.json
-          key: ${{ runner.os }}-node-v16-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-v22-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-v16-
+            ${{ runner.os }}-node-v22-
       - name: Install Dependencies
         if: ${{ steps.release.outputs.releases_created }}
         run: npm install
