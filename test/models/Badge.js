@@ -12,9 +12,7 @@
  * limitations under the License.
  */
 import Badge from '../../src/models/Badge'
-import chai from 'chai'
-
-const assert = chai.assert
+import { assert } from 'chai'
 
 class BrowserAction {
   constructor(tabs) {

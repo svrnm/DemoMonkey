@@ -12,9 +12,7 @@
  * limitations under the License.
  */
 import UndoElement from '../../src/commands/UndoElement'
-import chai from 'chai'
-
-const assert = chai.assert
+import { assert } from 'chai'
 
 describe('UndoElement', function () {
   describe('#apply', function () {

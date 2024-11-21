@@ -12,9 +12,7 @@
  * limitations under the License.
  */
 import Ini from '../../src/models/Ini'
-import chai from 'chai'
-
-const assert = chai.assert
+import { assert } from 'chai'
 
 describe('Ini', function () {
   describe('#parse', function () {

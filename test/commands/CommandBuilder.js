@@ -19,10 +19,7 @@ import ReplaceFlowmapIcon from '../../src/commands/appdynamics/ReplaceFlowmapIco
 import ReplaceNeighbor from '../../src/commands/ReplaceNeighbor'
 import Command from '../../src/commands/Command'
 import CommandBuilder from '../../src/commands/CommandBuilder'
-import chai from 'chai'
-
-const assert = chai.assert
-const expect = chai.expect
+import { assert, expect } from 'chai'
 
 describe('Command', function () {
   describe('#_extractForCustomCommand', function () {

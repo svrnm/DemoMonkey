@@ -12,11 +12,9 @@
  * limitations under the License.
  */
 import selenium from 'selenium-webdriver'
-import chai from 'chai'
+import { assert, expect } from 'chai'
 import base from './base'
 
-const assert = chai.assert
-const expect = chai.expect
 const By = selenium.By
 const until = selenium.until
 
