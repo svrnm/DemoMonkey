@@ -132,10 +132,6 @@ class Editor extends React.Component {
 
     Mousetrap.bind('mod+s', (event) => {
       event.preventDefault()
-      /*
-      this.props.onSave(this.props.currentConfiguration, this.state.currentConfiguration)
-      this.setState({ unsavedChanges: false })
-      */
       this.onBeforeSave()
       return false
     })
@@ -320,8 +316,6 @@ class Editor extends React.Component {
     const hotkeyOptions = Array.from(Array(9).keys())
 
     const currentHotkeys = current.hotkeys ? current.hotkeys.filter((e) => e !== null) : []
-
-    console.log('CH', currentHotkeys)
 
     const autosave = current.id === 'new' ? false : this.props.autoSave
 

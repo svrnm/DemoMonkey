@@ -176,13 +176,6 @@ class App extends React.Component {
   }
 
   _prepareForDownload(configuration) {
-    /*
-    if (configuration.values) {
-      const result = configuration.content + '\n\n; --- {VARIABLE VALUES} ---\n' + JSON.stringify(configuration.values).replace(/^/, ';')
-      console.log(result)
-      return result
-    }
-    */
     return configuration.content
   }
 
@@ -394,7 +387,6 @@ class App extends React.Component {
   }
 
   requestExtendedPermissions(revoke = false) {
-    console.log(revoke)
     if (revoke) {
       window.chrome.permissions.remove(
         {
