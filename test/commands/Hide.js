@@ -13,10 +13,7 @@
  */
 import Hide from '../../src/commands/Hide'
 import UndoElement from '../../src/commands/UndoElement'
-import chai from 'chai'
-
-const assert = chai.assert
-const expect = chai.expect
+import { assert, expect } from 'chai'
 
 const location = {
   href: '/folder',

@@ -13,9 +13,7 @@
  */
 import Eval from '../../src/commands/Eval'
 import UndoElement from '../../src/commands/UndoElement'
-import chai from 'chai'
-
-const assert = chai.assert
+import { assert } from 'chai'
 
 describe('Eval', function () {
   describe('#apply', function () {

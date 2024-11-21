@@ -12,9 +12,7 @@
  * limitations under the License.
  */
 import Stage from '../../src/commands/Stage'
-import chai from 'chai'
-
-const assert = chai.assert
+import { assert } from 'chai'
 
 // logger needs a global window object
 global.window = {

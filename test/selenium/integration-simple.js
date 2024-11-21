@@ -11,10 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import chai from 'chai'
+import { expect } from 'chai'
 import base from './base'
-
-const expect = chai.expect
 
 describe('Integration (Simple)', function () {
   const url = 'https://github.com/svrnm/demomonkey'

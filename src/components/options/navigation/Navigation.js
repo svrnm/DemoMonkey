@@ -19,10 +19,8 @@ import navigationTheme from './NavigationTheme'
 import ErrorBox from '../../shared/ErrorBox'
 import merge from 'deepmerge'
 import arrayMerge from '../../../helpers/arrayMerge'
-import { TreeView } from '@mui/x-tree-view/TreeView'
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView'
 import { TreeItem } from '@mui/x-tree-view/TreeItem'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 class Navigation extends React.Component {
   static propTypes = {
@@ -137,7 +135,7 @@ class Navigation extends React.Component {
     return (
       <TreeItem
         key={node.id}
-        nodeId={node.id}
+        itemId={node.id}
         label={
           <ItemHeader
             node={node}
@@ -157,14 +155,12 @@ class Navigation extends React.Component {
     // console.log(this.state.data)
     try {
       return (
-        <TreeView
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-          onNodeToggle={(event, nodeId) => this.onToggle('toggle', nodeId)}
-          onNodeSelect={(event, nodeId) => this.onToggle('select', nodeId)}
+        <SimpleTreeView
+          onItemExpansionToggle={(event, nodeId) => this.onToggle('toggle', nodeId)}
+          onItemClick={(event, nodeId) => this.onToggle('select', nodeId)}
         >
           {this.state.data.map((item) => this._renderTreeFromData(item))}
-        </TreeView>
+        </SimpleTreeView>
       )
     } catch (e) {
       return <ErrorBox error={e} />

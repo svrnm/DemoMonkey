@@ -13,14 +13,12 @@
  */
 import selenium from 'selenium-webdriver'
 import chrome from 'selenium-webdriver/chrome'
-import chai from 'chai'
+import { assert, expect } from 'chai'
 import fs from 'fs'
 
 // const extensionID = 'hgegamnnggfbjfpjjalciinpfoghjcnj'
 const extensionID = 'jppkhbnbdfkchpfplppanilmladmdfbf'
 
-const assert = chai.assert
-const expect = chai.expect
 const By = selenium.By
 const until = selenium.until
 let driver

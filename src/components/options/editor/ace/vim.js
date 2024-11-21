@@ -54,7 +54,6 @@ function vimHandler(acequire, exports, module, writeHandler) {
       var f = format(p)
       d += f + '  '
     }
-    console.log(d)
   }
   var Range = acequire('../range').Range
   var EventEmitter = acequire('../lib/event_emitter').EventEmitter
