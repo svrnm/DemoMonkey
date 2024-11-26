@@ -1,5 +1,15 @@
 # Changelog
 
+## [9.0.1](https://github.com/svrnm/DemoMonkey/compare/v9.0.0...v9.0.1) (2024-11-26)
+
+
+### Bug Fixes
+
+* **#131:** reinitialise the store in options ([#136](https://github.com/svrnm/DemoMonkey/issues/136)) ([52b50fb](https://github.com/svrnm/DemoMonkey/commit/52b50fbb4b465f9f9d37103c5a69f7f072d46e13))
+* issues after dependency updates ([88e888d](https://github.com/svrnm/DemoMonkey/commit/88e888df9313bec62da7bc9802ed5c630936e4f0))
+* more dependencies ([e309676](https://github.com/svrnm/DemoMonkey/commit/e3096766ea26458837cb296403475b43d15e1d2a))
+* revert change-case update ([0493783](https://github.com/svrnm/DemoMonkey/commit/04937834c48456ba7773b9653afba4d5d923c73d))
+
 ## [8.3.0](https://github.com/svrnm/DemoMonkey/compare/v8.2.6...v8.3.0) (2022-11-30)
 
 ### Features
