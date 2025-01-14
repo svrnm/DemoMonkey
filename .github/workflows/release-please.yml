@@ -9,8 +9,8 @@ permissions:
 jobs:
   release-please:
     permissions:
-      contents: write  # for google-github-actions/release-please-action to create release commit
-      pull-requests: write  # for google-github-actions/release-please-action to create release PR
+      contents: write # for google-github-actions/release-please-action to create release commit
+      pull-requests: write # for google-github-actions/release-please-action to create release PR
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
