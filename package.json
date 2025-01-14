@@ -111,5 +111,5 @@
     "*.less": "stylelint --cache --fix",
     "*.md": "npx markdownlint-cli --fix --config .markdownlint.jsonc"
   },
-  "version": "10.0.0"
+  "version": "9.2.1"
 }

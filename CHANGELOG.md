@@ -1,5 +1,14 @@
 # Changelog
 
+## [9.2.1](https://github.com/svrnm/DemoMonkey/compare/v9.2.0...v9.2.1) (2025-01-14)
+
+
+### Bug Fixes
+
+* add SECURITY.md ([#246](https://github.com/svrnm/DemoMonkey/issues/246)) ([27b6fb3](https://github.com/svrnm/DemoMonkey/commit/27b6fb3f85a51f87f51eb1ff2ea0e3b244c397aa))
+* prettier issues ([#245](https://github.com/svrnm/DemoMonkey/issues/245)) ([f02ce2b](https://github.com/svrnm/DemoMonkey/commit/f02ce2bd49ea718b9284373ed8f682d6a181cd3d))
+* set read only permissions for lint workflow ([#248](https://github.com/svrnm/DemoMonkey/issues/248)) ([43a8cd0](https://github.com/svrnm/DemoMonkey/commit/43a8cd0e10333ca62031b902fb738d5e9e78a69f))
+
 ## [8.3.0](https://github.com/svrnm/DemoMonkey/compare/v8.2.6...v8.3.0) (2022-11-30)
 
 ### Features
