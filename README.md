@@ -1,5 +1,10 @@
 # <img src="icons/monkey.png" alt="DemoMonkey Icon" width="28" height=""> DemoMonkey
 
+[![License](https://img.shields.io/github/license/svrnm/DemoMonkey)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/svrnm/DemoMonkey?sort=semver)](https://github.com/svrnm/DemoMonkey/releases)
+[![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/jgbhioialphpgjgofopnplfibkeehgjd)](https://bit.ly/demomonkey)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/svrnm/DemoMonkey/badge)](https://scorecard.dev/viewer/?uri=github.com/svrnm/DemoMonkey)
+
 ## About
 
 DemoMonkey allows you to turn your software demo in a fully tailored demo for your prospect in minutes:
