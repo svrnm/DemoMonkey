@@ -26,7 +26,7 @@
     "@mui/material": "^6.1.8",
     "@mui/x-tree-view": "^7.22.1",
     "ace-builds": "^1.36.5",
-    "axios": "^1.7.7",
+    "axios": "^1.10.0",
     "chance": "^1.1.12",
     "change-case": "^4.1.2",
     "color": "^4.1.0",
