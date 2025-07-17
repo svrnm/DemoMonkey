@@ -37,13 +37,13 @@ function logger() {
     })
   }
   return {
-    write: out.bind.apply(out, [console, '[logged]'].concat(message))
+    write: out.bind.apply(out, [console, `[logged: ${level}]`].concat(message))
   }
 }
 
 function connectLogger(store, extras = {}) {
   globalThis.dmLogEntries = []
-  // Log messages are written to the store peridocally to avoid lags.
+  // Log messages are written to the store periodically to avoid lags.
   setInterval(() => {
     if (globalThis.dmLogEntries.length > 0) {
       store.dispatch({

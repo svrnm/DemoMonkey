@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "DemoMonkey",
   "description": "Custom demo, every demo: Turn your standard demo into a tailored experience for your customers in minutes.",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "author": "Severin Neumann <severin.neumann@altmuehlnet.de>",
   "homepage_url": "https://github.com/svrnm/DemoMonkey/",
   "content_security_policy": {
