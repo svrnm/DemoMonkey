@@ -12,11 +12,6 @@
  * limitations under the License.
  */
 import { v4 as uuidV4 } from 'uuid'
-import omit from 'lodash.omit'
-
-function blocklist(object) {
-  return omit(object, ['__v', 'owner', '_id'])
-}
 
 const configuration = (state, action) => {
   if (
@@ -41,8 +36,6 @@ const configuration = (state, action) => {
         enabled: typeof action.enabled !== 'undefined' ? action.enabled : !state.enabled
       }
     case 'ADD_CONFIGURATION':
-      // id, created_at, updated_at can be overwritten by action.configuration
-      // if it comes from a remote source.
       // We need to delete the action configuration if it is set to new, to make
       // this mechanism work properly.
       if (action.configuration.id === 'new') {
@@ -50,15 +43,15 @@ const configuration = (state, action) => {
       }
       return Object.assign(
         { id: uuidV4(), created_at: Date.now(), updated_at: Date.now() },
-        blocklist(action.configuration),
+        action.configuration,
         { enabled: false }
       )
     case 'SAVE_CONFIGURATION':
       // the last array is a hot fix for issue #16
       // saving the configuration should currently not include overwriting the enabled state
-      return Object.assign({}, state, blocklist(action.configuration), {
+      return Object.assign({}, state, action.configuration, {
         enabled: state.enabled,
-        updated_at: action.sync === true ? action.configuration.updated_at : Date.now()
+        updated_at: Date.now()
       })
     case 'DELETE_CONFIGURATION':
       return {
@@ -66,6 +59,13 @@ const configuration = (state, action) => {
         enabled: false,
         updated_at: Date.now(),
         deleted_at: Date.now()
+      }
+    case 'RESTORE_CONFIGURATION':
+      const { deleted_at, ...rest } = state
+      return {
+        ...rest,
+        enabled: false,
+        updated_at: Date.now()
       }
     default:
       return state
@@ -78,6 +78,7 @@ const configurations = function (state = [], action) {
     case 'SAVE_CONFIGURATION':
     case 'DELETE_CONFIGURATION':
     case 'DELETE_CONFIGURATION_BY_PREFIX':
+    case 'RESTORE_CONFIGURATION':
       return state.map((i) => configuration(i, action))
     case 'BATCH_ADD_CONFIGURATION':
       return state.concat(
@@ -89,11 +90,22 @@ const configurations = function (state = [], action) {
         )
       )
     case 'ADD_CONFIGURATION':
-      // In the case of remote sync we have to protect ourselves against re-insertion
-      if (action.sync === true && state.findIndex((c) => c.id === action.configuration.id) !== -1) {
-        return state
-      }
       return [...state, configuration(undefined, action)]
+    case 'PERMANENTLY_DELETE_CONFIGURATION':
+      return state.filter((c) => c.id !== action.id)
+    case 'REMOVE_DELETED_CONFIGURATIONS':
+      return state.filter((c) => !c.deleted_at)
+    case 'REMOVE_DELETED_CONFIGURATIONS_AFTER_30_DAYS':
+      return state.filter((c) => {
+        if (!c.deleted_at) {
+          return true
+        }
+        const deletedDate = new Date(c.deleted_at)
+        const currentDate = new Date()
+        const diffTime = Math.abs(currentDate - deletedDate)
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+        return diffDays < 30 // Keep configurations deleted less than 30 days
+      })
     default:
       return state
   }

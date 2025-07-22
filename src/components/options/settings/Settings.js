@@ -41,7 +41,10 @@ class Settings extends React.Component {
     onToggleOptionalFeature: PropTypes.func.isRequired,
     onDownloadAll: PropTypes.func.isRequired,
     onDeleteAll: PropTypes.func.isRequired,
+    onTrashAll: PropTypes.func.isRequired,
     onReset: PropTypes.func.isRequired,
+    onRestoreConfiguration: PropTypes.func.isRequired,
+    onPermanentlyDeleteConfiguration: PropTypes.func.isRequired,
     isDarkMode: PropTypes.bool.isRequired,
     hasExtendedPermissions: PropTypes.bool.isRequired,
     onRequestExtendedPermissions: PropTypes.func.isRequired,
@@ -57,7 +60,8 @@ class Settings extends React.Component {
       monkeyInterval: this.props.settings.monkeyInterval,
       archiveValue: 30,
       showResetPopup: false,
-      showDeleteAllPopup: false
+      showDeleteAllPopup: false,
+      showTrashAllPopup: false
     }
   }
 
@@ -105,6 +109,14 @@ class Settings extends React.Component {
     this.setState({ showResetPopup: false })
   }
 
+  onCancelTrashAll() {
+    this.setState({ showTrashAllPopup: false })
+  }
+
+  onBeforeTrashAll() {
+    this.setState({ showTrashAllPopup: true })
+  }
+
   onReset(event) {
     this.setState({ showResetPopup: false })
     this.props.onReset(event)
@@ -123,6 +135,11 @@ class Settings extends React.Component {
     this.props.onDeleteAll(event)
   }
 
+  onTrashAll(event) {
+    this.setState({ showTrashAllPopup: false })
+    this.props.onTrashAll(event)
+  }
+
   render() {
     const optionalFeatures = OptionalFeature.getAll({
       styles: {
@@ -131,6 +148,8 @@ class Settings extends React.Component {
         }
       }
     })
+
+    const hasDeletedConfigurations = this.props.configurations.some((c) => c.deleted_at)
 
     return (
       <div className="content">
@@ -247,6 +266,67 @@ class Settings extends React.Component {
                   editorProps={{ $blockScrolling: true }}
                 />
               </div>
+            </Pane>
+            <Pane label="Trash" name="trash">
+              <h2>Trash</h2>
+              <p>Deleted configurations will be moved to the trash.</p>
+              {hasDeletedConfigurations && (
+                <button className="delete-button" onClick={(event) => this.onBeforeTrashAll(event)}>
+                  Empty Trash
+                </button>
+              )}
+              <Popup
+                title="Please Confirm"
+                text={<span>Do you really want to empty the trash?</span>}
+                open={this.state.showTrashAllPopup}
+                onCancel={(event) => this.onCancelTrashAll(event)}
+                onConfirm={(event) => this.onTrashAll(event)}
+              />
+              <h3>Deleted Configurations</h3>
+              <p>
+                The following configurations have been deleted. You can restore them or permanently
+                delete them.
+              </p>
+              <ul>
+                {this.props.configurations
+                  .filter((c) => c.deleted_at)
+                  .map((configuration, index) => {
+                    return (
+                      <li key={index} className="configuration">
+                        <strong className="configuration-name">{configuration.name}</strong>
+                        &nbsp; (deleted at{' '}
+                        <span className="configuration-deleted-at">
+                          {new Date(configuration.deleted_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                          })}
+                        </span>
+                        ) &nbsp;
+                        <a
+                          href="#"
+                          onClick={() => this.props.onRestoreConfiguration(configuration.id)}
+                        >
+                          (Restore)
+                        </a>
+                        &nbsp;
+                        <a
+                          href="#"
+                          onClick={() =>
+                            this.props.onPermanentlyDeleteConfiguration(configuration.id)
+                          }
+                        >
+                          (Permanently delete)
+                        </a>
+                      </li>
+                    )
+                  })}
+              </ul>
+              {this.props.configurations.filter((c) => c.deleted_at).length === 0 && (
+                <div className="no-deleted-configurations">
+                  <p>No deleted configurations found.</p>
+                </div>
+              )}
             </Pane>
             <Pane label="More" name="more">
               <h2>{"Monkey's Behavior"}</h2>

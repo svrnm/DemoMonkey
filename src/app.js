@@ -34,9 +34,9 @@ function updateCurrentView(v) {
 }
 
 function renderOptionsPageApp(root, store) {
-  console.log('Render options page.')
+  logger('debug', 'Render options page.').write()
   window.chrome.permissions.getAll(function (permissions) {
-    console.log('All permissions fetched.')
+    logger('debug', 'All permissions fetched', permissions).write()
     root.render(
       <Provider store={store}>
         <OptionsPageApp
@@ -71,6 +71,11 @@ function renderOptionsPageApp(root, store) {
       mbox.dataset.timeoutid = timeoutid
     }
   })
+
+  setTimeout(() => {
+    logger('debug', 'Removing deleted configurations after 30 days').write()
+    store.dispatch({ type: 'REMOVE_DELETED_CONFIGURATIONS_AFTER_30_DAYS' })
+  }, 1000)
 }
 
 function renderPopupPageApp(root, store, manifest) {
@@ -113,11 +118,11 @@ const initPopup = () => {
       console.log(e)
     })
     .finally(() => {
-      console.log('Loading redux store')
+      logger('debug', 'Loading redux store').write()
       store
         .ready()
         .then(() => {
-          console.log('Store loaded.')
+          logger('debug', 'Store loaded.').write()
           document.getElementById('backup-message') &&
             document.getElementById('backup-message').remove()
           window.store = store

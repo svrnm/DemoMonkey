@@ -109,6 +109,7 @@ class App extends React.Component {
   }
 
   saveConfiguration(configuration) {
+    logger('debug', `Saving configuration: ${configuration.name}`).write()
     if (configuration.id === 'new') {
       return this.addConfiguration(configuration)
     } else {
@@ -321,6 +322,11 @@ class App extends React.Component {
               onDownloadAll={(event) => this.downloadAll(event)}
               onDeleteAll={(event) => this.deleteAll(event)}
               onReset={(event) => this.resetDemoMonkey(event)}
+              onTrashAll={(event) => this.props.actions.removeDeletedConfigurations(event)}
+              onPermanentlyDeleteConfiguration={(id) =>
+                this.props.actions.permanentlyDeleteConfiguration(id)
+              }
+              onRestoreConfiguration={(id) => this.props.actions.restoreConfiguration(id)}
               onRequestExtendedPermissions={(revoke) => this.requestExtendedPermissions(revoke)}
               hasExtendedPermissions={this.hasExtendedPermissions()}
               isDarkMode={this._getDarkMode()}
@@ -498,6 +504,7 @@ const OptionsPageApp = connect(
         dispatch({ type: 'TOGGLE_CONFIGURATION', id })
       },
       saveConfiguration: (id, configuration) => {
+        logger('debug', `Dispatching SAVE_CONFIGURATION: ${id} ${configuration.name}`).write()
         return dispatch({ type: 'SAVE_CONFIGURATION', id, configuration })
       },
       deleteConfiguration: (id) => {
@@ -510,6 +517,7 @@ const OptionsPageApp = connect(
         return dispatch({ type: 'BATCH_ADD_CONFIGURATION', configurations })
       },
       addConfiguration: (configuration) => {
+        logger('debug', `Dispatching ADD_CONFIGURATION: ${id} ${configuration.name}`).write()
         return dispatch({ type: 'ADD_CONFIGURATION', configuration })
       },
       setBaseTemplate: (baseTemplate) => {
@@ -523,6 +531,15 @@ const OptionsPageApp = connect(
       },
       toggleOptionalFeature: (optionalFeature) => {
         return dispatch({ type: 'TOGGLE_OPTIONAL_FEATURE', optionalFeature })
+      },
+      removeDeletedConfigurations: () => {
+        return dispatch({ type: 'REMOVE_DELETED_CONFIGURATIONS' })
+      },
+      permanentlyDeleteConfiguration: (id) => {
+        return dispatch({ type: 'PERMANENTLY_DELETE_CONFIGURATION', id })
+      },
+      restoreConfiguration: (id) => {
+        return dispatch({ type: 'RESTORE_CONFIGURATION', id })
       }
     }
   })

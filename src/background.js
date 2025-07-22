@@ -209,12 +209,27 @@ try {
       const configurations = store.getState().configurations
       const settings = store.getState().settings
 
+      logger('debug', 'Updating storage with configurations and settings').write()
+
       // Sync data back into chrome.storage
-      scope.chrome.storage.local.set({
-        configurations,
-        settings,
-        monkeyID: store.getState().monkeyID
-      })
+      scope.chrome.storage.local.set(
+        {
+          configurations,
+          settings,
+          monkeyID: store.getState().monkeyID
+        },
+        function () {
+          if (scope.chrome.runtime.lastError) {
+            logger(
+              'error',
+              'Error updating storage:',
+              scope.chrome.runtime.lastError.message
+            ).write()
+            return
+          }
+          logger('debug', 'Storage updated').write()
+        }
+      )
       if (
         settings.optionalFeatures.webRequestHook &&
         configurations.filter((c) => c.enabled).length > 0
