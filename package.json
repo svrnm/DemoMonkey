@@ -15,6 +15,10 @@
     "test:e2e:ui": "npx playwright test --ui",
     "test:e2e:debug": "npx playwright test --debug",
     "test:all": "npm run test:unit && npm run test:e2e",
+    "lint": "eslint src/ test/",
+    "lint:fix": "eslint src/ test/ --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "start": "webpack watch --mode=development",
     "build": "webpack --mode=development",
     "release": "webpack --mode=production --env RELEASE=stable && rm -r ./build-release",
@@ -112,7 +116,11 @@
     ]
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
+    "*.js": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ],
+    "*.{json,css}": "prettier --write",
     "*.less": "stylelint --cache --fix",
     "*.md": "npx markdownlint-cli --fix --config .markdownlint.jsonc"
   },

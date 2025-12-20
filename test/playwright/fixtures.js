@@ -20,6 +20,7 @@ import fs from 'fs'
  */
 export const test = base.extend({
   // Provide a browser context with the extension loaded
+  // eslint-disable-next-line no-empty-pattern
   context: async ({}, use) => {
     const pathToExtension = path.resolve('./build')
 

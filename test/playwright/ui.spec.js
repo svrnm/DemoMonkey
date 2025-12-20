@@ -29,7 +29,11 @@ test.describe('UI', () => {
 
   test('allows to create new configurations', async ({ context, extensionPage }) => {
     const page = await context.newPage()
-    await extensionPage.createConfig(page, 'Playwright Test', 'demomonkey = testape\n@include = /.*/')
+    await extensionPage.createConfig(
+      page,
+      'Playwright Test',
+      'demomonkey = testape\n@include = /.*/'
+    )
   })
 
   test('allows to enable configurations', async ({ context, extensionPage }) => {

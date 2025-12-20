@@ -26,7 +26,6 @@ import FormControl from '@mui/material/FormControl'
 import CommandBuilder from '../../../commands/CommandBuilder'
 import ErrorCommand from '../../../commands/ErrorCommand'
 import Switch from '@mui/material/Switch'
-import { logger } from '../../../helpers/logger'
 
 class Editor extends React.Component {
   static propTypes = {

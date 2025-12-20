@@ -20,9 +20,11 @@ import pluginPromise from 'eslint-plugin-promise'
 import pluginHeader from '@tony.ganchev/eslint-plugin-header'
 import babelParser from '@babel/eslint-parser'
 
-const headerPattern = '\\* Licensed under the Apache License, Version 2\\.0 \\(the "License"\\);[\\r\\n]+ \\* you may not use this file except in compliance with the License\\.[\\r\\n]+ \\* You may obtain a copy of the License at[\\r\\n]+ \\*[\\r\\n]+ \\*      https:\\/\\/www\\.apache\\.org\\/licenses\\/LICENSE-2\\.0[\\r\\n]+ \\*[\\r\\n]+ \\* Unless required by applicable law or agreed to in writing, software[\\r\\n]+ \\* distributed under the License is distributed on an "AS IS" BASIS,[\\r\\n]+ \\* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied\\.[\\r\\n]+ \\* See the License for the specific language governing permissions and[\\r\\n]+ \\* limitations under the License\\.'
+const headerPattern =
+  '\\* Licensed under the Apache License, Version 2\\.0 \\(the "License"\\);[\\r\\n]+ \\* you may not use this file except in compliance with the License\\.[\\r\\n]+ \\* You may obtain a copy of the License at[\\r\\n]+ \\*[\\r\\n]+ \\*      https:\\/\\/www\\.apache\\.org\\/licenses\\/LICENSE-2\\.0[\\r\\n]+ \\*[\\r\\n]+ \\* Unless required by applicable law or agreed to in writing, software[\\r\\n]+ \\* distributed under the License is distributed on an "AS IS" BASIS,[\\r\\n]+ \\* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied\\.[\\r\\n]+ \\* See the License for the specific language governing permissions and[\\r\\n]+ \\* limitations under the License\\.'
 
-const headerTemplate = '*\n * Licensed under the Apache License, Version 2.0 (the "License");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      https://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an "AS IS" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n '
+const headerTemplate =
+  '*\n * Licensed under the Apache License, Version 2.0 (the "License");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      https://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an "AS IS" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n '
 
 export default [
   // Ignore patterns (replaces .eslintignore)
@@ -91,25 +93,36 @@ export default [
       'import/no-unresolved': 'off',
       'import/named': 'error',
 
-      // Promise rules
+      // Promise rules - disable strict rules that conflict with existing patterns
       ...pluginPromise.configs.recommended.rules,
+      'promise/always-return': 'off',
+      'promise/catch-or-return': 'off',
+      'promise/no-nesting': 'off',
+      'promise/no-callback-in-promise': 'off',
 
       // Disable stylistic space-before-function-paren from neostandard
       // (project uses named: 'ignore' which conflicts with neostandard)
       '@stylistic/space-before-function-paren': 'off',
 
       // Space before function paren - project style
-      'space-before-function-paren': ['error', {
-        anonymous: 'always',
-        named: 'ignore',
-        asyncArrow: 'ignore'
-      }],
+      'space-before-function-paren': [
+        'error',
+        {
+          anonymous: 'always',
+          named: 'ignore',
+          asyncArrow: 'ignore'
+        }
+      ],
 
       // Header rule
-      'header/header': ['error', 'block', {
-        pattern: headerPattern,
-        template: headerTemplate
-      }]
+      'header/header': [
+        'error',
+        'block',
+        {
+          pattern: headerPattern,
+          template: headerTemplate
+        }
+      ]
     }
   },
 
