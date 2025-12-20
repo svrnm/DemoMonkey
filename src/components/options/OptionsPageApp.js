@@ -517,7 +517,7 @@ const OptionsPageApp = connect(
         return dispatch({ type: 'BATCH_ADD_CONFIGURATION', configurations })
       },
       addConfiguration: (configuration) => {
-        logger('debug', `Dispatching ADD_CONFIGURATION: ${id} ${configuration.name}`).write()
+        logger('debug', `Dispatching ADD_CONFIGURATION: ${configuration.id} ${configuration.name}`).write()
         return dispatch({ type: 'ADD_CONFIGURATION', configuration })
       },
       setBaseTemplate: (baseTemplate) => {
