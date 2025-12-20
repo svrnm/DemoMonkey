@@ -10,3 +10,7 @@ DemoMonkey-*.zip
 .vscode
 .eslintcache
 .stylelintcache
+
+# Playwright
+playwright-report/
+test-results/
