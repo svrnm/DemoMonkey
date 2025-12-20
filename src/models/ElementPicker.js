@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable no-mixed-operators */
-
 class ElementPicker {
   close() {
     this.hoverBox.remove()

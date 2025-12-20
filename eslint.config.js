@@ -87,8 +87,8 @@ export default [
       'react/jsx-uses-vars': 'warn',
       'react/prop-types': 'off',
 
-      // Import rules
-      'import/no-unresolved': 'error',
+      // Import rules - disable no-unresolved due to resolver limitations
+      'import/no-unresolved': 'off',
       'import/named': 'error',
 
       // Promise rules
