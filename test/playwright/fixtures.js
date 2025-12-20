@@ -151,22 +151,22 @@ export const test = base.extend({
        */
       async createConfig(page, title = 'Playwright Test', content = 'demomonkey = testape') {
         await page.goto(dashboardUrl)
-        
+
         // Wait for the page to fully load
         await page.waitForLoadState('networkidle')
-        
+
         await page.click("a[href='#configuration/new']")
-        
+
         // Wait for the new configuration page to load
         await page.waitForSelector('#configuration-title')
         await page.fill('#configuration-title', title)
-        
+
         // Click the editor tab to show the code editor
         await page.click('li#current-configuration-editor a')
-        
+
         // Wait for ACE Editor to be ready - it creates a div with id="contentarea"
         await page.waitForSelector('#contentarea', { timeout: 5000 })
-        
+
         // Wait a bit more for ACE to fully initialize
         await page.waitForTimeout(500)
 

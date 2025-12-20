@@ -46,18 +46,18 @@ test.describe('Integration', () => {
 
       // Navigate to test page first to let the extension set up the rules
       await extensionPage.gotoTestPage(page)
-      
+
       // Wait for the monkey content script to fully initialize and set up URL rules
       await page.waitForTimeout(1000)
-      
+
       // Hard reload the page using the browser's reload button behavior
       // This is more reliable than page.reload() for triggering the URL interception
       await page.evaluate(() => window.location.reload())
       await page.waitForLoadState('domcontentloaded')
-      
+
       // Wait for the AJAX content to load with the intercepted URL
       await page.waitForTimeout(2000)
-      
+
       await page.fill('#input', 'San Francisco')
 
       // Wait for dynamic elements
