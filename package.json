@@ -8,8 +8,9 @@
     "url": "https://github.com/Appdynamics/demomonkey.git"
   },
   "scripts": {
-    "test": "mocha --exclude='*/selenium/*.js'",
-    "test:unit": "mocha --exclude='*/selenium/*.js'",
+    "test": "mocha --exclude='*/selenium/*.js' --exclude='*/playwright/*.js'",
+    "test-no-ui": "mocha --exclude='*/selenium/*.js' --exclude='*/playwright/*.js'",
+    "test:unit": "mocha --exclude='*/selenium/*.js' --exclude='*/playwright/*.js'",
     "test:e2e": "npx playwright test",
     "test:e2e:ui": "npx playwright test --ui",
     "test:e2e:debug": "npx playwright test --debug",
