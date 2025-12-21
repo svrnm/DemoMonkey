@@ -87,6 +87,120 @@ describe('Variable', function () {
         'This-Is-A-'
       )
     })
+
+    it('should handle all string case transformation functions', function () {
+      // toLowerCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.toLowerCase(HELLO WORLD)}'),
+        'hello world'
+      )
+
+      // toUpperCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.toUpperCase(hello world)}'),
+        'HELLO WORLD'
+      )
+
+      // camelCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.camelCase(hello world test)}'),
+        'helloWorldTest'
+      )
+
+      // capitalCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.capitalCase(hello world)}'),
+        'Hello World'
+      )
+
+      // constantCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.constantCase(hello world)}'),
+        'HELLO_WORLD'
+      )
+
+      // dotCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.dotCase(hello world)}'),
+        'hello.world'
+      )
+
+      // noCase
+      assert.strictEqual(Variable.evaluateFunctions('${string.noCase(helloWorld)}'), 'hello world')
+
+      // pascalCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.pascalCase(hello world)}'),
+        'HelloWorld'
+      )
+
+      // pathCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.pathCase(hello world)}'),
+        'hello/world'
+      )
+
+      // sentenceCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.sentenceCase(hello world)}'),
+        'Hello world'
+      )
+
+      // snakeCase
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.snakeCase(hello world)}'),
+        'hello_world'
+      )
+    })
+
+    it('should handle paramCase and kebabCase (aliases)', function () {
+      // paramCase (legacy name, maps to kebabCase)
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.paramCase(hello world)}'),
+        'hello-world'
+      )
+
+      // kebabCase (new name)
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.kebabCase(hello world)}'),
+        'hello-world'
+      )
+    })
+
+    it('should handle headerCase and trainCase (aliases)', function () {
+      // headerCase (legacy name, maps to trainCase)
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.headerCase(hello world)}'),
+        'Hello-World'
+      )
+
+      // trainCase (new name)
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.trainCase(hello world)}'),
+        'Hello-World'
+      )
+    })
+
+    it('should handle string.length function', function () {
+      assert.strictEqual(Variable.evaluateFunctions('${string.length(hello)}'), '5')
+      assert.strictEqual(Variable.evaluateFunctions('${string.length()}'), '0')
+      assert.strictEqual(Variable.evaluateFunctions('${string.length(hello world)}'), '11')
+    })
+
+    it('should handle string.slice function', function () {
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.slice({string: "hello world", start: 0, stop: 5})}'),
+        'hello'
+      )
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.slice({string: "hello world", start: 6, stop: 11})}'),
+        'world'
+      )
+      assert.strictEqual(
+        Variable.evaluateFunctions('${string.slice({string: "hello", start: 1})}'),
+        'ello'
+      )
+    })
   })
 
   describe('#applyList', function () {
