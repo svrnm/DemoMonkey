@@ -89,38 +89,36 @@ class ConfigurationUpload extends React.Component {
   }
 
   render() {
-    const handleZipFileProcess = () => {
+    const handleZipFileProcess = async () => {
       // return console.log(this.state.file)
       const file = this.state.file
       const folderName = this.state.value
       try {
-        JSZip.loadAsync(file).then((zip) => {
-          const zipPromises = []
-          zip.forEach((relativePath, zipEntry) => {
-            const extension = zipEntry.name.split('.').pop()
-            if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
-              zipPromises.push(
-                zipEntry.async('string').then((content) => {
-                  return {
-                    name: (
-                      folderName.replace(/\/$/, '') +
-                      '/' +
-                      zipEntry.name.replace(new RegExp('\\.' + extension + '$'), '')
-                    ).replace(/^\//, ''),
-                    content: this.getIni(content, extension),
-                    test: '',
-                    enabled: false,
-                    id: 'new'
-                  }
-                })
-              )
-            }
-          })
-          Promise.all(zipPromises).then((results) => {
-            this.props.onUpload(results)
-            this.setState({ open: false })
-          })
+        const zip = await JSZip.loadAsync(file)
+        const zipPromises = []
+        zip.forEach((relativePath, zipEntry) => {
+          const extension = zipEntry.name.split('.').pop()
+          if (extension === 'mnky' || extension === 'ini' || extension === 'json') {
+            zipPromises.push(
+              zipEntry.async('string').then((content) => {
+                return {
+                  name: (
+                    folderName.replace(/\/$/, '') +
+                    '/' +
+                    zipEntry.name.replace(new RegExp('\\.' + extension + '$'), '')
+                  ).replace(/^\//, ''),
+                  content: this.getIni(content, extension),
+                  test: '',
+                  enabled: false,
+                  id: 'new'
+                }
+              })
+            )
+          }
         })
+        const results = await Promise.all(zipPromises)
+        this.props.onUpload(results)
+        this.setState({ open: false })
       } catch (error) {
         window.alert('Unable to process the uploaded file!')
       }

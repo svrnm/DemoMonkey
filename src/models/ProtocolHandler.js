@@ -67,6 +67,7 @@ class ProtocolHandler {
         if (response.status === 200 && typeof response.data === 'string') {
           resolve(this._buildConfiguration(`Shared/${url.href}`, response.data))
         }
+        return null
       })
       .catch((error) => {
         error.message = `Could not handle ${url}, error was: ${error.message}`
@@ -74,30 +75,19 @@ class ProtocolHandler {
       })
   }
 
-  _handleGist(id, resolve, reject) {
+  async _handleGist(id, resolve, reject) {
     const url = `https://gist.github.com/${id}/`
-    axios({
-      url
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          const url = response.request.responseURL + '/raw'
-          axios({
-            url
-          })
-            .then((response) => {
-              resolve(this._buildConfiguration(`Shared/${id}`, response.data))
-            })
-            .catch((error) => {
-              error.message = `Could not handle ${url}, error was: ${error.message}`
-              reject(error)
-            })
-        }
-      })
-      .catch((error) => {
-        error.message = `Could not handle ${url}, error was: ${error.message}`
-        reject(error)
-      })
+    try {
+      const response = await axios({ url })
+      if (response.status === 200) {
+        const rawUrl = response.request.responseURL + '/raw'
+        const rawResponse = await axios({ url: rawUrl })
+        resolve(this._buildConfiguration(`Shared/${id}`, rawResponse.data))
+      }
+    } catch (error) {
+      error.message = `Could not handle ${url}, error was: ${error.message}`
+      reject(error)
+    }
   }
 }
 
