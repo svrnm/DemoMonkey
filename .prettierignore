@@ -2,3 +2,5 @@ build
 node_modules
 # the template triggers an error because of the code within the <html 
 pages/template.html
+# Generated files
+*.sarif

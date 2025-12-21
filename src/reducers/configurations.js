@@ -60,13 +60,15 @@ const configuration = (state, action) => {
         updated_at: Date.now(),
         deleted_at: Date.now()
       }
-    case 'RESTORE_CONFIGURATION':
+    case 'RESTORE_CONFIGURATION': {
+      // eslint-disable-next-line camelcase
       const { deleted_at, ...rest } = state
       return {
         ...rest,
         enabled: false,
         updated_at: Date.now()
       }
+    }
     default:
       return state
   }

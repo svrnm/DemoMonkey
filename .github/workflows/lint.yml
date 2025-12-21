@@ -1,6 +1,8 @@
 name: Lint
 
-permissions: read-all
+permissions:
+  contents: read
+  security-events: write
 
 on:
   # Trigger the workflow on push or pull request,
@@ -8,7 +10,7 @@ on:
   push:
     branches:
       - main
-  pull_request_target:
+  pull_request:
     branches:
       - main
 
@@ -36,7 +38,21 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npx eslint src/ test/
+        id: eslint
+        run: npx eslint src/ test/ --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif
+        continue-on-error: true
+
+      - name: Upload ESLint results to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: eslint-results.sarif
+          wait-for-processing: true
+
+      - name: Check ESLint results
+        if: steps.eslint.outcome == 'failure'
+        run: |
+          echo "ESLint found issues. Check the Code Scanning alerts for details."
+          exit 1
 
       - name: Run Prettier
         run: npx prettier --check .

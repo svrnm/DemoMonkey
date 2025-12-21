@@ -22,7 +22,11 @@ test.describe('Integration', () => {
       await extensionPage.disableOptionalFeature(page, 'editorAutocomplete')
 
       // Create test configurations
-      await extensionPage.createConfig(page, 'GermanCities', 'San Francisco = Berlin\nSeattle = Köln')
+      await extensionPage.createConfig(
+        page,
+        'GermanCities',
+        'San Francisco = Berlin\nSeattle = Köln'
+      )
       await extensionPage.createConfig(
         page,
         'Test Config',
