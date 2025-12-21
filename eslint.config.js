@@ -87,18 +87,23 @@ export default [
       // React rules
       ...pluginReact.configs.recommended.rules,
       'react/jsx-uses-vars': 'warn',
+      // PropTypes are legacy; project uses no runtime type checking
       'react/prop-types': 'off',
+      // Catch deprecated unsafe lifecycle methods (UNSAFE_componentWillMount, etc.)
+      'react/no-unsafe': 'error',
 
-      // Import rules - disable no-unresolved due to resolver limitations
+      // Import rules
+      // Disabled: ESLint import resolver can't resolve npm modules (e.g., 'uuid')
+      // without eslint-import-resolver-webpack. Webpack handles resolution at build time.
       'import/no-unresolved': 'off',
       'import/named': 'error',
 
-      // Promise rules - disable strict rules that conflict with existing patterns
+      // Promise rules
       ...pluginPromise.configs.recommended.rules,
-      'promise/always-return': 'off',
-      'promise/catch-or-return': 'off',
-      'promise/no-nesting': 'off',
-      'promise/no-callback-in-promise': 'off',
+      // Keep off: This rule bans native Promises (for old bluebird compatibility)
+      'promise/no-native': 'off',
+      // Keep off: This rule bans `new Promise()` which is sometimes necessary
+      'promise/avoid-new': 'off',
 
       // Disable stylistic space-before-function-paren from neostandard
       // (project uses named: 'ignore' which conflicts with neostandard)

@@ -41,5 +41,9 @@
     })
     .then(function (response) {
       document.getElementById('ajax').innerHTML = response.split(/<\/?title>/)[1]
+      return null
+    })
+    .catch(function (error) {
+      console.error('Failed to fetch:', error)
     })
 })()

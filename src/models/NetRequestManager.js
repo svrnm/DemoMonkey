@@ -175,6 +175,10 @@ class NetRequestManager {
         })
         .then(() => {
           this.nextId = -1
+          return null
+        })
+        .catch((error) => {
+          this.logger('error', 'Failed to clear session rules: ' + error).write()
         })
     })
   }

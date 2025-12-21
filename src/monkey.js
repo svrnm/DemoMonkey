@@ -55,74 +55,44 @@ try {
         }
       }
 
-      store.ready().then(() => {
-        if (store.getState().settings.optionalFeatures.writeLogs) {
-          connectLogger(store, { source: 'monkey.js' })
-        }
-
-        const settings = new Settings(store.getState().settings)
-
-        const inlineConfig = {
-          hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax')
-        }
-
-        if (inlineConfig.hookIntoAjax) {
-          if (!['miro.com'].includes(scope.location.host)) {
-            const inlineScriptTag = scope.document.createElement('script')
-            inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
-            inlineScriptTag.setAttribute('data-dm-config-hook-into-ajax', inlineConfig.hookIntoAjax)
-            inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
-            scope.document.head.append(inlineScriptTag)
-          } else {
-            logger(
-              'warn',
-              `inline.js not loaded, because ${scope.location.host} may break, see https://github.com/svrnm/DemoMonkey/issues/21`
-            ).write()
+      store
+        .ready()
+        .then(() => {
+          if (store.getState().settings.optionalFeatures.writeLogs) {
+            connectLogger(store, { source: 'monkey.js' })
           }
-        }
 
-        // We don't use the redux store, since below we restart demo monkey
-        // every time the store is updated, which would lead to a loop.
-        const urlManager = new UrlManager(scope, isTopFrame())
-
-        const inlineRuleManager = new InlineRuleManager(scope, inlineConfig)
-
-        let $DEMO_MONKEY = new Monkey(
-          store.getState().configurations,
-          scope,
-          settings.globalVariables,
-          settings.isFeatureEnabled('undo'),
-          settings.monkeyInterval,
-          urlManager,
-          inlineRuleManager,
-          {
-            withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
-            hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
-            webRequestHook: settings.isFeatureEnabled('webRequestHook')
-          }
-        )
-        onStart($DEMO_MONKEY.start())
-        logger(
-          'debug',
-          'DemoMonkey enabled. Tampering the content. Interval: ',
-          settings.monkeyInterval
-        ).write()
-
-        const modeManager = new ModeManager(
-          scope,
-          $DEMO_MONKEY,
-          new Manifest(scope.chrome),
-          settings.isDebugEnabled(),
-          settings.isFeatureEnabled('debugBox'),
-          settings.isLiveModeEnabled(),
-          settings.analyticsSnippet
-        )
-
-        function restart() {
-          logger('debug', 'Restart DemoMonkey').write()
-          // Update settings
           const settings = new Settings(store.getState().settings)
-          const newMonkey = new Monkey(
+
+          const inlineConfig = {
+            hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax')
+          }
+
+          if (inlineConfig.hookIntoAjax) {
+            if (!['miro.com'].includes(scope.location.host)) {
+              const inlineScriptTag = scope.document.createElement('script')
+              inlineScriptTag.setAttribute('id', 'demo-monkey-inline-script')
+              inlineScriptTag.setAttribute(
+                'data-dm-config-hook-into-ajax',
+                inlineConfig.hookIntoAjax
+              )
+              inlineScriptTag.src = scope.chrome.runtime.getURL('js/inline.js')
+              scope.document.head.append(inlineScriptTag)
+            } else {
+              logger(
+                'warn',
+                `inline.js not loaded, because ${scope.location.host} may break, see https://github.com/svrnm/DemoMonkey/issues/21`
+              ).write()
+            }
+          }
+
+          // We don't use the redux store, since below we restart demo monkey
+          // every time the store is updated, which would lead to a loop.
+          const urlManager = new UrlManager(scope, isTopFrame())
+
+          const inlineRuleManager = new InlineRuleManager(scope, inlineConfig)
+
+          let $DEMO_MONKEY = new Monkey(
             store.getState().configurations,
             scope,
             settings.globalVariables,
@@ -136,47 +106,88 @@ try {
               webRequestHook: settings.isFeatureEnabled('webRequestHook')
             }
           )
-          $DEMO_MONKEY.stop()
-          onStart(newMonkey.start())
-          $DEMO_MONKEY = newMonkey
-          modeManager.reload(
+          onStart($DEMO_MONKEY.start())
+          logger(
+            'debug',
+            'DemoMonkey enabled. Tampering the content. Interval: ',
+            settings.monkeyInterval
+          ).write()
+
+          const modeManager = new ModeManager(
+            scope,
             $DEMO_MONKEY,
+            new Manifest(scope.chrome),
             settings.isDebugEnabled(),
             settings.isFeatureEnabled('debugBox'),
-            settings.isLiveModeEnabled()
+            settings.isLiveModeEnabled(),
+            settings.analyticsSnippet
           )
-        }
 
-        store.subscribe(function () {
-          const lastAction = store.getState().lastAction
-          // updating the current view does not require any updates
-          if (['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)) {
-            return
+          function restart() {
+            logger('debug', 'Restart DemoMonkey').write()
+            // Update settings
+            const settings = new Settings(store.getState().settings)
+            const newMonkey = new Monkey(
+              store.getState().configurations,
+              scope,
+              settings.globalVariables,
+              settings.isFeatureEnabled('undo'),
+              settings.monkeyInterval,
+              urlManager,
+              inlineRuleManager,
+              {
+                withEvalCommand: settings.isFeatureEnabled('withEvalCommand'),
+                hookIntoAjax: settings.isFeatureEnabled('hookIntoAjax'),
+                webRequestHook: settings.isFeatureEnabled('webRequestHook')
+              }
+            )
+            $DEMO_MONKEY.stop()
+            onStart(newMonkey.start())
+            $DEMO_MONKEY = newMonkey
+            modeManager.reload(
+              $DEMO_MONKEY,
+              settings.isDebugEnabled(),
+              settings.isFeatureEnabled('debugBox'),
+              settings.isLiveModeEnabled()
+            )
           }
-          if (settings.isFeatureEnabled('autoReplace')) {
-            restart()
-          }
-        })
 
-        scope.document.addEventListener('DOMContentLoaded', function (e) {
-          modeManager.start()
-        })
-
-        scope.document.addEventListener('demomonkey-inline-editing', function (e) {
-          let { search, replacement, command } = JSON.parse(e.detail)
-          const configs = store.getState().configurations.filter((config) => config.enabled)
-          const configuration = configs.length > 0 ? configs[0] : store.getState().configurations[0]
-          if (command) {
-            search = `!${command}(${search})`
-          }
-          configuration.content += '\n' + search + ' = ' + replacement
-          store.dispatch({
-            type: 'SAVE_CONFIGURATION',
-            id: configuration.id,
-            configuration
+          store.subscribe(function () {
+            const lastAction = store.getState().lastAction
+            // updating the current view does not require any updates
+            if (['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)) {
+              return
+            }
+            if (settings.isFeatureEnabled('autoReplace')) {
+              restart()
+            }
           })
+
+          scope.document.addEventListener('DOMContentLoaded', function (e) {
+            modeManager.start()
+          })
+
+          scope.document.addEventListener('demomonkey-inline-editing', function (e) {
+            let { search, replacement, command } = JSON.parse(e.detail)
+            const configs = store.getState().configurations.filter((config) => config.enabled)
+            const configuration =
+              configs.length > 0 ? configs[0] : store.getState().configurations[0]
+            if (command) {
+              search = `!${command}(${search})`
+            }
+            configuration.content += '\n' + search + ' = ' + replacement
+            store.dispatch({
+              type: 'SAVE_CONFIGURATION',
+              id: configuration.id,
+              configuration
+            })
+          })
+
+          return null
         })
-      })
+        .catch((error) => {
+          console.error('Failed to initialize DemoMonkey store:', error)
+        })
     })(window)
   }
 } catch (e) {
