@@ -13,7 +13,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
+import { formatRelativeTime, formatISO } from '../../helpers/timeFormat'
 
 class Logs extends React.Component {
   static propTypes = {
@@ -70,12 +70,12 @@ class Logs extends React.Component {
                 .slice()
                 .reverse()
                 .map(({ timestamp, source, level, message, tabId, repeated }, index) => {
-                  const time = moment(timestamp)
+                  const isoTime = formatISO(timestamp)
                   return (
                     <tr key={index} className={`row-${level}`}>
                       <td>
-                        <time dateTime={time.format()} title={time.format()}>
-                          {time.fromNow(true)}
+                        <time dateTime={isoTime} title={isoTime}>
+                          {formatRelativeTime(timestamp, true)}
                         </time>
                       </td>
                       <td>
