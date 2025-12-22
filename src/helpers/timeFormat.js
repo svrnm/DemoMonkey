@@ -28,7 +28,7 @@ const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
  * Format a timestamp as relative time (e.g., "2 hours ago", "3 days ago")
  * @param {Date|number|string} date - The date to format
  * @param {boolean} withoutSuffix - If true, omit "ago" (returns "2 hours" instead of "2 hours ago")
- * @returns {string} The formatted relative time
+ * @returns {string} The formatted relative time, or an empty string if the duration exceeds all supported divisions
  */
 export function formatRelativeTime(date, withoutSuffix = false) {
   const timestamp = date instanceof Date ? date : new Date(date)
