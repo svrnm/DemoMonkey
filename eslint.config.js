@@ -131,6 +131,15 @@ export default [
     }
   },
 
+  // Test files - allow chai property assertions
+  {
+    files: ['test/**/*.js'],
+    rules: {
+      // Chai uses property assertions like .to.be.true which look like unused expressions
+      'no-unused-expressions': 'off'
+    }
+  },
+
   // JSON files
   {
     files: ['**/*.json'],

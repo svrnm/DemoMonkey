@@ -22,7 +22,7 @@ import Configuration from '../../models/Configuration'
 import PropTypes from 'prop-types'
 import Repository from '../../models/Repository'
 
-import { Base64 } from 'js-base64'
+import { base64Encode } from '../../helpers/base64'
 import ErrorBox from '../shared/ErrorBox'
 import WarningBox from '../shared/WarningBox'
 import Page from '../shared/Page'
@@ -196,7 +196,7 @@ class App extends React.Component {
   downloadConfiguration(configuration) {
     const link = document.createElement('a')
     link.href =
-      'data:text/octet-stream;base64,' + Base64.encode(this._prepareForDownload(configuration))
+      'data:text/octet-stream;base64,' + base64Encode(this._prepareForDownload(configuration))
     link.download = configuration.name.split('/').pop() + '.mnky'
     const event = document.createEvent('MouseEvents')
     event.initEvent('click', true, true)

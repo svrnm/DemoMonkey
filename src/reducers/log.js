@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import deepIs from 'deep-is'
+import { deepEqual } from '../helpers/deepEqual'
 
 // Verify that two entries are not identical
 function equal(entry1, entry2) {
@@ -19,14 +19,14 @@ function equal(entry1, entry2) {
     return false
   }
   // Verify that there are no custom properties as differences
-  if (!deepIs(Object.keys(entry1), Object.keys(entry2))) {
+  if (!deepEqual(Object.keys(entry1), Object.keys(entry2))) {
     // console.log('different keys', entry1, entry2)
     return false
   }
   const keys = Object.keys(entry1).filter((k) => !['repeated', 'timestamp'].includes(k))
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i]
-    if (!deepIs(entry1[key], entry2[key])) {
+    if (!deepEqual(entry1[key], entry2[key])) {
       // console.log('different', key, entry1, entry2)
       return false
     }

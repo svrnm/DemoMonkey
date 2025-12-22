@@ -184,25 +184,11 @@ module.exports = (env) => {
         },
         {
           test: /\.md$/,
-          use: [
-            {
-              loader: 'raw-loader',
-              options: {
-                esModule: false
-              }
-            }
-          ]
+          type: 'asset/source'
         },
         {
           test: /\.mnky$/,
-          use: [
-            {
-              loader: 'raw-loader',
-              options: {
-                esModule: false
-              }
-            }
-          ]
+          type: 'asset/source'
         }
       ]
     }

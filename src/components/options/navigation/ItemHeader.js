@@ -13,7 +13,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
+import { formatRelativeTime, formatISO } from '../../../helpers/timeFormat'
 import Popup from '../../shared/Popup'
 
 class ItemHeader extends React.Component {
@@ -84,9 +84,10 @@ class ItemHeader extends React.Component {
       return <span style={{ color: 'red' }}>enabled</span>
     }
     if (this.props.node.updated_at) {
+      const isoTime = formatISO(updatedAt)
       return (
-        <time dateTime={updatedAt.format()} title={updatedAt.format()}>
-          {updatedAt.fromNow(true)}
+        <time dateTime={isoTime} title={isoTime}>
+          {formatRelativeTime(updatedAt, true)}
         </time>
       )
     }
@@ -100,7 +101,7 @@ class ItemHeader extends React.Component {
 
     const base = isDirectory ? style.folder : style.item
 
-    const updatedAt = moment(this.props.node.updated_at)
+    const updatedAt = this.props.node.updated_at
 
     const label = this.props.node.name === '%' ? <i>Snippets</i> : this.props.node.name
 
