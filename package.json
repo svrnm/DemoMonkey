@@ -32,7 +32,7 @@
     "@mui/material": "7.3.6",
     "@mui/x-tree-view": "8.22.0",
     "ace-builds": "1.43.5",
-    "axios": "1.13.2",
+    "axios": "1.13.5",
     "chance": "1.1.13",
     "change-case": "5.4.4",
     "color": "5.0.3",
