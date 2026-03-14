@@ -12,17 +12,10 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import Variable from '../../../models/Variable'
 import VariableEditor from '../../shared/Variable'
 
 class GlobalVariables extends React.Component {
-  static propTypes = {
-    onSaveGlobalVariables: PropTypes.func.isRequired,
-    globalVariables: PropTypes.array.isRequired,
-    isDarkMode: PropTypes.bool.isRequired
-  }
-
   constructor(props) {
     super(props)
     this.state = {

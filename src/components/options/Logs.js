@@ -12,14 +12,9 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import { formatRelativeTime, formatISO } from '../../helpers/timeFormat'
 
 class Logs extends React.Component {
-  static propTypes = {
-    entries: PropTypes.arrayOf(PropTypes.object).isRequired
-  }
-
   renderElement(m) {
     if (typeof m === 'object' && m.fromError === true) {
       return (

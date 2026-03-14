@@ -13,7 +13,6 @@
  */
 import React from 'react'
 import Switch from '@mui/material/Switch'
-import PropTypes from 'prop-types'
 import AceEditor from 'react-ace'
 import Tabs from '../../shared/Tabs'
 import Pane from '../../shared/Pane'
@@ -30,28 +29,6 @@ import 'ace-builds/src-noconflict/ext-searchbox'
 import '../editor/ace/mnky'
 
 class Settings extends React.Component {
-  static propTypes = {
-    settings: PropTypes.object.isRequired,
-    configurations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onSetBaseTemplate: PropTypes.func.isRequired,
-    onSetAnalyticsSnippet: PropTypes.func.isRequired,
-    getRepository: PropTypes.func.isRequired,
-    onSaveGlobalVariables: PropTypes.func.isRequired,
-    onSetMonkeyInterval: PropTypes.func.isRequired,
-    onToggleOptionalFeature: PropTypes.func.isRequired,
-    onDownloadAll: PropTypes.func.isRequired,
-    onDeleteAll: PropTypes.func.isRequired,
-    onTrashAll: PropTypes.func.isRequired,
-    onReset: PropTypes.func.isRequired,
-    onRestoreConfiguration: PropTypes.func.isRequired,
-    onPermanentlyDeleteConfiguration: PropTypes.func.isRequired,
-    isDarkMode: PropTypes.bool.isRequired,
-    hasExtendedPermissions: PropTypes.bool.isRequired,
-    onRequestExtendedPermissions: PropTypes.func.isRequired,
-    activeTab: PropTypes.string,
-    onNavigate: PropTypes.func.isRequired
-  }
-
   constructor(props) {
     super(props)
     this.state = {

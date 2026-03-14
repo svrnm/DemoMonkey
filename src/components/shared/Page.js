@@ -12,16 +12,8 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 
 class Page extends React.Component {
-  static propTypes = {
-    children: PropTypes.any,
-    className: PropTypes.string,
-    syncDarkMode: PropTypes.bool.isRequired,
-    preferDarkMode: PropTypes.bool.isRequired
-  }
-
   render() {
     if (this.props.syncDarkMode) {
       document.documentElement.classList.remove('dark-mode')

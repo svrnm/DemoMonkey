@@ -13,8 +13,6 @@
  */
 import Command from './Command'
 import UndoElement from './UndoElement'
-import { v4 as uuidV4 } from 'uuid'
-
 class InsertHTML extends Command {
   // Using '' as locationFilter and location as {} works with _checkLocation
   // since every string includes ''
@@ -27,7 +25,7 @@ class InsertHTML extends Command {
     this.insert = insert
     this.locationFilter = locationFilter
     this.location = location
-    this.marker = uuidV4()
+    this.marker = crypto.randomUUID()
   }
 
   _checkLocation() {

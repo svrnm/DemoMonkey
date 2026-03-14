@@ -12,19 +12,11 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import ConfigurationUpload from '../../shared/ConfigurationUpload'
 import { Button } from '@mui/material'
 
 class NavigationHeader extends React.Component {
-  static propTypes = {
-    onUpload: PropTypes.func.isRequired,
-    onNavigate: PropTypes.func.isRequired,
-    onDownloadAll: PropTypes.func.isRequired,
-    showLogs: PropTypes.bool.isRequired
-  }
-
   handleClick(event, target) {
     event.preventDefault()
     this.props.onNavigate(target)

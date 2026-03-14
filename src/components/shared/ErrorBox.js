@@ -12,14 +12,9 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import { logger } from '../../helpers/logger'
 
 class ErrorBox extends React.Component {
-  static propTypes = {
-    error: PropTypes.object
-  }
-
   render() {
     const e = this.props.error
     logger('error', e).write()

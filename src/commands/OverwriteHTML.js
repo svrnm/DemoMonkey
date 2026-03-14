@@ -13,8 +13,6 @@
  */
 import Command from './Command'
 import UndoElement from './UndoElement'
-import { v4 as uuidV4 } from 'uuid'
-
 class OverwriteHTML extends Command {
   constructor(locationFilter, selector, html, location, conditionCallback) {
     super()
@@ -22,7 +20,7 @@ class OverwriteHTML extends Command {
     this.selector = selector
     this.html = html
     this.location = location
-    this.marker = uuidV4()
+    this.marker = crypto.randomUUID()
     this.conditionCallback =
       typeof conditionCallback === 'function' ? conditionCallback : () => true
   }

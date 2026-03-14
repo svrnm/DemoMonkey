@@ -12,7 +12,6 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import NavigationHeader from './NavigationHeader'
 import ItemHeader from './ItemHeader'
 import navigationTheme from './NavigationTheme'
@@ -23,16 +22,6 @@ import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView'
 import { TreeItem } from '@mui/x-tree-view/TreeItem'
 
 class Navigation extends React.Component {
-  static propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onNavigate: PropTypes.func.isRequired,
-    active: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-    onUpload: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onDownloadAll: PropTypes.func.isRequired,
-    showLogs: PropTypes.bool.isRequired
-  }
-
   // This implementation is not very performant
   // Probably in the long run, the underyling datamodel needs to be changed
   static buildTree(items, state) {

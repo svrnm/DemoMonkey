@@ -18,8 +18,6 @@ import Variable from '../../shared/Variable'
 import Popup from '../../shared/Popup'
 import CodeEditor from './CodeEditor'
 import Configuration from '../../../models/Configuration'
-import PropTypes from 'prop-types'
-import Mousetrap from 'mousetrap'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -28,26 +26,6 @@ import ErrorCommand from '../../../commands/ErrorCommand'
 import Switch from '@mui/material/Switch'
 
 class Editor extends React.Component {
-  static propTypes = {
-    currentConfiguration: PropTypes.object.isRequired,
-    globalVariables: PropTypes.array.isRequired,
-    getRepository: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired,
-    onCopy: PropTypes.func.isRequired,
-    onDownload: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    autoSave: PropTypes.bool.isRequired,
-    saveOnClose: PropTypes.bool.isRequired,
-    editorAutocomplete: PropTypes.bool.isRequired,
-    toggleConfiguration: PropTypes.func.isRequired,
-    keyboardHandler: PropTypes.string,
-    isDarkMode: PropTypes.bool.isRequired,
-    featureFlags: PropTypes.objectOf(PropTypes.bool).isRequired,
-    activeTab: PropTypes.string,
-    onNavigate: PropTypes.func.isRequired,
-    hasConfigurationWithSameName: PropTypes.func.isRequired
-  }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -114,31 +92,19 @@ class Editor extends React.Component {
     this.props.toggleConfiguration()
   }
 
-  componentDidMount() {
-    Mousetrap.prototype.stopCallback = function (e, element, combo) {
-      if (combo === 'mod+s') {
-        return false
-      }
-      if ((' ' + element.className + ' ').indexOf(' mousetrap ') > -1) {
-        return false
-      }
-      return (
-        element.tagName === 'INPUT' ||
-        element.tagName === 'SELECT' ||
-        element.tagName === 'TEXTAREA' ||
-        (element.contentEditable && element.contentEditable === 'true')
-      )
-    }
-
-    Mousetrap.bind('mod+s', (event) => {
+  _handleKeyDown = (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
       event.preventDefault()
       this.onBeforeSave()
-      return false
-    })
+    }
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this._handleKeyDown)
   }
 
   componentWillUnmount() {
-    Mousetrap.unbind('mod+s')
+    document.removeEventListener('keydown', this._handleKeyDown)
   }
 
   handleClick(event, action) {

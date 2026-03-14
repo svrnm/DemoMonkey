@@ -12,7 +12,6 @@
  * limitations under the License.
  */
 import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
 
 class DropDownMenu extends Component {
   constructor() {
@@ -20,13 +19,6 @@ class DropDownMenu extends Component {
     this.state = {
       visible: false
     }
-  }
-
-  static propTypes = {
-    children: PropTypes.arrayOf(PropTypes.object).isRequired,
-    buttonClassName: PropTypes.string.isRequired,
-    menuClassName: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired
   }
 
   _toggle(event) {

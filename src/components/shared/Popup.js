@@ -18,17 +18,8 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-import PropTypes from 'prop-types'
 
 class Popup extends React.Component {
-  static propTypes = {
-    open: PropTypes.bool.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired,
-    text: PropTypes.object.isRequired
-  }
-
   render() {
     return (
       <Dialog

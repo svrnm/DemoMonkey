@@ -12,17 +12,10 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import { formatRelativeTime, formatISO } from '../../../helpers/timeFormat'
 import Popup from '../../shared/Popup'
 
 class ItemHeader extends React.Component {
-  static propTypes = {
-    style: PropTypes.object.isRequired,
-    node: PropTypes.object.isRequired,
-    onDelete: PropTypes.func.isRequired
-  }
-
   constructor(props) {
     super(props)
     this.state = {

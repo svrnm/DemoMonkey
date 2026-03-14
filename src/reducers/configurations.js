@@ -11,8 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { v4 as uuidV4 } from 'uuid'
-
 const configuration = (state, action) => {
   if (
     state &&
@@ -42,7 +40,7 @@ const configuration = (state, action) => {
         delete action.configuration.id
       }
       return Object.assign(
-        { id: uuidV4(), created_at: Date.now(), updated_at: Date.now() },
+        { id: crypto.randomUUID(), created_at: Date.now(), updated_at: Date.now() },
         action.configuration,
         { enabled: false }
       )

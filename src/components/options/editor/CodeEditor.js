@@ -12,7 +12,6 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import AceEditor from 'react-ace'
 
 import autocomplete from './ace/autocomplete.js'
@@ -39,20 +38,6 @@ class CodeEditor extends React.Component {
     } catch (e) {
       logger('error', e).write()
     }
-  }
-
-  static propTypes = {
-    value: PropTypes.string.isRequired,
-    getRepository: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onAutoSave: PropTypes.func.isRequired,
-    onVimWrite: PropTypes.func.isRequired,
-    readOnly: PropTypes.bool,
-    editorAutocomplete: PropTypes.bool.isRequired,
-    annotations: PropTypes.func.isRequired,
-    keyboardHandler: PropTypes.string,
-    isDarkMode: PropTypes.bool.isRequired,
-    variables: PropTypes.array.isRequired
   }
 
   autoSave() {
