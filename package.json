@@ -113,5 +113,11 @@
     "*.less": "stylelint --cache --fix",
     "*.md": "npx markdownlint-cli --fix --config .markdownlint.jsonc"
   },
+  "overrides": {
+    "mocha": {
+      "diff": "8.0.3",
+      "serialize-javascript": "7.0.4"
+    }
+  },
   "version": "11.0.0"
 }
