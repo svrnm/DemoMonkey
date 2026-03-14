@@ -74,7 +74,8 @@ describe('ProtocolHandler', function () {
 
     it('should handle gist URLs by following redirect', async function () {
       globalThis.fetch = async (url) => {
-        if (url.includes('gist.github.com') && !url.includes('/raw')) {
+        const parsed = new URL(url)
+        if (parsed.hostname === 'gist.github.com' && !parsed.pathname.endsWith('/raw')) {
           return {
             ok: true,
             status: 200,
@@ -82,7 +83,7 @@ describe('ProtocolHandler', function () {
             text: async () => '<html>gist page</html>'
           }
         }
-        if (url.includes('/raw')) {
+        if (parsed.hostname === 'gist.github.com' && parsed.pathname.endsWith('/raw')) {
           return {
             ok: true,
             status: 200,
