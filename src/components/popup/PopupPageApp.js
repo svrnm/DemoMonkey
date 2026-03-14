@@ -15,21 +15,11 @@ import React from 'react'
 import Tabs from '../shared/Tabs'
 import Pane from '../shared/Pane'
 import Page from '../shared/Page'
-import Manifest from '../../models/Manifest'
 import { connect } from 'react-redux'
 import ConfigurationList from './ConfigurationList'
-import PropTypes from 'prop-types'
 
 /* The PopupPageApp will be defined below */
 class App extends React.Component {
-  static propTypes = {
-    currentUrl: PropTypes.string,
-    actions: PropTypes.objectOf(PropTypes.func).isRequired,
-    configurations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    settings: PropTypes.object.isRequired,
-    manifest: PropTypes.instanceOf(Manifest).isRequired
-  }
-
   constructor(props) {
     super(props)
     this.state = {

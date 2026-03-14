@@ -13,18 +13,8 @@
  */
 import React from 'react'
 import Switch from '@mui/material/Switch'
-import PropTypes from 'prop-types'
 
 class ToggleConfiguration extends React.Component {
-  static propTypes = {
-    currentUrl: PropTypes.string,
-    onlyShowAvailable: PropTypes.bool.isRequired,
-    actions: PropTypes.objectOf(PropTypes.func).isRequired,
-    configuration: PropTypes.object,
-    index: PropTypes.number,
-    className: PropTypes.string
-  }
-
   toggle(id) {
     this.props.actions.toggleConfiguration(id)
   }

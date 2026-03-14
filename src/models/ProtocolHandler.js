@@ -11,7 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import axios from 'axios'
 
 class ProtocolHandler {
   constructor(protocol) {
@@ -62,10 +61,11 @@ class ProtocolHandler {
   }
 
   _handleDefault(url, resolve, reject) {
-    axios({ url })
-      .then((response) => {
-        if (response.status === 200 && typeof response.data === 'string') {
-          resolve(this._buildConfiguration(`Shared/${url.href}`, response.data))
+    fetch(url)
+      .then(async (response) => {
+        if (response.ok) {
+          const data = await response.text()
+          resolve(this._buildConfiguration(`Shared/${url.href}`, data))
         }
         return null
       })
@@ -78,11 +78,12 @@ class ProtocolHandler {
   async _handleGist(id, resolve, reject) {
     const url = `https://gist.github.com/${id}/`
     try {
-      const response = await axios({ url })
-      if (response.status === 200) {
-        const rawUrl = response.request.responseURL + '/raw'
-        const rawResponse = await axios({ url: rawUrl })
-        resolve(this._buildConfiguration(`Shared/${id}`, rawResponse.data))
+      const response = await fetch(url)
+      if (response.ok) {
+        const rawUrl = response.url + '/raw'
+        const rawResponse = await fetch(rawUrl)
+        const data = await rawResponse.text()
+        resolve(this._buildConfiguration(`Shared/${id}`, data))
       }
     } catch (error) {
       error.message = `Could not handle ${url}, error was: ${error.message}`

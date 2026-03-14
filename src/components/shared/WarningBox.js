@@ -12,14 +12,8 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 
 class WarningBox extends React.Component {
-  static propTypes = {
-    onDismiss: PropTypes.func.isRequired,
-    onRequestExtendedPermissions: PropTypes.func.isRequired
-  }
-
   grantPermission(e) {
     e.preventDefault()
     this.props.onRequestExtendedPermissions()

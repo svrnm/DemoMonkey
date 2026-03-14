@@ -11,8 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { v4 as uuidV4 } from 'uuid'
-
 const optionalFeatures = function (state, action) {
   switch (action.type) {
     case 'TOGGLE_OPTIONAL_FEATURE':
@@ -27,7 +25,7 @@ const connections = function (state, action) {
   switch (action.type) {
     case 'ADD_CONNECTION':
       if (action.connection.key === false) {
-        return [...state, Object.assign(action.connection, { key: uuidV4() })]
+        return [...state, Object.assign(action.connection, { key: crypto.randomUUID() })]
       }
       return state.map((c) => {
         if (c.key === action.connection.key) {

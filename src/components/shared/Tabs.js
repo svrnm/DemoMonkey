@@ -12,15 +12,8 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 
 class Tabs extends React.Component {
-  static propTypes = {
-    children: PropTypes.arrayOf(PropTypes.object).isRequired,
-    activeTab: PropTypes.string,
-    onNavigate: PropTypes.func.isRequired
-  }
-
   _getSelected() {
     this.tabNames = this.props.children.map((child) => child.props.name)
     return this.props.activeTab && this.tabNames.indexOf(this.props.activeTab) > -1

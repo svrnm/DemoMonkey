@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 import React from 'react'
-import VariableModel from '../../models/Variable'
-import PropTypes from 'prop-types'
 import AceEditor from 'react-ace'
 import { base64Decode } from '../../helpers/base64'
 import 'ace-builds/src-noconflict/theme-xcode'
@@ -22,14 +20,6 @@ import 'ace-builds/src-noconflict/mode-html'
 import 'ace-builds/src-noconflict/mode-javascript'
 
 class Variable extends React.Component {
-  static propTypes = {
-    onUpdate: PropTypes.func.isRequired,
-    onDelete: PropTypes.func,
-    variable: PropTypes.instanceOf(VariableModel),
-    isDarkMode: PropTypes.bool.isRequired,
-    isGlobal: PropTypes.bool.isRequired
-  }
-
   constructor(props) {
     super(props)
     this.colorPicker = React.createRef()

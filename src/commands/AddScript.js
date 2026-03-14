@@ -13,14 +13,12 @@
  */
 import Command from './Command'
 import UndoElement from './UndoElement'
-import { v4 as uuidV4 } from 'uuid'
-
 class QuerySelector extends Command {
   constructor(attributes = [], body) {
     super()
     this.attributes = attributes
     this.body = body
-    this.demoMonkeyId = `dmid-${uuidV4()}`
+    this.demoMonkeyId = `dmid-${crypto.randomUUID()}`
   }
 
   isApplicableForGroup(group) {

@@ -13,7 +13,6 @@
  */
 import React from 'react'
 import Json2Ini from '../../models/Json2Ini'
-import PropTypes from 'prop-types'
 import Dialog from '@mui/material/Dialog'
 import JSZip from 'jszip'
 import {
@@ -26,11 +25,6 @@ import {
 } from '@mui/material'
 
 class ConfigurationUpload extends React.Component {
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    onUpload: PropTypes.func.isRequired
-  }
-
   constructor(props) {
     super(props)
 

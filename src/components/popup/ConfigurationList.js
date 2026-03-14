@@ -12,19 +12,11 @@
  * limitations under the License.
  */
 import React from 'react'
-import PropTypes from 'prop-types'
 import Configuration from '../../models/Configuration'
 import ToggleConfiguration from '../shared/ToggleConfiguration'
 import ErrorBox from '../shared/ErrorBox'
 
 class ConfigurationList extends React.Component {
-  static propTypes = {
-    settings: PropTypes.object.isRequired,
-    currentUrl: PropTypes.string,
-    configurations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    actions: PropTypes.objectOf(PropTypes.func).isRequired
-  }
-
   constructor(props) {
     super(props)
     this.currentDirectory = ''
