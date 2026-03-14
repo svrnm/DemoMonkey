@@ -91,12 +91,12 @@ INI config text
 
 ### Extension Components
 
-| Entry Point        | Role                                              |
-|--------------------|---------------------------------------------------|
-| `src/app.js`       | Renders React UI for popup and options page       |
-| `src/monkey.js`    | Content script: applies configurations to page DOM|
-| `src/background.js`| Service worker: manages tabs, messaging, requests |
-| `src/inline.js`    | Injected into pages for AJAX/XHR interception     |
+| Entry Point         | Role                                               |
+| ------------------- | -------------------------------------------------- |
+| `src/app.js`        | Renders React UI for popup and options page        |
+| `src/monkey.js`     | Content script: applies configurations to page DOM |
+| `src/background.js` | Service worker: manages tabs, messaging, requests  |
+| `src/inline.js`     | Injected into pages for AJAX/XHR interception      |
 
 ### State Management
 
