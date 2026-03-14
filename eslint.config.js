@@ -93,7 +93,7 @@ export default [
       'react/no-unsafe': 'error',
 
       // Import rules
-      // Disabled: ESLint import resolver can't resolve npm modules (e.g., 'uuid')
+      // Disabled: ESLint import resolver can't resolve all npm modules
       // without eslint-import-resolver-webpack. Webpack handles resolution at build time.
       'import/no-unresolved': 'off',
       'import/named': 'error',

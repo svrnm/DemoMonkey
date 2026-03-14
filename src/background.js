@@ -14,7 +14,6 @@
 import { createStore } from 'redux'
 import { createWrapStore } from 'webext-redux'
 import reducers from './reducers'
-import { v4 as uuidV4 } from 'uuid'
 import Configuration from './models/Configuration'
 import Badge from './models/Badge'
 import OptionalFeature from './models/OptionalFeature'
@@ -155,7 +154,7 @@ try {
           test: 'Inventory-Services\nCart\nCART\nSan Francisco',
           enabled: false,
           values: {},
-          id: uuidV4()
+          id: crypto.randomUUID()
         },
         {
           name: 'templates/Cities',
@@ -163,7 +162,7 @@ try {
           test: 'San Francisco\nSeattle\nLondon',
           enabled: false,
           values: {},
-          id: uuidV4()
+          id: crypto.randomUUID()
         }
       ],
       settings: {
@@ -184,7 +183,7 @@ try {
         debugMode: false,
         monkeyInterval: 100
       },
-      monkeyID: uuidV4()
+      monkeyID: crypto.randomUUID()
     }
 
     function init() {
