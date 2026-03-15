@@ -27,14 +27,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-
-      - name: Cache node_modules
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-v22-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-v22-
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -44,7 +37,7 @@ jobs:
 
       - name: Extract version
         id: version
-        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
 
       - name: Build production release
         run: webpack --mode=production --env RELEASE=stable
@@ -52,7 +45,6 @@ jobs:
       - name: Create archives
         run: |
           cd build-release
-          zip -r "../DemoMonkey-${{ steps.version.outputs.version }}.zip" .
           tar -czf "../DemoMonkey-${{ steps.version.outputs.version }}.tar.gz" .
           cd ..
           rm -r build-release
@@ -62,8 +54,8 @@ jobs:
         with:
           name: release-artifacts
           path: |
-            DemoMonkey-*.zip
-            DemoMonkey-*.tar.gz
+            DemoMonkey-${{ steps.version.outputs.version }}-stable.zip
+            DemoMonkey-${{ steps.version.outputs.version }}.tar.gz
           retention-days: 5
 
   attest:
@@ -88,7 +80,7 @@ jobs:
       - name: Attest zip
         uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
         with:
-          subject-path: DemoMonkey-${{ needs.build.outputs.version }}.zip
+          subject-path: DemoMonkey-${{ needs.build.outputs.version }}-stable.zip
 
       - name: Attest tarball
         uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
