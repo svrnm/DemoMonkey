@@ -7,6 +7,9 @@ on:
         description: 'Git tag to release (e.g. v11.0.0)'
         required: true
         type: string
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -25,9 +28,24 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Validate input tag exists
+        run: |
+          TAG="${{ inputs.tag }}"
+          if ! [[ "$TAG" =~ ^v.* ]]; then
+            echo "Error: input tag '$TAG' does not match expected pattern 'v*'."
+            exit 1
+          fi
+
+          REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
+          echo "Validating that tag '$TAG' exists in '$REPO_URL'..."
+          if ! git ls-remote --exit-code --tags "$REPO_URL" "refs/tags/$TAG" > /dev/null 2>&1; then
+            echo "Error: tag '$TAG' does not exist in the remote repository."
+            exit 1
+          fi
+
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
@@ -46,7 +64,8 @@ jobs:
 
       - name: Validate tag matches manifest version
         run: |
-          TAG_VERSION="${{ inputs.tag }}"
+          TAG_VERSION="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          TAG_VERSION="${TAG_VERSION#refs/tags/}"
           TAG_VERSION="${TAG_VERSION#v}"
           MANIFEST_VERSION="${{ steps.version.outputs.version }}"
           echo "Tag version: ${TAG_VERSION}"
