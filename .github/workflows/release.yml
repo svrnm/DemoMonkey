@@ -39,13 +39,24 @@ jobs:
         id: version
         run: echo "version=$(node -p \"require('./manifest.json').version\")" >> "$GITHUB_OUTPUT"
 
+      - name: Validate tag matches manifest version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          MANIFEST_VERSION="${{ steps.version.outputs.version }}"
+          echo "Tag version: ${TAG_VERSION}"
+          echo "Manifest version: ${MANIFEST_VERSION}"
+          if [ "${TAG_VERSION}" != "${MANIFEST_VERSION}" ]; then
+            echo "Error: Git tag version (${TAG_VERSION}) does not match manifest.json version (${MANIFEST_VERSION})."
+            exit 1
+          fi
+
       - name: Build production release
         run: npx webpack --mode=production --env RELEASE=stable
 
       - name: Create archives
         run: |
           cd build-release
-          tar -czf "../DemoMonkey-${{ steps.version.outputs.version }}.tar.gz" .
+          tar -czf "../DemoMonkey-${{ steps.version.outputs.version }}-stable.tar.gz" .
           cd ..
           rm -r build-release
 
@@ -55,7 +66,7 @@ jobs:
           name: release-artifacts
           path: |
             DemoMonkey-${{ steps.version.outputs.version }}-stable.zip
-            DemoMonkey-${{ steps.version.outputs.version }}.tar.gz
+            DemoMonkey-${{ steps.version.outputs.version }}-stable.tar.gz
           retention-days: 5
 
   attest:
