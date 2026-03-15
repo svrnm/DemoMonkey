@@ -29,10 +29,11 @@ jobs:
           egress-policy: audit
 
       - name: Validate input tag exists
+        if: github.event_name == 'workflow_dispatch'
         run: |
           TAG="${{ inputs.tag }}"
           if ! [[ "$TAG" =~ ^v.* ]]; then
-            echo "Error: input tag '$TAG' does not match expected pattern 'v*'."
+            echo "Error: input tag '$TAG' is invalid. It must start with 'v' (e.g. v11.0.0)."
             exit 1
           fi
 
