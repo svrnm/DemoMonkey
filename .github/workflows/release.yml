@@ -37,10 +37,10 @@ jobs:
 
       - name: Extract version
         id: version
-        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(node -p \"require('./manifest.json').version\")" >> "$GITHUB_OUTPUT"
 
       - name: Build production release
-        run: webpack --mode=production --env RELEASE=stable
+        run: npx webpack --mode=production --env RELEASE=stable
 
       - name: Create archives
         run: |
@@ -50,7 +50,7 @@ jobs:
           rm -r build-release
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v3.pre.node20
+        uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097 # v4.4.0
         with:
           name: release-artifacts
           path: |
@@ -114,5 +114,5 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --title "$TAG" \
             --generate-notes \
-            "DemoMonkey-${VERSION}.zip" \
+            "DemoMonkey-${VERSION}-stable.zip" \
             "DemoMonkey-${VERSION}.tar.gz"
