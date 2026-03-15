@@ -61,7 +61,9 @@ jobs:
 
       - name: Extract version
         id: version
-        run: echo "version=$(node -p \"require('./manifest.json').version\")" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Validate tag matches manifest version
         run: |
