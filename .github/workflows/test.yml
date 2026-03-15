@@ -32,12 +32,11 @@ jobs:
         with:
           path: |
             node_modules
-            package-lock.json
           key: ${{ runner.os }}-node-v22-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v22-
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
       - name: Run Build
         run: npm run build
       - name: Run Non-Ui Tests
