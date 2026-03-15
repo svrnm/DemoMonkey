@@ -77,6 +77,8 @@ jobs:
       id-token: write
       contents: read
       attestations: write
+    env:
+      ARTIFACT_BASENAME: DemoMonkey-${{ needs.build.outputs.version }}-stable
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
@@ -91,19 +93,20 @@ jobs:
       - name: Attest zip
         uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
         with:
-          subject-path: DemoMonkey-${{ needs.build.outputs.version }}-stable.zip
+          subject-path: ${{ env.ARTIFACT_BASENAME }}.zip
 
       - name: Attest tarball
         uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
         with:
-          subject-path: DemoMonkey-${{ needs.build.outputs.version }}.tar.gz
-
+          subject-path: ${{ env.ARTIFACT_BASENAME }}.tar.gz
   release:
     name: Create GitHub release
     needs: [build, attest]
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      ARTIFACT_BASENAME: DemoMonkey-${{ needs.build.outputs.version }}-stable
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
@@ -125,5 +128,5 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --title "$TAG" \
             --generate-notes \
-            "DemoMonkey-${VERSION}-stable.zip" \
-            "DemoMonkey-${VERSION}.tar.gz"
+            "${ARTIFACT_BASENAME}.zip" \
+            "${ARTIFACT_BASENAME}.tar.gz"
