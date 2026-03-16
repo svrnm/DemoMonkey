@@ -15,13 +15,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "manifest.json",
-        "COMMITHASH",
-        "js/inline.js",
-        "js/index.js.map",
-        "icons/monkey_48.png"
-      ],
+      "resources": ["manifest.json", "COMMITHASH", "js/inline.js", "js/index.js.map"],
       "matches": ["<all_urls>"]
     }
   ],
