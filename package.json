@@ -39,7 +39,7 @@
     "color-string": "2.1.4",
     "crypto-js": "4.2.0",
     "deepmerge": "4.3.1",
-    "dompurify": "^3.3.3",
+    "dompurify": "3.3.3",
     "fast-json-patch": "3.1.1",
     "highlight.js": "11.11.1",
     "ini": "6.0.0",
