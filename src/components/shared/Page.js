@@ -17,7 +17,16 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { lightTheme, darkTheme } from '../../theme'
 
 function Page({ syncDarkMode, preferDarkMode, className, children }) {
-  const [isDark, setIsDark] = useState(() => (syncDarkMode ? false : !!preferDarkMode))
+  const [isDark, setIsDark] = useState(() => {
+    if (syncDarkMode && typeof window !== 'undefined' && window.matchMedia) {
+      try {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches
+      } catch {
+        // If matchMedia throws for any reason, fall back to explicit preference
+      }
+    }
+    return !!preferDarkMode
+  })
 
   useEffect(() => {
     if (syncDarkMode && typeof window !== 'undefined' && window.matchMedia) {
