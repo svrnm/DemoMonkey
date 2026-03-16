@@ -50,8 +50,15 @@ function Help() {
   const handleClick = useCallback((e) => {
     if (e.target.classList.contains('code-copy-btn')) {
       const wrapper = e.target.closest('.code-block-wrapper')
+      if (!wrapper) {
+        return
+      }
       const code = wrapper.querySelector('code')
       if (code) {
+        if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') {
+          window.alert('Copy to clipboard is not available in this browser.')
+          return
+        }
         navigator.clipboard
           .writeText(code.textContent)
           .then(() => {
