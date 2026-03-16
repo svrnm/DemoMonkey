@@ -258,7 +258,7 @@ class Settings extends React.Component {
                 <p>
                   If your demo team asks you to provide analytics on your usage of their platform,
                   this is the right place! Put a snippet of any end user monitoring or analytics
-                  solution (AppDynamics, Matamo, Plausible) into this box and it will be injected
+                  solution (AppDynamics, Matomo, Plausible) into this box and it will be injected
                   when an @include[] in your demo configuration matches.
                 </p>
                 <p>

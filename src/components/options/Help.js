@@ -13,6 +13,7 @@
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 
 const renderer = new marked.Renderer()
 const originalCode = renderer.code.bind(renderer)
@@ -30,6 +31,9 @@ function Help() {
   useEffect(() => {
     fetch('https://raw.githubusercontent.com/svrnm/DemoMonkey/main/USAGE.md')
       .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load remote usage documentation: ${response.status}`)
+        }
         return response.text()
       })
       .then((data) => {
@@ -68,6 +72,40 @@ function Help() {
     headerIds: true,
     renderer
   })
+  const safeHtml = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      'a',
+      'b',
+      'strong',
+      'i',
+      'em',
+      'p',
+      'br',
+      'ul',
+      'ol',
+      'li',
+      'code',
+      'pre',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'blockquote',
+      'hr',
+      'img',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+      'th',
+      'td',
+      'div',
+      'span'
+    ],
+    ALLOWED_ATTR: ['href', 'title', 'alt', 'src']
+  })
 
   return (
     <div className="content">
@@ -75,7 +113,7 @@ function Help() {
         className="welcome"
         ref={contentRef}
         onClick={handleClick}
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
       ></div>
     </div>
   )

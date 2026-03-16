@@ -149,10 +149,20 @@ class ConfigurationList extends React.Component {
     return ''
   }
 
-  copyIncludeRegex() {
+  async copyIncludeRegex() {
     const text = this.buildIncludeRegex()
-    if (text) {
-      navigator.clipboard.writeText(text)
+    if (!text) {
+      return
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      try {
+        await navigator.clipboard.writeText(text)
+      } catch (err) {
+        // Handle clipboard write failure to avoid unhandled promise rejections
+        // You may want to surface this to the user instead of just logging.
+        console.error('Failed to copy include regex to clipboard:', err)
+      }
     }
   }
 
