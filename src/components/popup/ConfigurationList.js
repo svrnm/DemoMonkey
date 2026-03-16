@@ -155,7 +155,11 @@ class ConfigurationList extends React.Component {
       return
     }
 
-    if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    if (
+      typeof navigator !== 'undefined' &&
+      navigator.clipboard &&
+      typeof navigator.clipboard.writeText === 'function'
+    ) {
       try {
         await navigator.clipboard.writeText(text)
       } catch (err) {
