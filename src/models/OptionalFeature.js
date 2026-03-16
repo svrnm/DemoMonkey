@@ -210,7 +210,8 @@ class OptionalFeature {
   }
 
   static getGroups() {
-    return ['Editor', 'Replacements', 'Appearance', 'General']
+    // Derive unique group names from optionalFeatures in declaration order
+    return Array.from(new Set(optionalFeatures.map((obj) => obj.group)))
   }
 }
 

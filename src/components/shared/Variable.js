@@ -86,7 +86,7 @@ class Variable extends React.Component {
     if (typeof value !== 'string') return false
     const v = value.trim()
     return (
-      /^#([0-9a-f]{3,8})$/i.test(v) ||
+      /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(v) ||
       /^([0-9a-f]{3})$/i.test(v) ||
       /^([0-9a-f]{6})$/i.test(v) ||
       /^(rgb|rgba|hsl|hsla)\s*\(/.test(v) ||
@@ -111,7 +111,7 @@ class Variable extends React.Component {
     if (value.startsWith('data:image')) {
       return (
         <div className="variable-image-preview">
-          <img src={value} />
+          <img src={value} alt="Variable image preview" />
         </div>
       )
     }

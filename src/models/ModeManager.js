@@ -250,7 +250,7 @@ class ModeManager {
           `
         <div id="demo-monkey-debug-box">
           <div id="demo-monkey-logo" title="Click to minimize/maximize Demo Monkey Bar">
-            <img src="${this.scope.chrome.runtime.getURL('icons/monkey_48.png')}" width="20" height="20" style="display:block" />
+            <img src="${this.scope.chrome.runtime.getURL('icons/monkey_48.png')}" alt="DemoMonkey" width="20" height="20" style="display:block" />
           </div>
           <div class="demo-monkey-debug-box-inner">Runtime (ms): <span id="demo-monkey-last-runtime"></span></div>
           <div class="demo-monkey-debug-box-inner">Inspected: <span id="demo-monkey-elements-count"></span></div>

@@ -54,7 +54,7 @@ function WarningBox({ onRequestExtendedPermissions, onDismiss }) {
         </>
       }
     >
-      For DemoMonkey to work optimal you have to grant permissions to access all websites.{' '}
+      For DemoMonkey to work optimally you have to grant permissions to access all websites.{' '}
       <a
         href="https://developer.chrome.com/extensions/permission_warnings"
         target="_blank"

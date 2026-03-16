@@ -26,7 +26,7 @@ function ErrorBox({ error }) {
       <div>
         <a
           href={`https://github.com/svrnm/DemoMonkey/issues/new?title=${encodeURIComponent(error.message || '')}&body=${encodeURIComponent(error.stack || '')}`}
-          target="blank"
+          target="_blank"
           rel="noopener noreferrer"
         >
           Report Issue

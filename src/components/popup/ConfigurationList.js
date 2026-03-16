@@ -143,7 +143,8 @@ class ConfigurationList extends React.Component {
       const u = new URL(this.props.currentUrl)
       const protocol = ['https:', 'http:'].includes(u.protocol) ? 'https?:' : u.protocol
       const host = u.hostname
-      return '@include[] = /^' + protocol + '//' + host + '/.*$/'
+      const escapedHost = host.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+      return '@include[] = /^' + protocol + '\\/\\/' + escapedHost + '\\/.*$/'
     }
     return ''
   }
