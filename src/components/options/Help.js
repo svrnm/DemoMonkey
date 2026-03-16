@@ -102,9 +102,10 @@ function Help() {
       'th',
       'td',
       'div',
-      'span'
+      'span',
+      'button'
     ],
-    ALLOWED_ATTR: ['href', 'title', 'alt', 'src']
+    ALLOWED_ATTR: ['href', 'title', 'alt', 'src', 'class']
   })
 
   return (

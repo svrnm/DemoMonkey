@@ -516,10 +516,9 @@ class App extends React.Component {
   }
 
   render() {
-    const activeItem =
-      this.state.currentView.indexOf('configuration/') === -1
-        ? false
-        : this.state.currentView.split('/').pop()
+    const activeItem = this.state.currentView.startsWith('configuration/')
+      ? this.state.currentView.split('/')[1] || false
+      : false
 
     const withWarning =
       !this.hasExtendedPermissions() &&
