@@ -126,7 +126,7 @@ export const test = base.extend({
         await page.goto(dashboardUrl)
         await page.waitForSelector("a[href='#settings']")
         await page.click("a[href='#settings']")
-        await page.waitForSelector('.toggle-group')
+        await page.waitForSelector('.feature-item')
 
         const toggle = page.locator(`#toggle-${title} input`)
         await toggle.click()
@@ -140,7 +140,7 @@ export const test = base.extend({
         await page.goto(dashboardUrl)
         await page.waitForSelector("a[href='#settings']")
         await page.click("a[href='#settings']")
-        await page.waitForSelector('.toggle-group')
+        await page.waitForSelector('.feature-item')
 
         const toggle = page.locator(`#toggle-${title} input`)
         await toggle.click()
@@ -162,8 +162,8 @@ export const test = base.extend({
         await page.waitForSelector('#configuration-title')
         await page.fill('#configuration-title', title)
 
-        // Click the editor tab to show the code editor
-        await page.click('li#current-configuration-editor a')
+        // Click the editor tab (Configuration tab) to show the code editor
+        await page.click('#current-configuration-editor')
 
         // Wait for ACE Editor to be ready - it creates a div with id="contentarea"
         await page.waitForSelector('#contentarea', { timeout: 5000 })
@@ -185,8 +185,8 @@ export const test = base.extend({
         // Wait for React to process the change
         await page.waitForTimeout(200)
 
-        // Click save button
-        await page.click('.save-button')
+        // Click save button (MUI Button with "Save" text)
+        await page.getByRole('button', { name: 'Save' }).click()
 
         // Wait for save to complete
         await page.waitForTimeout(500)

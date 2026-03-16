@@ -49,8 +49,8 @@ test.describe('Download and Upload', () => {
       // Set up download listener before clicking download
       const downloadPromise = page.waitForEvent('download')
 
-      // Click the download button
-      await page.click('button.download-button')
+      // Click the download button in the editor toolbar (MUI Button)
+      await page.locator('.current-view').getByRole('button', { name: 'Download' }).click()
 
       // Wait for the download to complete
       const download = await downloadPromise

@@ -11,22 +11,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react'
+import React, { useMemo } from 'react'
+import { ThemeProvider } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+import { lightTheme, darkTheme } from '../../theme'
 
-class Page extends React.Component {
-  render() {
-    if (this.props.syncDarkMode) {
-      document.documentElement.classList.remove('dark-mode')
-      document.documentElement.classList.remove('light-mode')
-    } else if (this.props.preferDarkMode) {
-      document.documentElement.classList.add('dark-mode')
-      document.documentElement.classList.remove('light-mode')
-    } else {
-      document.documentElement.classList.remove('dark-mode')
-      document.documentElement.classList.add('light-mode')
-    }
-    return <div className={this.props.className}>{this.props.children}</div>
+function Page({ syncDarkMode, preferDarkMode, className, children }) {
+  if (syncDarkMode) {
+    document.documentElement.classList.remove('dark-mode')
+    document.documentElement.classList.remove('light-mode')
+  } else if (preferDarkMode) {
+    document.documentElement.classList.add('dark-mode')
+    document.documentElement.classList.remove('light-mode')
+  } else {
+    document.documentElement.classList.remove('dark-mode')
+    document.documentElement.classList.add('light-mode')
   }
+
+  const isDark = syncDarkMode
+    ? window.matchMedia('(prefers-color-scheme: dark)').matches
+    : !!preferDarkMode
+
+  const theme = useMemo(() => (isDark ? darkTheme : lightTheme), [isDark])
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline enableColorScheme />
+      <div className={className}>{children}</div>
+    </ThemeProvider>
+  )
 }
 
 export default Page

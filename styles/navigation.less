@@ -1,5 +1,41 @@
 @import 'colors';
 
+.top-bar {
+  display: flex;
+  align-items: center;
+  background-color: var(--topbar-color);
+  color: #f0f0f0;
+  padding: 0 8px;
+  height: 40px;
+  min-height: 40px;
+  gap: 4px;
+  z-index: 10;
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 2px;
+  }
+
+  .top-bar-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 20%);
+    margin: 0 4px;
+  }
+
+  .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .upload-form {
+    display: none;
+  }
+}
+
 .navigation {
   background: var(--navigation-background);
   border-right: 1px solid var(--base-color);
@@ -8,9 +44,9 @@
   margin: 0;
   min-height: 100%;
   min-width: 250px;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow: auto;
   padding: 0;
+  resize: horizontal;
 
   & > div {
     height: 100%;
@@ -40,22 +76,33 @@
       top: 4px;
 
       & button {
-        background: transparent;
+        background: var(--navigation-background);
         border: 0;
+        border-radius: 50%;
         cursor: pointer;
         font-size: 140%;
         font-weight: bold;
         margin: 0;
-        margin-right: 4px;
+        margin-right: 2px;
         padding: 0;
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
         &:focus,
         &:hover {
           box-shadow: none !important;
+          opacity: 0.8;
         }
 
         &.delete-configuration {
           color: red;
+        }
+
+        &.download-configuration {
+          color: green;
         }
 
         &.edit-configuration {
@@ -80,93 +127,14 @@
     }
   }
 
-  .navigation-header {
-    max-height: 90px;
-
-    ul {
-      margin: 0;
-      padding: 0;
-    }
-  }
-
-  .actions {
-    background-color: var(--base-color);
-
-    a {
-      color: #f0f0f0;
-      display: block;
-      font-weight: bold;
-      padding: 8px 8px;
-      text-align: center;
-      text-decoration: none;
-
-      &:hover {
-        background: #f0f0f0;
-        color: var(--base-color);
-        text-decoration: underline;
-      }
-    }
-
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    li {
-      list-style-type: none;
-      width: 33.333%;
-    }
-  }
-
-  .context-menu {
-    position: fixed;
-    border: 1px solid var(--mode-text-color);
-    color: var(--mode-text-color);
-    margin: 4px;
-    padding: 0;
-    background: var(--mode-color);
-    z-index: 999999;
-    min-width: 100px;
-
-    li {
-      list-style-type: none;
-      padding: 4px;
-      border-bottom: 1px solid var(--mode-text-color);
-
-      &:last-of-type {
-        border: 0;
-      }
-
-      &:hover {
-        text-decoration: underline;
-        background: var(--highlight-background-color);
-      }
-    }
-  }
-
-  .navigation .actions li:last-of-type {
-    border-right: 0;
+  .navigation-search {
+    padding: 8px;
+    border-bottom: 1px solid var(--navigation-active-color);
   }
 
   .items {
-    height: calc(100% - 90px);
-    min-height: calc(100% - 90px);
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  .upload-form {
-    display: none;
-  }
-
-  .searchBox {
-    border-bottom: 1px solid var(--base-color);
-    border-left: 0;
-    border-right: 1px solid var(--base-color);
-    border-top: 1px solid var(--base-color);
-    height: 24px;
-    background: var(--input-background-color);
-    color: var(--mode-text-color);
-    padding-left: 4px;
-    width: 250px;
+    height: calc(100% - 52px);
+    min-height: calc(100% - 52px);
+    overflow: hidden auto;
   }
 }

@@ -13,6 +13,7 @@
  */
 import React from 'react'
 import Navigation from './navigation/Navigation'
+import NavigationHeader from './navigation/NavigationHeader'
 import { connect } from 'react-redux'
 import Help from './Help'
 import Settings from './settings/Settings'
@@ -63,7 +64,60 @@ class App extends React.Component {
     return this.props.settings.optionalFeatures.preferDarkMode
   }
 
+  _handleGlobalKeyDown = (event) => {
+    const tag = event.target.tagName
+    const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || event.target.isContentEditable
+
+    const shortcutsEnabled = this.props.settings.optionalFeatures.keyboardShortcuts
+
+    // / or Cmd+K — focus search bar (works even from inputs)
+    if (
+      ((event.metaKey || event.ctrlKey) && event.key === 'k') ||
+      (shortcutsEnabled && !isInput && event.key === '/')
+    ) {
+      event.preventDefault()
+      const input = document.querySelector('.navigation-search input')
+      if (input) input.focus()
+      return
+    }
+
+    // Escape — blur search bar
+    if (event.key === 'Escape' && tag === 'INPUT') {
+      event.target.blur()
+      return
+    }
+
+    // Single-key shortcuts only when not in a text field and feature is enabled
+    if (isInput || event.metaKey || event.ctrlKey || event.altKey) return
+    if (!this.props.settings.optionalFeatures.keyboardShortcuts) return
+
+    switch (event.key) {
+      case 'n': // Create new configuration
+        this.navigateTo('configuration/new')
+        break
+      case 'u': // Upload configuration
+        document.getElementById('upload')?.click()
+        break
+      case ',': // Settings
+        this.navigateTo('settings')
+        break
+      case '?': // Help
+        this.navigateTo('help')
+        break
+      case 'b': // Backup
+        this.downloadAll(event)
+        break
+      case 'l': // Logs
+        if (this.props.settings.optionalFeatures.writeLogs) {
+          this.navigateTo('logs')
+        }
+        break
+    }
+  }
+
   componentDidMount() {
+    document.addEventListener('keydown', this._handleGlobalKeyDown)
+
     this.mql = window.matchMedia('(prefers-color-scheme: dark)')
     this.darkModeUpdated = (e) => {
       this.setState({ isDarkMode: e.matches })
@@ -84,6 +138,7 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
+    document.removeEventListener('keydown', this._handleGlobalKeyDown)
     this.mql.removeListener(this.darkModeUpdated)
     if (window.chrome.permissions.onAdded) {
       window.chrome.permissions.onAdded.removeListener(this.permissionsUpdated)
@@ -490,18 +545,27 @@ class App extends React.Component {
         syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
       >
         {this._renderWarningBox(withWarning)}
-        <div className="navigation">
-          <Navigation
-            onNavigate={(target) => this.navigateTo(target)}
-            onUpload={(upload) => this.uploadConfiguration(upload)}
-            onDelete={(configuration) => this.deleteConfiguration(configuration)}
-            items={configurations}
-            onDownloadAll={(event) => this.downloadAll(event)}
-            active={activeItem}
-            showLogs={this.props.settings.optionalFeatures.writeLogs === true}
-          />
+        <NavigationHeader
+          onNavigate={(target) => this.navigateTo(target)}
+          onUpload={(upload) => this.uploadConfiguration(upload)}
+          onDownloadAll={(event) => this.downloadAll(event)}
+          showLogs={this.props.settings.optionalFeatures.writeLogs === true}
+          syncDarkMode={this.props.settings.optionalFeatures.syncDarkMode}
+          preferDarkMode={this.props.settings.optionalFeatures.preferDarkMode}
+          onToggleOptionalFeature={(feature) => this.toggleOptionalFeature(feature)}
+        />
+        <div className="main-content">
+          <div className="navigation">
+            <Navigation
+              onNavigate={(target) => this.navigateTo(target)}
+              onDelete={(configuration) => this.deleteConfiguration(configuration)}
+              onDownload={(configuration) => this.downloadConfiguration(configuration)}
+              items={configurations}
+              active={activeItem}
+            />
+          </div>
+          <div className="current-view">{this.getCurrentView()}</div>
         </div>
-        <div className="current-view">{this.getCurrentView()}</div>
       </Page>
     )
   }

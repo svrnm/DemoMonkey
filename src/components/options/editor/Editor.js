@@ -12,18 +12,27 @@
  * limitations under the License.
  */
 import React from 'react'
-import Tabs from '../../shared/Tabs'
-import Pane from '../../shared/Pane'
 import Variable from '../../shared/Variable'
 import Popup from '../../shared/Popup'
+import TabPanel from '../../shared/TabPanel'
 import CodeEditor from './CodeEditor'
 import Configuration from '../../../models/Configuration'
+import Box from '@mui/material/Box'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import CommandBuilder from '../../../commands/CommandBuilder'
 import ErrorCommand from '../../../commands/ErrorCommand'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import TextField from '@mui/material/TextField'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+
+const TAB_NAMES = ['configuration', 'variables']
 
 class Editor extends React.Component {
   constructor(props) {
@@ -123,7 +132,6 @@ class Editor extends React.Component {
 
     const lines = content.split('\n')
 
-    // Capture namespaces for the command builder.
     const nsPattern = /^@namespace(?:\[\])?\s*=\s*(.*)$/gm
     let match
     const namespaces = []
@@ -134,8 +142,6 @@ class Editor extends React.Component {
     const cb = new CommandBuilder(namespaces, [], [], this.props.featureFlags)
 
     lines.forEach((line, rowIdx) => {
-      // Process each line and add infos, warnings, errors
-      // Multiple = signs can lead to issues, add an info
       if ((line.replaceAll('\\=', '\u2260').match(/(?:^=)|(?:[^\\]=)/g) || []).length > 1) {
         result.push({
           row: rowIdx,
@@ -145,7 +151,6 @@ class Editor extends React.Component {
         })
       }
 
-      // Check if an imported configuration is available
       if (
         line.startsWith('+') &&
         line.length > 1 &&
@@ -165,7 +170,6 @@ class Editor extends React.Component {
         const [lhs, rhs] = line.replaceAll('\\=', '\u2260').split('=')
         const cmd = cb.build(lhs.trim(), typeof rhs === 'string' ? rhs.trim() : '')
         if (cmd instanceof ErrorCommand) {
-          // `Command "${command}" not found.\nPlease check the spelling and\nif all required namespaces are loaded.`
           result.push({
             row: rowIdx,
             column: 0,
@@ -182,9 +186,6 @@ class Editor extends React.Component {
             })
           })
         }
-        /* if (cmd === 'Eval') {
-          result.push({ row: rowIdx, column: 0, text: '!eval allows you to inject arbitrary javascript code in a page, please use with caution!', type: 'warning' })
-        } */
       }
 
       if (line.includes('=')) {
@@ -204,7 +205,6 @@ class Editor extends React.Component {
         (!line.startsWith('#') && line.includes('#')) ||
         (!line.startsWith('//') && line.includes('[^:]//'))
       ) {
-        /* the ^: is so that URL's are not interpreted as comments */
         result.push({
           row: rowIdx,
           column: 0,
@@ -263,9 +263,13 @@ class Editor extends React.Component {
     this.handleClick(event, 'delete')
   }
 
+  _getTabIndex() {
+    const idx = TAB_NAMES.indexOf(this.props.activeTab)
+    return idx >= 0 ? idx : 0
+  }
+
   renderConfiguration() {
     const current = this.state.currentConfiguration
-    const hiddenIfNew = current.id === 'new' ? { display: 'none' } : {}
     const tmpConfig = new Configuration(
       current.content,
       this.props.getRepository(),
@@ -276,70 +280,103 @@ class Editor extends React.Component {
     )
     const variables = tmpConfig.getVariables()
 
-    const showTemplateWarning =
-      tmpConfig.isTemplate() || tmpConfig.isRestricted() ? 'no-warning-box' : 'warning-box'
-
     const hotkeyOptions = Array.from(Array(9).keys())
 
     const currentHotkeys = current.hotkeys ? current.hotkeys.filter((e) => e !== null) : []
 
     const autosave = current.id === 'new' ? false : this.props.autoSave
 
+    const tabIndex = this._getTabIndex()
+
+    const isNew = current.id === 'new'
+
     return (
-      <div className="editor">
-        <div className="title">
-          <div className="toggle-configuration" style={hiddenIfNew}>
-            <Switch
-              checked={!!this.props.currentConfiguration.enabled}
-              onChange={() => {
-                this.toggle()
-              }}
-              height={20}
-              width={48}
+      <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            px: 2,
+            py: 1,
+            borderBottom: 1,
+            borderColor: 'divider'
+          }}
+        >
+          {!isNew && (
+            <FormControlLabel
+              control={
+                <Switch
+                  size="small"
+                  checked={!!this.props.currentConfiguration.enabled}
+                  onChange={() => {
+                    this.toggle()
+                  }}
+                />
+              }
+              label={this.props.currentConfiguration.enabled ? 'On' : 'Off'}
+              slotProps={{ typography: { variant: 'caption' } }}
+              sx={{ mr: 0 }}
             />
-          </div>
-          <b>Name</b>
-          <input
-            type="text"
-            className="text-input"
+          )}
+          <TextField
             id="configuration-title"
-            placeholder="Please provide a name. You can use slashes (/) in it to create folders."
+            label="Name"
+            placeholder="Use slashes (/) to create folders"
             value={current.name}
             onChange={(event) => this.handleUpdate('name', event.target.value, event)}
+            sx={{ flexGrow: 1, minWidth: 150 }}
           />
-          <div className="select-hotkeys">
-            <FormControl sx={{ m: 1, width: '95%' }} size="small">
-              <Select
-                style={{
-                  background: 'var(--input-background-color)',
-                  color: 'var(--mode-text-color)'
-                }}
-                renderValue={(selected) => {
-                  if (selected.length === 0) {
-                    return <em>Shortcut Groups...</em>
-                  }
-                  return selected.map((e) => '#' + e).join(', ')
-                }}
-                displayEmpty
-                value={currentHotkeys}
-                multiple
-                width="100%"
-                onChange={(event) => this.handleHotkeysChange(event)}
-              >
-                {hotkeyOptions.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    <span>#{value}</span>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          <button
-            className={'save-button ' + (this.state.unsavedChanges ? '' : 'disabled')}
-            onClick={() => this.onBeforeSave()}
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <Select
+              renderValue={(selected) => {
+                if (selected.length === 0) {
+                  return <em>Shortcut Groups...</em>
+                }
+                return selected.map((e) => '#' + e).join(', ')
+              }}
+              displayEmpty
+              value={currentHotkeys}
+              multiple
+              onChange={(event) => this.handleHotkeysChange(event)}
+            >
+              {hotkeyOptions.map((value) => (
+                <MenuItem key={value} value={value}>
+                  <span>#{value}</span>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <ButtonGroup
+            variant="contained"
+            sx={{
+              alignSelf: 'stretch',
+              '& .MuiButtonGroup-grouped': { borderColor: 'rgba(255,255,255,0.3)' }
+            }}
           >
-            Save
-          </button>
+            <Button
+              color="success"
+              disabled={!this.state.unsavedChanges}
+              onClick={() => this.onBeforeSave()}
+            >
+              Save
+            </Button>
+            {!isNew && (
+              <Button color="success" onClick={(event) => this.handleClick(event, 'copy')}>
+                Duplicate
+              </Button>
+            )}
+            {!isNew && (
+              <Button color="success" onClick={(event) => this.handleClick(event, 'download')}>
+                Download
+              </Button>
+            )}
+            {!isNew && (
+              <Button color="error" onClick={() => this.onBeforeDelete()}>
+                Delete
+              </Button>
+            )}
+          </ButtonGroup>
           <Popup
             open={this.state.showSavePopup}
             onCancel={(event) => this.onCancelSave(event)}
@@ -352,27 +389,6 @@ class Editor extends React.Component {
               </span>
             }
           />
-          <button
-            className="copy-button"
-            style={hiddenIfNew}
-            onClick={(event) => this.handleClick(event, 'copy')}
-          >
-            Duplicate
-          </button>
-          <button
-            className="download-button"
-            style={hiddenIfNew}
-            onClick={(event) => this.handleClick(event, 'download')}
-          >
-            Download
-          </button>
-          <button
-            className="delete-button"
-            style={hiddenIfNew}
-            onClick={(event) => this.onBeforeDelete()}
-          >
-            Delete
-          </button>
           <Popup
             open={this.state.showDeletePopup}
             onCancel={(event) => this.onCancelDelete(event)}
@@ -384,67 +400,90 @@ class Editor extends React.Component {
               </span>
             }
           />
-        </div>
-        <div className={showTemplateWarning}>
-          <b>Warning:</b> Without <b>@include</b> or <b>@exclude</b> defined, your configuration can
-          not be enabled. You can only import it as template into another configuration. If this is
-          intended, add <b>@template</b> to remove this warning.
-        </div>
-        <Tabs activeTab={this.props.activeTab} onNavigate={this.props.onNavigate}>
-          <Pane label="Configuration" name="configuration" id="current-configuration-editor">
-            <CodeEditor
-              value={current.content}
-              getRepository={this.props.getRepository}
-              onChange={(content) => this.handleUpdate('content', content)}
-              readOnly={current.readOnly === true}
-              annotations={(content) => this._buildAnnotations(content)}
-              onVimWrite={() => this.onBeforeSave()}
-              onAutoSave={() => {
-                if (autosave) {
-                  this.onBeforeSave()
-                }
+        </Box>
+        {!tmpConfig.isTemplate() && !tmpConfig.isRestricted() && (
+          <Alert severity="warning" sx={{ borderRadius: 0 }}>
+            Without <b>@include</b> or <b>@exclude</b> defined, your configuration can not be
+            enabled. You can only import it as template. Add <b>@template</b> to remove this
+            warning.
+          </Alert>
+        )}
+        <Box sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <Tabs
+            value={tabIndex}
+            onChange={(e, newValue) => this.props.onNavigate(TAB_NAMES[newValue])}
+            sx={{ px: 1 }}
+          >
+            <Tab label="Configuration" id="current-configuration-editor" />
+            <Tab label="Variables" />
+            <Tab
+              label="Shortcuts"
+              onClick={(e) => {
+                e.preventDefault()
+                window.open('https://github.com/svrnm/DemoMonkey/blob/master/SHORTCUTS.md')
               }}
-              keyboardHandler={this.props.keyboardHandler}
-              editorAutocomplete={this.props.editorAutocomplete}
-              isDarkMode={this.props.isDarkMode}
-              variables={variables}
+              component="a"
+              href="https://github.com/svrnm/DemoMonkey/blob/master/SHORTCUTS.md"
             />
-          </Pane>
-          <Pane label="Variables" name="variables">
-            <div>
-              Introduce variables in your configuration with a line{' '}
-              <code>$variableName = variableValue//description</code>. You can quickly update the
-              values of variables here. Note, that you also can see the variables of imported
-              configurations and set their value accordingly. If you define a variable with the same
-              name here and in the important, your local variable has precedence.
-            </div>
-            <div className="scrolling-pane">
-              {variables.length > 0 ? '' : <div className="no-variables">No variables defined</div>}
-              {variables.map((variable, index) => {
-                return (
-                  <Variable
-                    isGlobal={false}
-                    key={variable.id}
-                    onUpdate={(id, value) => this.updateVariable(id, value)}
-                    variable={variable}
-                    isDarkMode={this.props.isDarkMode}
-                  />
-                )
-              })}
-            </div>
-          </Pane>
-          {/* <Pane label="Access Control" name="acl">
-            <AccessControl for={current} />
-          </Pane> */}
-          <Pane
-            link={(e) => {
-              e.preventDefault()
-              window.open('https://github.com/svrnm/DemoMonkey/blob/master/SHORTCUTS.md')
-            }}
-            label="Shortcuts"
-          />
-        </Tabs>
-      </div>
+          </Tabs>
+          <Box sx={{ flexGrow: 1, minHeight: 0, p: 1 }}>
+            <TabPanel value={tabIndex} index={0} padding={0}>
+              <CodeEditor
+                value={current.content}
+                getRepository={this.props.getRepository}
+                onChange={(content) => this.handleUpdate('content', content)}
+                readOnly={current.readOnly === true}
+                annotations={(content) => this._buildAnnotations(content)}
+                onVimWrite={() => this.onBeforeSave()}
+                onAutoSave={() => {
+                  if (autosave) {
+                    this.onBeforeSave()
+                  }
+                }}
+                keyboardHandler={this.props.keyboardHandler}
+                editorAutocomplete={this.props.editorAutocomplete}
+                isDarkMode={this.props.isDarkMode}
+                variables={variables}
+              />
+            </TabPanel>
+            <TabPanel value={tabIndex} index={1} padding={0}>
+              <p
+                style={{ color: 'var(--help-text-color)', margin: '8px 0 12px', fontSize: '13px' }}
+              >
+                Define variables with <code>$variableName = value//description</code> and update
+                their values here. Variables from imported configurations are also shown.
+              </p>
+              <div className="scrolling-pane">
+                {variables.length === 0 && (
+                  <div className="variables-empty" style={{ padding: '24px 0' }}>
+                    <svg
+                      style={{ width: 36, height: 36, opacity: 0.3 }}
+                      viewBox="0 0 24 24"
+                      fill="var(--navigation-text-color)"
+                    >
+                      <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z" />
+                    </svg>
+                    <p>No variables defined</p>
+                  </div>
+                )}
+                <div className="variables-list">
+                  {variables.map((variable) => {
+                    return (
+                      <Variable
+                        isGlobal={false}
+                        key={variable.id}
+                        onUpdate={(id, value) => this.updateVariable(id, value)}
+                        variable={variable}
+                        isDarkMode={this.props.isDarkMode}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            </TabPanel>
+          </Box>
+        </Box>
+      </Box>
     )
   }
 }

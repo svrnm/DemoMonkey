@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "DemoMonkey",
   "description": "Custom demo, every demo: Turn your standard demo into a tailored experience for your customers in minutes.",
-  "version": "11.0.0",
+  "version": "11.0.1",
   "author": "Severin Neumann <severin.neumann@altmuehlnet.de>",
   "homepage_url": "https://github.com/svrnm/DemoMonkey/",
   "content_security_policy": {
@@ -15,7 +15,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["manifest.json", "COMMITHASH", "js/inline.js", "js/index.js.map"],
+      "resources": [
+        "manifest.json",
+        "COMMITHASH",
+        "js/inline.js",
+        "js/index.js.map",
+        "icons/monkey_48.png"
+      ],
       "matches": ["<all_urls>"]
     }
   ],

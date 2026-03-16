@@ -15,13 +15,37 @@ import React from 'react'
 
 const optionalFeatures = [
   {
-    id: 'undo',
+    id: 'autoSave',
+    group: 'Editor',
     defaultValue: true,
-    label: 'Undo replacements',
-    description: 'when configuration is disabled'
+    label: 'Save configuration on line break',
+    description: ''
+  },
+  {
+    id: 'saveOnClose',
+    group: 'Editor',
+    defaultValue: true,
+    label: 'Save configuration when it is closed',
+    description: ''
+  },
+  {
+    id: 'editorAutocomplete',
+    group: 'Editor',
+    defaultValue: true,
+    label: 'Autocomplete',
+    description:
+      'The editor for configurations will display an auto completion for commands, options & imports.'
+  },
+  {
+    id: 'keyboardHandlerVim',
+    group: 'Editor',
+    defaultValue: false,
+    label: 'VIM Keyboard Handler',
+    description: 'Use the vim keyboard handler for the editor.'
   },
   {
     id: 'autoReplace',
+    group: 'Replacements',
     defaultValue: true,
     label: 'Automatically apply replacements',
     description: (
@@ -31,38 +55,20 @@ const optionalFeatures = [
     )
   },
   {
-    id: 'autoSave',
+    id: 'undo',
+    group: 'Replacements',
     defaultValue: true,
-    label: 'Save configuration on line break',
-    description: ''
-  },
-  {
-    id: 'saveOnClose',
-    defaultValue: true,
-    label: 'Save configuration when it is closed',
-    description: ''
-  },
-  {
-    id: 'editorAutocomplete',
-    defaultValue: true,
-    label: 'Autocomplete.',
-    description:
-      'The editor for configurations will display an auto completion for commands, options & imports.'
-  },
-  {
-    id: 'onlyShowAvailableConfigurations',
-    defaultValue: true,
-    label: 'Only show available configurations.',
-    description:
-      'Set the default value for the popup toggle, which hides configurations that are not available for the current url.'
+    label: 'Undo replacements',
+    description: 'when configuration is disabled'
   },
   {
     id: 'webRequestHook',
+    group: 'Replacements',
     defaultValue: false,
-    label: 'Hook into Web Requests.',
+    label: 'Hook into Web Requests',
     description: (
       <span>
-        Turn this feature on, if you want to use the commands !blockUrl and !redirectUrl.{' '}
+        Enable the commands !blockUrl and !redirectUrl.{' '}
         <b>This will allow DemoMonkey to block or redirect requests in-flight</b>. To learn what
         this means, read about{' '}
         <a
@@ -76,89 +82,106 @@ const optionalFeatures = [
     )
   },
   {
-    id: 'debugBox',
+    id: 'hookIntoAjax',
+    group: 'Replacements',
     defaultValue: false,
-    label: 'Expand Debug Box',
+    label: 'Hook into Ajax',
     description: (
       <span>
-        Turn this feature on, to show the debug box with statistics in full length when running demo
-        monkey in <i>debug mode</i>
+        Allow DemoMonkey to hook into Ajax calls and modify their response. Does not support{' '}
+        <i>window.fetch</i>.
       </span>
     )
-  },
-  {
-    id: 'keyboardHandlerVim',
-    defaultValue: false,
-    label: 'VIM Keyboard Handler.',
-    description: 'Turn this feature on, to use the vim keyboard handler for the editor.'
   },
   {
     id: 'withEvalCommand',
+    group: 'Replacements',
     defaultValue: false,
-    label: 'Allow !eval.',
+    label: 'Allow !eval',
     description:
-      'By turning on this flag, you can use the command !eval which allows you to write arbitrary javascript code. Use with caution!'
-  },
-  {
-    id: 'hookIntoAjax',
-    defaultValue: false,
-    label: 'Hook into Ajax.',
-    description: (
-      <span>
-        Turn this feature on to allow DemoMonkey to hook into Ajax calls and modify their response.
-        Does not support <i>window.fetch</i>.
-      </span>
-    )
+      'Use the command !eval which allows you to write arbitrary javascript code. Use with caution!'
   },
   {
     id: 'syncDarkMode',
+    group: 'Appearance',
     defaultValue: true,
-    label: 'Sync Dark/Light mode with OS setting.',
+    label: 'Sync Dark/Light mode with OS',
     description: 'Automatically switch between dark and light mode.'
   },
   {
     id: 'preferDarkMode',
+    group: 'Appearance',
     defaultValue: false,
-    // style: { display: this.props.settings.optionalFeatures.syncDarkMode ? 'none' : 'flex' },
-    label: 'Use dark mode.',
+    label: 'Use dark mode',
     description: (
       <span>
-        Use this toggle to set <i>dark mode</i> as your preferred theme.
+        Set <i>dark mode</i> as your preferred theme.
+      </span>
+    )
+  },
+  {
+    id: 'onlyShowAvailableConfigurations',
+    group: 'Appearance',
+    defaultValue: true,
+    label: 'Only show available configurations',
+    description:
+      'Set the default value for the popup toggle, which hides configurations that are not available for the current url.'
+  },
+  {
+    id: 'debugBox',
+    group: 'Appearance',
+    defaultValue: false,
+    label: 'Expand Debug Box',
+    description: (
+      <span>
+        Show the debug box with statistics in full length when running DemoMonkey in{' '}
+        <i>debug mode</i>.
+      </span>
+    )
+  },
+  {
+    id: 'keyboardShortcuts',
+    group: 'General',
+    defaultValue: true,
+    label: 'Keyboard Shortcuts',
+    description:
+      'Single-key shortcuts for navigation: n (new), u (upload), , (settings), ? (help), b (backup), l (logs), / (search).'
+  },
+  {
+    id: 'writeLogs',
+    group: 'General',
+    defaultValue: true,
+    label: 'Write Logs',
+    description: (
+      <span>
+        Have DemoMonkey logs accessible via the <b>Logs</b> navigation item.
       </span>
     )
   },
   {
     id: 'noWarningForMissingPermissions',
+    group: 'General',
     defaultValue: false,
-    label: 'No warning for missing permissions.',
+    label: 'No warning for missing permissions',
     description:
-      "To work best, DemoMonkey requires permissions to interact with all sites, and will warn you if you don't provide those permissions. Turn this feature on to remove this warning."
+      "DemoMonkey requires permissions to interact with all sites, and will warn you if you don't provide those permissions. Turn this on to remove the warning."
   },
   {
     id: 'registerProtocolHandler',
+    group: 'General',
     defaultValue: false,
-    label: 'Register Protocol Handler.',
-    description: 'Turn this feature on to register web+mnky to be handled by demomonkey.'
-  },
-  {
-    id: 'writeLogs',
-    defaultValue: true,
-    label: 'Write Logs.',
-    description: (
-      <span>
-        Turn this feature on to have a DemoMonkey logs accessible via the <b>Logs</b> navigation
-        item.
-      </span>
-    )
+    label: 'Register Protocol Handler',
+    description: 'Register web+mnky to be handled by DemoMonkey.'
   }
 ]
 
 class OptionalFeature {
-  constructor(id, defaultValue, label, description) {
+  constructor(id, defaultValue, label, description, group) {
     this.id = id
     this.defaultValue = defaultValue
     this.label = label
     this.description = description
+    this.group = group
     this.style = false
   }
 
@@ -172,12 +195,22 @@ class OptionalFeature {
 
   static getAll(options = {}) {
     return optionalFeatures.map((obj) => {
-      const of = new OptionalFeature(obj.id, obj.defaultValue, obj.label, obj.description)
+      const of = new OptionalFeature(
+        obj.id,
+        obj.defaultValue,
+        obj.label,
+        obj.description,
+        obj.group
+      )
       if (options.styles && options.styles[obj.id]) {
         of.style = options.styles[obj.id]
       }
       return of
     })
+  }
+
+  static getGroups() {
+    return ['Editor', 'Replacements', 'Appearance', 'General']
   }
 }
 

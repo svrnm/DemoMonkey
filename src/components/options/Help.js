@@ -11,54 +11,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { marked } from 'marked'
-import highlight from 'highlight.js'
 
-class Help extends React.Component {
-  constructor(props) {
-    super(props)
+const renderer = new marked.Renderer()
+const originalCode = renderer.code.bind(renderer)
+renderer.code = function (code) {
+  const html = originalCode(code)
+  return `<div class="code-block-wrapper">${html}<button class="code-copy-btn" title="Copy to clipboard">Copy</button></div>`
+}
 
-    this.fallback = require('../../../USAGE.md')
+function Help() {
+  const fallback = require('../../../USAGE.md')
+  const [usage, setUsage] = useState(null)
+  const [loaded, setLoaded] = useState(false)
+  const contentRef = useRef(null)
 
-    this.state = {
-      usage: null,
-      loaded: false
-    }
-  }
-
-  componentDidMount() {
-    // We try to fetch USAGE.md from github directly, this allows to update
-    // the inline usage docs without having to make a release every time
-    // on the google chrome webstore.
+  useEffect(() => {
     fetch('https://raw.githubusercontent.com/svrnm/DemoMonkey/main/USAGE.md')
-      .then((response) => response.text())
-      .then((data) => this.setState({ usage: data, loaded: true }))
-      .catch(() => {
-        this.setState({
-          loaded: true,
-          usage: this.fallback
-        })
+      .then((response) => {
+        return response.text()
       })
-  }
+      .then((data) => {
+        setUsage(data)
+        setLoaded(true)
+        return null
+      })
+      .catch(() => {
+        setUsage(fallback)
+        setLoaded(true)
+      })
+  }, [fallback])
 
-  render() {
-    const usage = this.state.loaded ? this.state.usage : this.fallback
-    const html = marked(usage, {
-      gfm: true,
-      headerIds: true,
-      highlight: (code, lang) => {
-        const language = highlight.getLanguage(lang) ? lang : 'plaintext'
-        return highlight.highlight(code, { language }).value
+  const handleClick = useCallback((e) => {
+    if (e.target.classList.contains('code-copy-btn')) {
+      const wrapper = e.target.closest('.code-block-wrapper')
+      const code = wrapper.querySelector('code')
+      if (code) {
+        navigator.clipboard
+          .writeText(code.textContent)
+          .then(() => {
+            e.target.textContent = 'Copied!'
+            setTimeout(() => {
+              e.target.textContent = 'Copy'
+            }, 2000)
+            return null
+          })
+          .catch(() => {})
       }
-    })
+    }
+  }, [])
 
-    return (
-      <div className="content">
-        <div className="welcome" dangerouslySetInnerHTML={{ __html: html }}></div>
-      </div>
-    )
-  }
+  const content = loaded ? usage : fallback
+  const html = marked(content, {
+    gfm: true,
+    headerIds: true,
+    renderer
+  })
+
+  return (
+    <div className="content">
+      <div
+        className="welcome"
+        ref={contentRef}
+        onClick={handleClick}
+        dangerouslySetInnerHTML={{ __html: html }}
+      ></div>
+    </div>
+  )
 }
 
 export default Help

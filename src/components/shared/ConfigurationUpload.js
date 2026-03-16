@@ -21,7 +21,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField
+  IconButton,
+  TextField,
+  Tooltip
 } from '@mui/material'
 
 class ConfigurationUpload extends React.Component {
@@ -124,19 +126,39 @@ class ConfigurationUpload extends React.Component {
     const handleClose = (e) => {
       this.setState({ open: false })
     }
+    const uploadButton = this.props.icon ? (
+      <Tooltip title="Upload configuration (u)">
+        <IconButton
+          sx={{ color: 'inherit', p: '6px' }}
+          href="#configuration/upload"
+          onClick={(event) => this.showUploadDialog(event)}
+        >
+          <svg
+            style={{ width: 18, height: 18, verticalAlign: 'middle' }}
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 13.01l1.41 1.41L11 12.84V16h2v-3.16l1.59 1.59L16 13.01 12.01 9 8 13.01z" />
+          </svg>
+        </IconButton>
+      </Tooltip>
+    ) : (
+      <Button
+        style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
+        href="#configuration/upload"
+        onClick={(event) => this.showUploadDialog(event)}
+      >
+        Upload
+      </Button>
+    )
+
     return (
-      <div>
+      <div style={this.props.icon ? { display: 'inline-flex' } : undefined}>
         <form id={this.props.id + 'Form'} className="upload-form">
           <input multiple id={this.props.id} type="file" />
         </form>
 
-        <Button
-          style={{ textTransform: 'none', fontSize: '12px', lineHeight: '14px' }}
-          href={'#configuration/upload'}
-          onClick={(event) => this.showUploadDialog(event)}
-        >
-          Upload
-        </Button>
+        {uploadButton}
 
         <Dialog open={this.state.open} onClose={handleClose}>
           <DialogTitle>Batch upload into folder.</DialogTitle>

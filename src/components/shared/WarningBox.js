@@ -12,43 +12,58 @@
  * limitations under the License.
  */
 import React from 'react'
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
 
-class WarningBox extends React.Component {
-  grantPermission(e) {
-    e.preventDefault()
-    this.props.onRequestExtendedPermissions()
-  }
-
-  dismiss(e) {
-    e.preventDefault()
-    this.props.onDismiss()
-  }
-
-  render() {
-    return (
-      <div className="warning-box fixed">
-        <b>Warning:</b> For DemoMonkey to work optimal you have to grant permissions to access all
-        websites.{' '}
-        <a id="grant-permissions-button" href="#" onClick={(e) => this.grantPermission(e)}>
-          Click here
-        </a>{' '}
-        to grant that permission or{' '}
-        <a href="#" onClick={(e) => this.dismiss(e)}>
-          {' '}
-          dismiss
-        </a>{' '}
-        this warning and give access to DemoMonkey on demand. (
-        <a
-          href="https://developer.chrome.com/extensions/permission_warnings"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn more about site access
-        </a>
-        )
-      </div>
-    )
-  }
+function WarningBox({ onRequestExtendedPermissions, onDismiss }) {
+  return (
+    <Alert
+      severity="warning"
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        borderRadius: 0,
+        py: 0,
+        zIndex: 1000
+      }}
+      action={
+        <>
+          <Button
+            color="inherit"
+            size="small"
+            id="grant-permissions-button"
+            onClick={(e) => {
+              e.preventDefault()
+              onRequestExtendedPermissions()
+            }}
+          >
+            Grant
+          </Button>
+          <Button
+            color="inherit"
+            size="small"
+            onClick={(e) => {
+              e.preventDefault()
+              onDismiss()
+            }}
+          >
+            Dismiss
+          </Button>
+        </>
+      }
+    >
+      For DemoMonkey to work optimal you have to grant permissions to access all websites.{' '}
+      <a
+        href="https://developer.chrome.com/extensions/permission_warnings"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Learn more
+      </a>
+    </Alert>
+  )
 }
 
 export default WarningBox

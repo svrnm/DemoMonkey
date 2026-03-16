@@ -51,9 +51,9 @@ test.describe('UI', () => {
     // Click on Example configuration in the navigation
     await page.locator('.navigation .items').getByText('Example').click()
 
-    // Wait for and click delete button
-    await page.waitForSelector('button.delete-button')
-    await page.click('button.delete-button')
+    // Wait for and click delete button in the editor toolbar (MUI Button)
+    await page.locator('.current-view').getByRole('button', { name: 'Delete' }).waitFor()
+    await page.locator('.current-view').getByRole('button', { name: 'Delete' }).click()
 
     // Confirm deletion
     await page.waitForSelector('#alert-dialog-confirm-button')

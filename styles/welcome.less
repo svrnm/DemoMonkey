@@ -21,14 +21,36 @@
     background: var(--highlight-background-color);
   }
 
-  /* code.language-ini {
-
-  } */
-
   pre code {
     display: block;
-    margin: 1em;
-    margin-right: 0;
+    margin: 0;
     padding: 1em;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+
+  .code-block-wrapper {
+    position: relative;
+    margin: 1em 0;
+
+    .code-copy-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--highlight-background-color);
+      border: 1px solid var(--base-color);
+      border-radius: 4px;
+      color: var(--mode-text-color);
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 8px;
+      opacity: 0;
+      transition: opacity 0.15s;
+      margin: 0;
+    }
+
+    &:hover .code-copy-btn {
+      opacity: 1;
+    }
   }
 }
