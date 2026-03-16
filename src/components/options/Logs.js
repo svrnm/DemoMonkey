@@ -55,7 +55,6 @@ function Logs({ entries }) {
     )
   }
 
-  window.entries = entries
   return (
     <div className="content">
       <div className="logs">

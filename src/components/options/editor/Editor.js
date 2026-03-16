@@ -413,7 +413,7 @@ class Editor extends React.Component {
             value={tabIndex}
             onChange={(e, newValue) => {
               const target = TAB_NAMES[newValue]
-              if (target) {
+              if (typeof target === 'string') {
                 this.props.onNavigate(target)
               }
             }}
@@ -425,6 +425,7 @@ class Editor extends React.Component {
               label="Shortcuts"
               onClick={(e) => {
                 e.preventDefault()
+                e.stopPropagation()
                 window.open('https://github.com/svrnm/DemoMonkey/blob/master/SHORTCUTS.md')
               }}
               component="a"

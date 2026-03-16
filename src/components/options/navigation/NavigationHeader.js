@@ -34,19 +34,19 @@ function NavigationHeader({
   }
 
   // Cycle: System → Dark → Light → System
-  function cycleTheme() {
+  async function cycleTheme() {
     if (syncDarkMode) {
-      // System → Dark: disable sync, enable dark
-      onToggleOptionalFeature('syncDarkMode')
+      // System → Dark: disable sync, then enable dark
+      await onToggleOptionalFeature('syncDarkMode')
       if (!preferDarkMode) {
-        onToggleOptionalFeature('preferDarkMode')
+        await onToggleOptionalFeature('preferDarkMode')
       }
     } else if (preferDarkMode) {
       // Dark → Light: disable dark
-      onToggleOptionalFeature('preferDarkMode')
+      await onToggleOptionalFeature('preferDarkMode')
     } else {
       // Light → System: enable sync
-      onToggleOptionalFeature('syncDarkMode')
+      await onToggleOptionalFeature('syncDarkMode')
     }
   }
 
