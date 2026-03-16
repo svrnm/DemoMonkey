@@ -16,8 +16,8 @@ import { marked } from 'marked'
 
 const renderer = new marked.Renderer()
 const originalCode = renderer.code.bind(renderer)
-renderer.code = function (code) {
-  const html = originalCode(code)
+renderer.code = function (...args) {
+  const html = originalCode(...args)
   return `<div class="code-block-wrapper">${html}<button class="code-copy-btn" title="Copy to clipboard">Copy</button></div>`
 }
 
