@@ -232,7 +232,7 @@ class Settings extends React.Component {
               annotations={(content) => {}}
               getRepository={this.props.getRepository}
               variables={[]}
-              onVimWrite={() => this.handleClick(null, 'save')}
+              onVimWrite={() => this.saveBaseTemplate()}
               onAutoSave={(event) =>
                 this.props.settings.optionalFeatures.autoSave
                   ? this.saveBaseTemplate()
