@@ -411,7 +411,12 @@ class Editor extends React.Component {
         <Box sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           <Tabs
             value={tabIndex}
-            onChange={(e, newValue) => this.props.onNavigate(TAB_NAMES[newValue])}
+            onChange={(e, newValue) => {
+              const target = TAB_NAMES[newValue]
+              if (target) {
+                this.props.onNavigate(target)
+              }
+            }}
             sx={{ px: 1 }}
           >
             <Tab label="Configuration" id="current-configuration-editor" />

@@ -56,7 +56,12 @@ class App extends React.Component {
       >
         <Tabs
           value={tabIndex}
-          onChange={(e, newValue) => this.updateActiveTab(TAB_NAMES[newValue])}
+          onChange={(e, newValue) => {
+            const nextTab = TAB_NAMES[newValue]
+            if (nextTab) {
+              this.updateActiveTab(nextTab)
+            }
+          }}
           sx={{
             minHeight: 36,
             borderBottom: '1px solid var(--highlight-background-color)',
