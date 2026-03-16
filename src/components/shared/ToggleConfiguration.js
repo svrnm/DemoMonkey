@@ -20,22 +20,28 @@ class ToggleConfiguration extends React.Component {
   }
 
   render() {
+    const name = this.props.configuration.name
+    const parts = name.split('/')
+    const displayName = parts.pop()
+    const folder = parts.length > 0 ? parts.join('/') + '/' : ''
+
     return (
-      <div className={'toggle-group ' + this.props.className}>
+      <div className={'toggle-group ' + (this.props.className || '')}>
         <Switch
-          colors={{ active: { base: '#5c832f', hover: '#90c256' } }}
+          size="small"
           checked={this.props.configuration.enabled}
           onChange={() => {
             this.toggle(this.props.configuration.id)
           }}
         />
         <label>
+          {folder && <span className="toggle-config-folder">{folder}</span>}
           <a
             href={`/options.html#configuration/${this.props.configuration.id}`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {this.props.configuration.name}
+            {displayName}
           </a>
         </label>
       </div>

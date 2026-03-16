@@ -12,33 +12,30 @@
  * limitations under the License.
  */
 import React from 'react'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import { logger } from '../../helpers/logger'
 
-class ErrorBox extends React.Component {
-  render() {
-    const e = this.props.error
-    logger('error', e).write()
-    return (
-      <div className="error-box">
-        <div className="error-title">Oops! Something went wrong: </div>
-        <div className="error-message">Message: {e.message}</div>
-        <div className="error-details">
-          <pre>{e.stack}</pre>
-        </div>
-        <div className="error-report">
-          <a
-            href={`https://github.com/svrnm/DemoMonkey/issues/new?title=${e.message}&body=${e.stack}`}
-            target="blank"
-            rel="noopener noreferer"
-          >
-            Report Issue
-          </a>
-          &nbsp;:&nbsp;
-          <a href="backup.html">Open Backup Page</a>
-        </div>
+function ErrorBox({ error }) {
+  logger('error', error).write()
+  return (
+    <Alert severity="error" sx={{ m: 1, mt: 0 }}>
+      <AlertTitle>Oops! Something went wrong:</AlertTitle>
+      <strong>Message:</strong> {error.message}
+      {error.stack && <pre style={{ whiteSpace: 'pre-wrap', fontSize: '11px' }}>{error.stack}</pre>}
+      <div>
+        <a
+          href={`https://github.com/svrnm/DemoMonkey/issues/new?title=${encodeURIComponent(error.message || '')}&body=${encodeURIComponent(error.stack || '')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Report Issue
+        </a>
+        &nbsp;:&nbsp;
+        <a href="backup.html">Open Backup Page</a>
       </div>
-    )
-  }
+    </Alert>
+  )
 }
 
 export default ErrorBox

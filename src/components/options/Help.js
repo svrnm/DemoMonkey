@@ -11,54 +11,120 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { marked } from 'marked'
-import highlight from 'highlight.js'
+import DOMPurify from 'dompurify'
 
-class Help extends React.Component {
-  constructor(props) {
-    super(props)
+const renderer = new marked.Renderer()
+const originalCode = renderer.code.bind(renderer)
+renderer.code = function (...args) {
+  const html = originalCode(...args)
+  return `<div class="code-block-wrapper">${html}<button class="code-copy-btn" title="Copy to clipboard">Copy</button></div>`
+}
 
-    this.fallback = require('../../../USAGE.md')
+function Help() {
+  const fallback = require('../../../USAGE.md')
+  const [usage, setUsage] = useState(null)
+  const [loaded, setLoaded] = useState(false)
+  const contentRef = useRef(null)
 
-    this.state = {
-      usage: null,
-      loaded: false
-    }
-  }
-
-  componentDidMount() {
-    // We try to fetch USAGE.md from github directly, this allows to update
-    // the inline usage docs without having to make a release every time
-    // on the google chrome webstore.
+  useEffect(() => {
     fetch('https://raw.githubusercontent.com/svrnm/DemoMonkey/main/USAGE.md')
-      .then((response) => response.text())
-      .then((data) => this.setState({ usage: data, loaded: true }))
-      .catch(() => {
-        this.setState({
-          loaded: true,
-          usage: this.fallback
-        })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load remote usage documentation: ${response.status}`)
+        }
+        return response.text()
       })
-  }
+      .then((data) => {
+        setUsage(data)
+        setLoaded(true)
+        return null
+      })
+      .catch(() => {
+        setUsage(fallback)
+        setLoaded(true)
+      })
+  }, [fallback])
 
-  render() {
-    const usage = this.state.loaded ? this.state.usage : this.fallback
-    const html = marked(usage, {
-      gfm: true,
-      headerIds: true,
-      highlight: (code, lang) => {
-        const language = highlight.getLanguage(lang) ? lang : 'plaintext'
-        return highlight.highlight(code, { language }).value
+  const handleClick = useCallback((e) => {
+    if (e.target.classList.contains('code-copy-btn')) {
+      const wrapper = e.target.closest('.code-block-wrapper')
+      if (!wrapper) {
+        return
       }
-    })
+      const code = wrapper.querySelector('code')
+      if (code) {
+        if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') {
+          window.alert('Copy to clipboard is not available in this browser.')
+          return
+        }
+        navigator.clipboard
+          .writeText(code.textContent)
+          .then(() => {
+            e.target.textContent = 'Copied!'
+            setTimeout(() => {
+              e.target.textContent = 'Copy'
+            }, 2000)
+            return null
+          })
+          .catch(() => {})
+      }
+    }
+  }, [])
 
-    return (
-      <div className="content">
-        <div className="welcome" dangerouslySetInnerHTML={{ __html: html }}></div>
-      </div>
-    )
-  }
+  const content = loaded ? usage : fallback
+  const html = marked(content, {
+    gfm: true,
+    headerIds: true,
+    renderer
+  })
+  const safeHtml = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      'a',
+      'b',
+      'strong',
+      'i',
+      'em',
+      'p',
+      'br',
+      'ul',
+      'ol',
+      'li',
+      'code',
+      'pre',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'blockquote',
+      'hr',
+      'img',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+      'th',
+      'td',
+      'div',
+      'span',
+      'button'
+    ],
+    ALLOWED_ATTR: ['href', 'title', 'alt', 'src', 'class']
+  })
+
+  return (
+    <div className="content">
+      <div
+        className="welcome"
+        ref={contentRef}
+        onClick={handleClick}
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
+      ></div>
+    </div>
+  )
 }
 
 export default Help

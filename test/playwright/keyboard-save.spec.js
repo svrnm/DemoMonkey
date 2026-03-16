@@ -24,7 +24,7 @@ test.describe('Keyboard Save', () => {
     await page.locator('.navigation .items').getByText('Keyboard Save Test').click()
 
     // Click the editor tab
-    await page.click('li#current-configuration-editor a')
+    await page.click('#current-configuration-editor')
     await page.waitForSelector('#contentarea', { timeout: 5000 })
     await page.waitForTimeout(500)
 
@@ -36,16 +36,16 @@ test.describe('Keyboard Save', () => {
     })
     await page.waitForTimeout(200)
 
-    // The save button should indicate unsaved changes
-    const saveButton = page.locator('.save-button')
-    await expect(saveButton).not.toHaveClass(/disabled/)
+    // The save button should indicate unsaved changes (not disabled)
+    const saveButton = page.getByRole('button', { name: 'Save' })
+    await expect(saveButton).toBeEnabled()
 
     // Press Ctrl+S to save
     await page.keyboard.press('Control+s')
     await page.waitForTimeout(500)
 
     // After saving, the save button should be disabled (no unsaved changes)
-    await expect(saveButton).toHaveClass(/disabled/)
+    await expect(saveButton).toBeDisabled()
 
     // Navigate away and back to confirm the change persisted
     await page.locator('.navigation .items').getByText('Example').click()
@@ -54,7 +54,7 @@ test.describe('Keyboard Save', () => {
     await page.waitForTimeout(300)
 
     // Click the editor tab
-    await page.click('li#current-configuration-editor a')
+    await page.click('#current-configuration-editor')
     await page.waitForSelector('#contentarea', { timeout: 5000 })
     await page.waitForTimeout(500)
 

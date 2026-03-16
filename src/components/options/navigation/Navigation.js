@@ -12,7 +12,8 @@
  * limitations under the License.
  */
 import React from 'react'
-import NavigationHeader from './NavigationHeader'
+import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
 import ItemHeader from './ItemHeader'
 import navigationTheme from './NavigationTheme'
 import ErrorBox from '../../shared/ErrorBox'
@@ -120,6 +121,11 @@ class Navigation extends React.Component {
     this.props.onDelete(node)
   }
 
+  onDownload(event, node) {
+    event.preventDefault()
+    this.props.onDownload(node)
+  }
+
   _renderTreeFromData(node) {
     return (
       <TreeItem
@@ -130,6 +136,7 @@ class Navigation extends React.Component {
             node={node}
             style={navigationTheme.tree.node.header}
             onDelete={(event, node) => this.onDelete(event, node)}
+            onDownload={(event, node) => this.onDownload(event, node)}
           />
         }
       >
@@ -147,6 +154,10 @@ class Navigation extends React.Component {
         <SimpleTreeView
           onItemExpansionToggle={(event, nodeId) => this.onToggle('toggle', nodeId)}
           onItemClick={(event, nodeId) => this.onToggle('select', nodeId)}
+          sx={{
+            '& .MuiTreeItem-content': { pl: 0.5 },
+            '& .MuiTreeItem-groupTransition': { ml: 2 }
+          }}
         >
           {this.state.data.map((item) => this._renderTreeFromData(item))}
         </SimpleTreeView>
@@ -157,31 +168,52 @@ class Navigation extends React.Component {
   }
 
   render() {
-    /*
-    decorators.Header = (props) => {
-      return <ItemHeader
-        style={props.style}
-        node={props.node}
-        onDelete={(event, node) => this.onDelete(event, node)}
-      />
-    }
-    */
-
     return (
       <div>
-        <div className="navigation-header">
-          <NavigationHeader
-            onUpload={this.props.onUpload}
-            onDownloadAll={this.props.onDownloadAll}
-            onNavigate={this.props.onNavigate}
-            showLogs={this.props.showLogs}
-          />
-          <input
-            type="text"
+        <div className="navigation-search">
+          <TextField
+            size="small"
+            fullWidth
             onChange={(event) => this.handleSearchUpdate(event)}
             value={this.state.search}
-            placeholder="Search..."
-            className="searchBox"
+            placeholder="Search... (/ or ⌘K)"
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <svg
+                      style={{ width: 16, height: 16 }}
+                      viewBox="0 0 24 24"
+                      fill="var(--navigation-text-color)"
+                    >
+                      <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                  </InputAdornment>
+                )
+              }
+            }}
+            sx={{
+              '& .MuiInputBase-input': {
+                background: 'transparent',
+                color: 'var(--navigation-text-color)',
+                py: '6px',
+                px: '4px',
+                fontSize: '13px'
+              },
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '4px',
+                background: 'var(--navigation-active-color)',
+                '& fieldset': { borderColor: 'transparent' },
+                '&:hover fieldset': {
+                  borderColor: 'var(--navigation-text-color)',
+                  opacity: 0.3
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'var(--base-color)',
+                  borderWidth: '1px'
+                }
+              }
+            }}
           />
         </div>
         <div className="tree items">{this._safeRenderTree()}</div>

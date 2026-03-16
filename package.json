@@ -39,6 +39,7 @@
     "color-string": "2.1.4",
     "crypto-js": "4.2.0",
     "deepmerge": "4.3.1",
+    "dompurify": "3.3.3",
     "fast-json-patch": "3.1.1",
     "highlight.js": "11.11.1",
     "ini": "6.0.0",
@@ -89,6 +90,7 @@
     "mocha": "11.7.5",
     "neostandard": "0.12.2",
     "postcss": "8.5.8",
+    "postcss-less": "6.0.0",
     "prettier": "3.8.1",
     "responsive-loader": "3.1.2",
     "sharp": "0.34.5",
@@ -119,5 +121,5 @@
       "serialize-javascript": "7.0.4"
     }
   },
-  "version": "11.0.0"
+  "version": "11.0.1"
 }

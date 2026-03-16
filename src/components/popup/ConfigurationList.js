@@ -12,6 +12,12 @@
  * limitations under the License.
  */
 import React from 'react'
+import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
+import Switch from '@mui/material/Switch'
+import Chip from '@mui/material/Chip'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
 import Configuration from '../../models/Configuration'
 import ToggleConfiguration from '../shared/ToggleConfiguration'
 import ErrorBox from '../shared/ErrorBox'
@@ -43,11 +49,7 @@ class ConfigurationList extends React.Component {
     this.props.actions.toggleDebugMode()
   }
 
-  renderPath(configuration, index) {
-    return <div key={configuration.id}>{this.renderItem(configuration, index)}</div>
-  }
-
-  renderItem(configuration, index) {
+  renderItem(configuration) {
     const tmpConfig = new Configuration(configuration.content, null, false, configuration.values)
 
     if (
@@ -57,19 +59,17 @@ class ConfigurationList extends React.Component {
       !tmpConfig.isRestricted() ||
       configuration.name.toLowerCase().startsWith('zzz_archive/')
     ) {
-      return <div></div>
+      return null
     }
 
     return (
-      <div>
-        <ToggleConfiguration
-          onlyShowAvailable={this.state.onlyShowAvailable}
-          currentUrl={this.props.currentUrl}
-          index={index}
-          actions={this.props.actions}
-          configuration={configuration}
-        />
-      </div>
+      <ToggleConfiguration
+        key={configuration.id}
+        onlyShowAvailable={this.state.onlyShowAvailable}
+        currentUrl={this.props.currentUrl}
+        actions={this.props.actions}
+        configuration={configuration}
+      />
     )
   }
 
@@ -95,31 +95,36 @@ class ConfigurationList extends React.Component {
 
   renderLatest() {
     if (this.getConfigurations().length < 12) {
-      return
+      return null
     }
+    const items = this.getLatest()
+      .map((c) => this.renderItem(c))
+      .filter(Boolean)
+    if (items.length === 0) return null
     return (
       <div className="latest-configurations">
-        <div className="latest-title">Latest</div>
-        {this.getLatest().map((configuration, index) => this.renderPath(configuration, index))}
+        <div className="latest-title">Recent</div>
+        {items}
       </div>
     )
   }
 
   renderList() {
+    const items = this.getList()
+      .map((c) => this.renderItem(c))
+      .filter(Boolean)
     return (
       <div>
         {this.renderLatest()}
-        <div>
-          {this.getList().map((configuration, index) => this.renderPath(configuration, index))}
-        </div>
+        {items.length > 0 ? items : <div className="popup-empty">No matching configurations</div>}
       </div>
     )
   }
 
   renderEmpty() {
     return (
-      <i>
-        No configuration found. Open the{' '}
+      <div className="popup-empty">
+        No configurations found.{' '}
         <a
           href="#"
           onClick={(e) => {
@@ -127,72 +132,145 @@ class ConfigurationList extends React.Component {
             window.chrome.runtime.openOptionsPage()
           }}
         >
-          Dashboard
-        </a>{' '}
-        to create configurations
-      </i>
+          Open Dashboard
+        </a>
+      </div>
     )
   }
 
   buildIncludeRegex() {
     if (this.props.currentUrl) {
       const u = new URL(this.props.currentUrl)
-
       const protocol = ['https:', 'http:'].includes(u.protocol) ? 'https?:' : u.protocol
-
       const host = u.hostname
-
-      return '/^' + protocol + '//' + host + '/.*$/'
+      const escapedHost = host.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+      return '@include[] = /^' + protocol + '\\/\\/' + escapedHost + '\\/.*$/'
     }
     return ''
   }
 
+  async copyIncludeRegex() {
+    const text = this.buildIncludeRegex()
+    if (!text) {
+      return
+    }
+
+    if (
+      typeof navigator !== 'undefined' &&
+      navigator.clipboard &&
+      typeof navigator.clipboard.writeText === 'function'
+    ) {
+      try {
+        await navigator.clipboard.writeText(text)
+      } catch (err) {
+        // Handle clipboard write failure to avoid unhandled promise rejections
+        // You may want to surface this to the user instead of just logging.
+        console.error('Failed to copy include regex to clipboard:', err)
+      }
+    }
+  }
+
   render() {
-    // If the rendering of the list throws any exception we display an error and the user should still be able to access the options page.
     try {
       return (
-        <div>
-          <div>
-            <b>Copy the following, to add current page to a configuration:</b>
+        <div className="popup-content">
+          <div className="popup-include-hint">Copy this to add the current page to a config:</div>
+          <div className="popup-include-bar">
+            <code className="popup-include-code">{this.buildIncludeRegex()}</code>
+            <Tooltip title="Copy to clipboard">
+              <IconButton size="small" onClick={() => this.copyIncludeRegex()}>
+                <svg style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                </svg>
+              </IconButton>
+            </Tooltip>
           </div>
-          <div>
-            <code>@include[]&nbsp;=&nbsp;{this.buildIncludeRegex()}</code>
-          </div>
-          <div>
-            <input
-              type="text"
+          <div className="popup-search">
+            <TextField
+              size="small"
+              fullWidth
               onChange={(event) => this.handleSearchUpdate(event)}
               value={this.state.search}
-              placeholder="Search..."
-              className="searchBox"
+              placeholder="Search configurations..."
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <svg
+                        style={{ width: 16, height: 16 }}
+                        viewBox="0 0 24 24"
+                        fill="var(--help-text-color)"
+                      >
+                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                      </svg>
+                    </InputAdornment>
+                  )
+                }
+              }}
+              sx={{
+                '& .MuiInputBase-input': {
+                  background: 'transparent',
+                  color: 'var(--mode-text-color)',
+                  py: '6px',
+                  fontSize: '13px'
+                },
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '6px',
+                  background: 'var(--highlight-background-color)',
+                  '& fieldset': { borderColor: 'transparent' },
+                  '&:hover fieldset': { borderColor: 'var(--help-text-color)', opacity: 0.3 },
+                  '&.Mui-focused fieldset': { borderColor: 'var(--base-color)', borderWidth: '1px' }
+                }
+              }}
             />
           </div>
-          <div>
-            <input
-              type="checkbox"
-              checked={this.state.onlyShowAvailable}
-              onChange={(event) => this.toggleOnlyShowAvailable()}
-            />{' '}
-            Only show configurations available for the current url
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              checked={this.state.onlyShowActivated}
-              onChange={(event) => this.toggleOnlyShowActivated()}
-            />{' '}
-            Only show activated configurations
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              checked={this.props.settings.debugMode}
-              onChange={(event) => this.toggleDebugMode()}
-            />{' '}
-            Run in <i>Debug Mode</i>
+          <div className="popup-list-header">
+            <div className="popup-filters">
+              <span className="popup-filter-label">Show:</span>
+              <Chip
+                label="Available for this page"
+                size="small"
+                variant={this.state.onlyShowAvailable ? 'filled' : 'outlined'}
+                color={this.state.onlyShowAvailable ? 'success' : 'default'}
+                onClick={() => this.toggleOnlyShowAvailable()}
+                icon={
+                  this.state.onlyShowAvailable ? (
+                    <svg style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                  ) : undefined
+                }
+                sx={{ fontSize: '11px', height: 22 }}
+              />
+              <Chip
+                label="Active only"
+                size="small"
+                variant={this.state.onlyShowActivated ? 'filled' : 'outlined'}
+                color={this.state.onlyShowActivated ? 'success' : 'default'}
+                onClick={() => this.toggleOnlyShowActivated()}
+                icon={
+                  this.state.onlyShowActivated ? (
+                    <svg style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                  ) : undefined
+                }
+                sx={{ fontSize: '11px', height: 22 }}
+              />
+            </div>
           </div>
           <div className="configurations-list">
             {this.getConfigurations().length < 1 ? this.renderEmpty() : this.renderList()}
+          </div>
+          <div className="popup-footer">
+            <Tooltip title="Adds performance statistics overlay to the page" placement="top">
+              <span className="popup-debug-label">Debug Mode</span>
+            </Tooltip>
+            <Switch
+              size="small"
+              checked={this.props.settings.debugMode}
+              onChange={() => this.toggleDebugMode()}
+            />
           </div>
         </div>
       )

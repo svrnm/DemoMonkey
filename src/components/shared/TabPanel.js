@@ -12,11 +12,18 @@
  * limitations under the License.
  */
 import React from 'react'
+import Box from '@mui/material/Box'
 
-class Pane extends React.Component {
-  render() {
-    return <div className="tabs__pane">{this.props.children}</div>
+function TabPanel({ value, index, children, padding = 1, sx, ...other }) {
+  if (value !== index) {
+    return null
   }
+
+  return (
+    <Box role="tabpanel" sx={{ height: '100%', p: padding, ...sx }} {...other}>
+      {children}
+    </Box>
+  )
 }
 
-export default Pane
+export default TabPanel

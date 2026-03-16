@@ -12,10 +12,20 @@
  * limitations under the License.
  */
 import React from 'react'
+import Table from '@mui/material/Table'
+import TableHead from '@mui/material/TableHead'
+import TableBody from '@mui/material/TableBody'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
 import { formatRelativeTime, formatISO } from '../../helpers/timeFormat'
 
-class Logs extends React.Component {
-  renderElement(m) {
+const levelColors = {
+  error: 'var(--danger-color)',
+  warn: 'var(--warning-color)'
+}
+
+function Logs({ entries }) {
+  function renderElement(m) {
     if (typeof m === 'object' && m.fromError === true) {
       return (
         <span title={m.stack}>
@@ -29,69 +39,67 @@ class Logs extends React.Component {
     return m
   }
 
-  openTab(event, tabId) {
+  function openTab(event, tabId) {
     event.preventDefault()
     window.chrome.tabs.update(tabId, { active: true, highlighted: true })
   }
 
-  renderTabButton(tabId) {
+  function renderTabButton(tabId) {
     if (!tabId) {
       return ''
     }
     return (
-      <a href="#" onClick={(event) => this.openTab(event, tabId)}>
+      <a href="#" onClick={(event) => openTab(event, tabId)}>
         Open Tab
       </a>
     )
   }
 
-  render() {
-    window.entries = this.props.entries
-    return (
-      <div className="content">
-        <div className="logs">
-          <h1>Logs</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Source</th>
-                <th>Level</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.props.entries
-                .slice()
-                .reverse()
-                .map(({ timestamp, source, level, message, tabId, repeated }, index) => {
-                  const isoTime = formatISO(timestamp)
-                  return (
-                    <tr key={index} className={`row-${level}`}>
-                      <td>
-                        <time dateTime={isoTime} title={isoTime}>
-                          {formatRelativeTime(timestamp, true)}
-                        </time>
-                      </td>
-                      <td>
-                        {source} {this.renderTabButton(tabId)}
-                      </td>
-                      <td>{level}</td>
-                      <td>
-                        {message.map((m, k) => {
-                          return <span key={k}>{this.renderElement(m)} </span>
-                        })}
-                        <i>{repeated > 0 ? ` (message repeated ${repeated} times)` : ''}</i>
-                      </td>
-                    </tr>
-                  )
-                })}
-            </tbody>
-          </table>
-        </div>
+  return (
+    <div className="content">
+      <div className="logs">
+        <h1>Logs</h1>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>Time</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Source</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Level</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Message</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {entries
+              .slice()
+              .reverse()
+              .map(({ timestamp, source, level, message, tabId, repeated }, index) => {
+                const isoTime = formatISO(timestamp)
+                const color = levelColors[level]
+                return (
+                  <TableRow key={index} sx={color ? { color } : undefined}>
+                    <TableCell sx={color ? { color: 'inherit' } : undefined}>
+                      <time dateTime={isoTime} title={isoTime}>
+                        {formatRelativeTime(timestamp, true)}
+                      </time>
+                    </TableCell>
+                    <TableCell sx={color ? { color: 'inherit' } : undefined}>
+                      {source} {renderTabButton(tabId)}
+                    </TableCell>
+                    <TableCell sx={color ? { color: 'inherit' } : undefined}>{level}</TableCell>
+                    <TableCell sx={color ? { color: 'inherit' } : undefined}>
+                      {message.map((m, k) => {
+                        return <span key={k}>{renderElement(m)} </span>
+                      })}
+                      <i>{repeated > 0 ? ` (message repeated ${repeated} times)` : ''}</i>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+          </TableBody>
+        </Table>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default Logs

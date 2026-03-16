@@ -1,3 +1,13 @@
 {
-  "extends": "stylelint-config-standard"
+  "extends": "stylelint-config-standard",
+  "customSyntax": "postcss-less",
+  "rules": {
+    "selector-class-pattern": null,
+    "selector-id-pattern": null,
+    "no-descending-specificity": null,
+    "import-notation": null,
+    "declaration-property-value-no-unknown": null,
+    "color-function-notation": null,
+    "color-function-alias-notation": null
+  }
 }

@@ -105,9 +105,9 @@ export default [
       // Keep off: This rule bans `new Promise()` which is sometimes necessary
       'promise/avoid-new': 'off',
 
-      // Disable stylistic space-before-function-paren from neostandard
-      // (project uses named: 'ignore' which conflicts with neostandard)
+      // Disable stylistic rules from neostandard that conflict with prettier
       '@stylistic/space-before-function-paren': 'off',
+      '@stylistic/multiline-ternary': 'off',
 
       // Space before function paren - project style
       'space-before-function-paren': [
