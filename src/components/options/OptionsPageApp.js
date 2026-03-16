@@ -96,7 +96,7 @@ class App extends React.Component {
         this.navigateTo('configuration/new')
         break
       case 'u': // Upload configuration
-        document.getElementById('upload')?.click()
+        document.getElementById('toolbar-upload-button')?.click()
         break
       case ',': // Settings
         this.navigateTo('settings')
