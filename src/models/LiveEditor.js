@@ -113,7 +113,7 @@ class LiveEditor {
     this.panel = this.scope.document.createElement('div')
     this.panel.className = 'dm-le-panel'
     this.panel.addEventListener('click', (e) => {
-      if (e.target !== this.configSelect && e.target.tagName !== 'BUTTON') {
+      if (!e.target.closest('select, button, a')) {
         this.input.focus()
       }
     })
@@ -139,6 +139,7 @@ class LiveEditor {
     const pickBtn = this.scope.document.createElement('button')
     pickBtn.className = 'dm-le-header-btn'
     pickBtn.title = 'Pick element'
+    pickBtn.setAttribute('aria-label', 'Pick element')
     pickBtn.innerHTML =
       '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">' +
       '<path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/>' +

@@ -179,7 +179,13 @@ try {
           })
 
           scope.document.addEventListener('demomonkey-inline-editing', function (e) {
-            let { search, replacement, command, configId, raw, token } = JSON.parse(e.detail)
+            let detail
+            try {
+              detail = JSON.parse(e.detail)
+            } catch (err) {
+              return
+            }
+            let { search, replacement, command, configId, raw, token } = detail
             if (token !== eventToken) return
             let configuration
             if (configId) {
@@ -206,7 +212,13 @@ try {
           })
 
           scope.document.addEventListener('demomonkey-toggle-configuration', function (e) {
-            const { id, enabled, token } = JSON.parse(e.detail)
+            let detail
+            try {
+              detail = JSON.parse(e.detail)
+            } catch (err) {
+              return
+            }
+            const { id, enabled, token } = detail
             if (token !== eventToken) return
             store.dispatch({
               type: 'TOGGLE_CONFIGURATION',
@@ -216,7 +228,12 @@ try {
           })
 
           scope.document.addEventListener('demomonkey-add-configuration', function (e) {
-            const detail = JSON.parse(e.detail)
+            let detail
+            try {
+              detail = JSON.parse(e.detail)
+            } catch (err) {
+              return
+            }
             if (detail.token !== eventToken) return
             const id = detail.id || crypto.randomUUID()
             store.dispatch({

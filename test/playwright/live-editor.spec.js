@@ -18,7 +18,9 @@ async function enableLiveEditor(page, extensionPage) {
   await extensionPage.gotoPopup(page)
   await page.waitForSelector('.popup-footer')
   const toggle = page.locator('.popup-footer input[type="checkbox"]')
-  await toggle.click()
+  if (!(await toggle.isChecked())) {
+    await toggle.click()
+  }
   await expect(toggle).toBeChecked()
 }
 

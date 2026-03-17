@@ -281,7 +281,7 @@ class ConfigurationList extends React.Component {
             </Tooltip>
             <Switch
               size="small"
-              checked={!!this.props.settings.liveEditorEnabled}
+              checked={!!(this.props.settings.liveEditorEnabled ?? this.props.settings.debugMode)}
               onChange={() => this.toggleLiveEditor()}
             />
           </div>
