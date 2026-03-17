@@ -315,11 +315,24 @@ class Monkey {
   _collectOpenShadowRoots(root) {
     const shadowRoots = []
     let elements
+
+    // Guard against invalid roots that do not support querySelectorAll
+    if (!root || typeof root.querySelectorAll !== 'function') {
+      if (logger && typeof logger.warn === 'function') {
+        logger.warn('Monkey._collectOpenShadowRoots: root does not support querySelectorAll; skipping shadow root collection.')
+      }
+      return shadowRoots
+    }
+
     try {
       elements = root.querySelectorAll('*')
     } catch (e) {
+      if (logger && typeof logger.warn === 'function') {
+        logger.warn('Monkey._collectOpenShadowRoots: error while querying elements from root; skipping shadow root collection.', e)
+      }
       return shadowRoots
     }
+
     for (const el of elements) {
       if (el.shadowRoot && el.id !== 'dm-live-editor-host') {
         shadowRoots.push(el.shadowRoot)
