@@ -335,7 +335,7 @@ class App extends React.Component {
   }
 
   toggleOptionalFeature(feature) {
-    this.props.actions
+    return this.props.actions
       .toggleOptionalFeature(feature)
       .then(() => {
         if (feature === 'registerProtocolHandler') {

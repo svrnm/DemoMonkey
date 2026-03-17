@@ -11,67 +11,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState, useEffect } from 'react'
-import { ThemeProvider } from '@mui/material/styles'
+import React, { useEffect } from 'react'
+import { ThemeProvider, useColorScheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { theme } from '../../theme'
 
-function Page({ syncDarkMode, preferDarkMode, className, children }) {
-  const [isDark, setIsDark] = useState(() => {
-    if (syncDarkMode && typeof window !== 'undefined' && window.matchMedia) {
-      try {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches
-      } catch {
-        // If matchMedia throws for any reason, fall back to explicit preference
-      }
-    }
-    return !!preferDarkMode
-  })
+function ColorSchemeSync({ syncDarkMode, preferDarkMode }) {
+  const { setMode } = useColorScheme()
 
   useEffect(() => {
-    if (syncDarkMode && typeof window !== 'undefined' && window.matchMedia) {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-
-      // Set initial value based on current OS preference
-      setIsDark(mediaQuery.matches)
-
-      const handleChange = (event) => {
-        setIsDark(event.matches)
-      }
-
-      if (typeof mediaQuery.addEventListener === 'function') {
-        mediaQuery.addEventListener('change', handleChange)
-      } else if (typeof mediaQuery.addListener === 'function') {
-        mediaQuery.addListener(handleChange)
-      }
-
-      return () => {
-        if (typeof mediaQuery.removeEventListener === 'function') {
-          mediaQuery.removeEventListener('change', handleChange)
-        } else if (typeof mediaQuery.removeListener === 'function') {
-          mediaQuery.removeListener(handleChange)
-        }
-      }
+    if (syncDarkMode) {
+      setMode('system')
+    } else if (preferDarkMode) {
+      setMode('dark')
     } else {
-      setIsDark(!!preferDarkMode)
+      setMode('light')
     }
-  }, [syncDarkMode, preferDarkMode])
+  }, [syncDarkMode, preferDarkMode, setMode])
 
-  useEffect(() => {
-    if (typeof document === 'undefined') {
-      return
-    }
+  return null
+}
 
-    const root = document.documentElement
-    const colorScheme = isDark ? 'dark' : 'light'
-
-    // Set MUI color scheme attribute — drives cssVariables mode
-    root.setAttribute('data-mui-color-scheme', colorScheme)
-  }, [syncDarkMode, isDark])
-
+function Page({ syncDarkMode, preferDarkMode, className, children }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme />
+      <ColorSchemeSync syncDarkMode={syncDarkMode} preferDarkMode={preferDarkMode} />
       <div className={className}>{children}</div>
     </ThemeProvider>
   )
