@@ -106,6 +106,7 @@ export default [
       'promise/avoid-new': 'off',
 
       // Disable stylistic rules from neostandard that conflict with prettier
+      '@stylistic/indent': 'off',
       '@stylistic/space-before-function-paren': 'off',
       '@stylistic/multiline-ternary': 'off',
 
