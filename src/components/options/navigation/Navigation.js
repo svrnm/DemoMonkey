@@ -184,7 +184,7 @@ class Navigation extends React.Component {
                     <svg
                       style={{ width: 16, height: 16 }}
                       viewBox="0 0 24 24"
-                      fill="var(--navigation-text-color)"
+                      fill="var(--mui-palette-custom-navigation-text)"
                     >
                       <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                     </svg>
@@ -195,21 +195,21 @@ class Navigation extends React.Component {
             sx={{
               '& .MuiInputBase-input': {
                 background: 'transparent',
-                color: 'var(--navigation-text-color)',
+                color: 'var(--mui-palette-custom-navigation-text)',
                 py: '6px',
                 px: '4px',
                 fontSize: '13px'
               },
               '& .MuiOutlinedInput-root': {
                 borderRadius: '4px',
-                background: 'var(--navigation-active-color)',
+                background: 'var(--mui-palette-custom-navigation-active)',
                 '& fieldset': { borderColor: 'transparent' },
                 '&:hover fieldset': {
-                  borderColor: 'var(--navigation-text-color)',
+                  borderColor: 'var(--mui-palette-custom-navigation-text)',
                   opacity: 0.3
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: 'var(--base-color)',
+                  borderColor: 'var(--mui-palette-custom-base)',
                   borderWidth: '1px'
                 }
               }
