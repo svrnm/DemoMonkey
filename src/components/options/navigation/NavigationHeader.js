@@ -45,11 +45,13 @@ function NavigationHeader({
   // Cycle: System → Dark → Light → System
   async function cycleTheme() {
     if (syncDarkMode) {
-      // System → Dark: disable sync, then enable dark
-      await onToggleOptionalFeature('syncDarkMode')
+      // System → Dark: enable dark first (no visual change while sync is
+      // still on), then disable sync so the explicit dark preference takes
+      // over — avoids a flash-of-light-mode in the intermediate state.
       if (!preferDarkMode) {
         await onToggleOptionalFeature('preferDarkMode')
       }
+      await onToggleOptionalFeature('syncDarkMode')
     } else if (preferDarkMode) {
       // Dark → Light: disable dark
       await onToggleOptionalFeature('preferDarkMode')
