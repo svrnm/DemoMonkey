@@ -23,7 +23,8 @@ class ModeManager {
     liveMode = false,
     analyticsSnippet = '',
     configs = [],
-    autoOpenLiveEditor = false
+    autoOpenLiveEditor = false,
+    options = {}
   ) {
     this.monkey = monkey
     this.scope = scope
@@ -33,6 +34,7 @@ class ModeManager {
     this.analyticsSnippet = analyticsSnippet
     this.configs = configs
     this.autoOpenLiveEditor = autoOpenLiveEditor
+    this.options = options
 
     this.started = false
 
@@ -181,7 +183,9 @@ class ModeManager {
   toggleLiveEditor() {
     if (this.liveEditorEnabled) {
       if (!this.liveEditor) {
-        this.liveEditor = new LiveEditor(this.scope, this.monkey, this.manifest, this.configs)
+        this.liveEditor = new LiveEditor(this.scope, this.monkey, this.manifest, this.configs, {
+          eventToken: this.options.eventToken
+        })
         if (this.autoOpenLiveEditor) {
           this.liveEditor.open()
         }

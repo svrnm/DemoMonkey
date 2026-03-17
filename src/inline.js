@@ -18,7 +18,10 @@ import JSON5 from 'json5'
   const rules = []
 
   function isDebug() {
-    return scope.document.head && scope.document.head.dataset.demoMonkeyMode === 'debug'
+    return (
+      scope.document.head &&
+      ['debug', 'live-editor'].includes(scope.document.head.dataset.demoMonkeyMode)
+    )
   }
 
   scope.addEventListener('message', function (event) {

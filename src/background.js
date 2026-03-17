@@ -60,15 +60,17 @@ try {
     liveModeAlarm.registerAlarmListener()
 
     scope.chrome.runtime.onInstalled.addListener(function () {
-      scope.chrome.contextMenus.create({
-        id: 'dmToggleLiveMode',
-        title: 'Toggle Live Mode',
-        contexts: ['action']
-      })
-      scope.chrome.contextMenus.create({
-        id: 'dmToggleLiveEditor',
-        title: 'Toggle Live Editor',
-        contexts: ['action']
+      scope.chrome.contextMenus.removeAll(() => {
+        scope.chrome.contextMenus.create({
+          id: 'dmToggleLiveMode',
+          title: 'Toggle Live Mode',
+          contexts: ['action']
+        })
+        scope.chrome.contextMenus.create({
+          id: 'dmToggleLiveEditor',
+          title: 'Toggle Live Editor',
+          contexts: ['action']
+        })
       })
     })
 

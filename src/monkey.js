@@ -113,6 +113,8 @@ try {
             settings.monkeyInterval
           ).write()
 
+          const eventToken = crypto.randomUUID()
+
           const modeManager = new ModeManager(
             scope,
             $DEMO_MONKEY,
@@ -121,7 +123,8 @@ try {
             settings.isLiveModeEnabled(),
             settings.analyticsSnippet,
             store.getState().configurations,
-            settings.isFeatureEnabled('debugBox')
+            settings.isFeatureEnabled('debugBox'),
+            { eventToken }
           )
 
           function restart() {
@@ -175,7 +178,8 @@ try {
           })
 
           scope.document.addEventListener('demomonkey-inline-editing', function (e) {
-            let { search, replacement, command, configId, raw } = JSON.parse(e.detail)
+            let { search, replacement, command, configId, raw, token } = JSON.parse(e.detail)
+            if (token !== eventToken) return
             let configuration
             if (configId) {
               configuration = store.getState().configurations.find((c) => c.id === configId)
@@ -184,23 +188,25 @@ try {
               const configs = store.getState().configurations.filter((config) => config.enabled)
               configuration = configs.length > 0 ? configs[0] : store.getState().configurations[0]
             }
+            let newContent
             if (raw) {
-              configuration.content += '\n' + search
+              newContent = configuration.content + '\n' + search
             } else {
               if (command) {
                 search = `!${command}(${search})`
               }
-              configuration.content += '\n' + search + ' = ' + replacement
+              newContent = configuration.content + '\n' + search + ' = ' + replacement
             }
             store.dispatch({
               type: 'SAVE_CONFIGURATION',
               id: configuration.id,
-              configuration
+              configuration: { ...configuration, content: newContent }
             })
           })
 
           scope.document.addEventListener('demomonkey-toggle-configuration', function (e) {
-            const { id, enabled } = JSON.parse(e.detail)
+            const { id, enabled, token } = JSON.parse(e.detail)
+            if (token !== eventToken) return
             store.dispatch({
               type: 'TOGGLE_CONFIGURATION',
               id,
@@ -210,6 +216,7 @@ try {
 
           scope.document.addEventListener('demomonkey-add-configuration', function (e) {
             const detail = JSON.parse(e.detail)
+            if (detail.token !== eventToken) return
             const id = detail.id || crypto.randomUUID()
             store.dispatch({
               type: 'ADD_CONFIGURATION',

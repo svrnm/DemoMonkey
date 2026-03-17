@@ -403,7 +403,8 @@ class LiveEditor {
         detail: JSON.stringify({
           name: configName,
           id: configId,
-          content
+          content,
+          token: this.options.eventToken
         })
       })
     )
@@ -487,6 +488,10 @@ class LiveEditor {
   }
 
   destroy() {
+    if (this._populateTimer) {
+      clearTimeout(this._populateTimer)
+      this._populateTimer = null
+    }
     if (this.picker) {
       this.picker.close()
       this.picker = null
@@ -541,7 +546,8 @@ class LiveEditor {
               replacement: '',
               command: false,
               configId,
-              raw: true
+              raw: true,
+              token: this.options.eventToken
             })
           })
         )
@@ -565,7 +571,8 @@ class LiveEditor {
             search,
             replacement,
             command: false,
-            configId
+            configId,
+            token: this.options.eventToken
           })
         })
       )
@@ -645,7 +652,7 @@ class LiveEditor {
   toggleConfig(id, enabled) {
     this.scope.document.dispatchEvent(
       new CustomEvent('demomonkey-toggle-configuration', {
-        detail: JSON.stringify({ id, enabled })
+        detail: JSON.stringify({ id, enabled, token: this.options.eventToken })
       })
     )
   }
