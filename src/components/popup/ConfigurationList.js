@@ -188,7 +188,11 @@ class ConfigurationList extends React.Component {
           <div className="popup-include-bar">
             <code className="popup-include-code">{this.buildIncludeRegex()}</code>
             <Tooltip title="Copy to clipboard">
-              <IconButton size="small" onClick={() => this.copyIncludeRegex()}>
+              <IconButton
+                size="small"
+                aria-label="Copy include regex to clipboard"
+                onClick={() => this.copyIncludeRegex()}
+              >
                 <ContentCopyIcon sx={{ fontSize: 14 }} />
               </IconButton>
             </Tooltip>

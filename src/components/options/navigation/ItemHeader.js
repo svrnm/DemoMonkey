@@ -127,6 +127,7 @@ function ItemHeader({ node, style: styleProp, onDelete, onDownload }) {
             className="download-configuration"
             onClick={(event) => onDownload(event, node)}
             title="Download"
+            aria-label="Download"
           >
             <DownloadIcon sx={{ fontSize: 12, verticalAlign: 'middle' }} />
           </button>
@@ -135,6 +136,7 @@ function ItemHeader({ node, style: styleProp, onDelete, onDownload }) {
           className="delete-configuration"
           onClick={() => setShowDeletePopup(true)}
           title="Delete"
+          aria-label="Delete"
         >
           <DeleteIcon sx={{ fontSize: 12, verticalAlign: 'middle' }} />
         </button>
