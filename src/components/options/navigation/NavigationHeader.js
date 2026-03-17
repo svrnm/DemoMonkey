@@ -96,6 +96,7 @@ function NavigationHeader({
             sx={iconSx}
             href="#settings"
             onClick={(event) => handleClick(event, 'settings')}
+            aria-label="Settings"
           >
             <SettingsIcon fontSize="small" />
           </IconButton>
@@ -127,7 +128,12 @@ function NavigationHeader({
         {/* TextSnippet */}
         {showLogs && (
           <Tooltip title="Logs (l)">
-            <IconButton sx={iconSx} href="#logs" onClick={(event) => handleClick(event, 'logs')}>
+            <IconButton
+              sx={iconSx}
+              href="#logs"
+              onClick={(event) => handleClick(event, 'logs')}
+              aria-label="Logs"
+            >
               <DescriptionIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -135,7 +141,7 @@ function NavigationHeader({
         <div className="top-bar-divider" />
         {/* Theme toggle */}
         <Tooltip title={`Theme: ${themeLabel} (click to cycle)`}>
-          <IconButton sx={iconSx} onClick={cycleTheme}>
+          <IconButton sx={iconSx} onClick={cycleTheme} aria-label={`Theme: ${themeLabel}`}>
             {themeMode === 'system' && <ContrastIcon fontSize="small" />}
             {themeMode === 'dark' && <DarkModeIcon fontSize="small" />}
             {themeMode === 'light' && <LightModeIcon fontSize="small" />}
@@ -149,6 +155,7 @@ function NavigationHeader({
             href="https://github.com/svrnm/DemoMonkey"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="GitHub repository"
           >
             <GitHubIcon fontSize="small" />
           </IconButton>
@@ -161,6 +168,7 @@ function NavigationHeader({
             href="https://chromewebstore.google.com/detail/demomonkey/jgbhioialphpgjgofopnplfibkeehgjd"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Chrome Web Store"
           >
             <ExtensionIcon fontSize="small" />
           </IconButton>
