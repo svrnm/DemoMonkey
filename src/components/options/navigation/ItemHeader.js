@@ -68,7 +68,9 @@ function ItemHeader({ node, style: styleProp, onDelete, onDownload }) {
   }
 
   function renderIcon() {
-    const iconColor = isEnabled ? 'var(--success-color)' : 'var(--navigation-text-color)'
+    const iconColor = isEnabled
+      ? 'var(--mui-palette-success-main)'
+      : 'var(--mui-palette-custom-navigation-text)'
     if (isDirectory) {
       return (
         <svg style={iconStyle} viewBox="0 0 24 24" fill={iconColor}>

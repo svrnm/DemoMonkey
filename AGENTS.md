@@ -160,6 +160,14 @@ This is enforced by ESLint (`header/header` rule) and will fail CI if missing.
 - Function paren spacing: `anonymous: always`, `named: ignore`, `asyncArrow: ignore`
 - Run `npm run lint:fix && npm run format:fix` before committing
 
+### Commit Signing (Required)
+
+All commits **must** be signed. Always use `-s -S` flags:
+
+```bash
+git commit -s -S -m "your message"
+```
+
 ### Pre-commit Hooks
 
 Husky + lint-staged run on every commit:

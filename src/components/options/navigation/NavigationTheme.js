@@ -19,10 +19,10 @@ export default {
   tree: {
     base: {
       listStyle: 'none',
-      backgroundColor: 'var(--navigation-item-color)',
+      backgroundColor: 'var(--mui-palette-custom-navigation-item)',
       margin: 0,
       padding: 0,
-      color: '#284907'
+      color: 'var(--mui-palette-custom-navigation-text)'
     },
     node: {
       base: {
@@ -34,10 +34,10 @@ export default {
         padding: '4px',
         width: '100%',
         display: 'block',
-        borderBottom: '1px solid var(--navigation-active-color)'
+        borderBottom: '1px solid var(--mui-palette-custom-navigation-active)'
       },
       activeLink: {
-        background: 'var(--navigation-active-color)'
+        background: 'var(--mui-palette-custom-navigation-active)'
       },
       toggle: {
         base: {
@@ -58,7 +58,7 @@ export default {
         height: 14,
         width: 14,
         arrow: {
-          fill: '#9DA5AB',
+          fill: 'var(--mui-palette-text-secondary)',
           strokeWidth: 0
         }
       },
@@ -66,13 +66,13 @@ export default {
         folder: {
           display: 'inline-block',
           verticalAlign: 'top',
-          color: 'var(--navigation-text-color)',
+          color: 'var(--mui-palette-custom-navigation-text)',
           width: 'calc(100% - 24px)'
         },
         item: {
           display: 'inline-block',
           verticalAlign: 'top',
-          color: 'var(--navigation-text-color)',
+          color: 'var(--mui-palette-custom-navigation-text)',
           width: '100%'
         },
         connector: {
@@ -91,7 +91,7 @@ export default {
           width: 'calc(100% - 80px)'
         },
         timestamp: {
-          color: '#888888',
+          color: 'var(--mui-palette-text-secondary)',
           fontSize: '80%',
           display: 'inline-block',
           textAlign: 'right',

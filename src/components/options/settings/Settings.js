@@ -167,7 +167,7 @@ class Settings extends React.Component {
             <Tab label="More" />
           </Tabs>
           <TabPanel value={tabIndex} index={0}>
-            <p style={{ color: 'var(--help-text-color)', margin: '16px 0 20px' }}>
+            <p style={{ color: 'var(--mui-palette-text-secondary)', margin: '16px 0 20px' }}>
               Toggle features on or off to customize the behaviour of DemoMonkey.
             </p>
             {OptionalFeature.getGroups().map((group) => (
@@ -300,7 +300,13 @@ class Settings extends React.Component {
           </TabPanel>
           <TabPanel value={tabIndex} index={4}>
             <div className="trash-header">
-              <p style={{ color: 'var(--help-text-color)', margin: '16px 0 20px', flex: 1 }}>
+              <p
+                style={{
+                  color: 'var(--mui-palette-text-secondary)',
+                  margin: '16px 0 20px',
+                  flex: 1
+                }}
+              >
                 Deleted configurations are moved here. You can restore or permanently remove them.
               </p>
               {hasDeletedConfigurations && (
@@ -327,7 +333,7 @@ class Settings extends React.Component {
                 <svg
                   style={{ width: 48, height: 48, opacity: 0.3 }}
                   viewBox="0 0 24 24"
-                  fill="var(--navigation-text-color)"
+                  fill="var(--mui-palette-custom-navigation-text)"
                 >
                   <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                 </svg>
@@ -395,7 +401,7 @@ class Settings extends React.Component {
             )}
           </TabPanel>
           <TabPanel value={tabIndex} index={5}>
-            <p style={{ color: 'var(--help-text-color)', margin: '16px 0 20px' }}>
+            <p style={{ color: 'var(--mui-palette-text-secondary)', margin: '16px 0 20px' }}>
               Advanced settings for performance, permissions, and data management.
             </p>
 
@@ -420,8 +426,8 @@ class Settings extends React.Component {
                       sx={{
                         width: '90px',
                         '& .MuiInputBase-input': {
-                          background: 'var(--input-background-color)',
-                          color: 'var(--mode-text-color)',
+                          background: 'var(--mui-palette-background-paper)',
+                          color: 'var(--mui-palette-text-primary)',
                           py: '6px'
                         }
                       }}
