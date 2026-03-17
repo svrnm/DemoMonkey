@@ -314,6 +314,32 @@ class Monkey {
 
   _collectOpenShadowRoots(root) {
     const shadowRoots = []
+
+    // Prefer a TreeWalker-based traversal to avoid materializing a full NodeList
+    const ownerDocument = root.ownerDocument || root
+
+    if (ownerDocument && typeof ownerDocument.createTreeWalker === 'function') {
+      const walker = ownerDocument.createTreeWalker(
+        root,
+        NodeFilter.SHOW_ELEMENT,
+        null,
+        false
+      )
+
+      let current = walker.currentNode
+      while (current) {
+        const el = current
+        if (el.shadowRoot && el.id !== 'dm-live-editor-host') {
+          shadowRoots.push(el.shadowRoot)
+          shadowRoots.push(...this._collectOpenShadowRoots(el.shadowRoot))
+        }
+        current = walker.nextNode()
+      }
+
+      return shadowRoots
+    }
+
+    // Fallback for environments without TreeWalker support
     let elements
 
     // Guard against invalid roots that do not support querySelectorAll
