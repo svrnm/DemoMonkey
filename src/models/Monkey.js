@@ -319,12 +319,7 @@ class Monkey {
     const ownerDocument = root.ownerDocument || root
 
     if (ownerDocument && typeof ownerDocument.createTreeWalker === 'function') {
-      const walker = ownerDocument.createTreeWalker(
-        root,
-        NodeFilter.SHOW_ELEMENT,
-        null,
-        false
-      )
+      const walker = ownerDocument.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null, false)
 
       let current = walker.currentNode
       while (current) {
@@ -345,7 +340,9 @@ class Monkey {
     // Guard against invalid roots that do not support querySelectorAll
     if (!root || typeof root.querySelectorAll !== 'function') {
       if (logger && typeof logger.warn === 'function') {
-        logger.warn('Monkey._collectOpenShadowRoots: root does not support querySelectorAll; skipping shadow root collection.')
+        logger.warn(
+          'Monkey._collectOpenShadowRoots: root does not support querySelectorAll; skipping shadow root collection.'
+        )
       }
       return shadowRoots
     }
@@ -354,7 +351,10 @@ class Monkey {
       elements = root.querySelectorAll('*')
     } catch (e) {
       if (logger && typeof logger.warn === 'function') {
-        logger.warn('Monkey._collectOpenShadowRoots: error while querying elements from root; skipping shadow root collection.', e)
+        logger.warn(
+          'Monkey._collectOpenShadowRoots: error while querying elements from root; skipping shadow root collection.',
+          e
+        )
       }
       return shadowRoots
     }
@@ -396,6 +396,20 @@ class Monkey {
         shadowRoot
       )
       sum.image += this._applyOnXpathGroup(configuration, './/img', 'image', 'src', shadowRoot)
+      sum.image += this._applyOnXpathGroup(
+        configuration,
+        './/div[contains(@ad-test-id, "dash-image-widget-renderer")]',
+        'image',
+        'style.backgroundImage',
+        shadowRoot
+      )
+      sum.image += this._applyOnXpathGroup(
+        configuration,
+        './/dash-kit-image-widget2/div/ui-kit-card-v1/div/div/div',
+        'image',
+        'style.backgroundImage',
+        shadowRoot
+      )
     }
   }
 
