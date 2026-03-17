@@ -29,6 +29,7 @@
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
+    "@mui/icons-material": "7.3.9",
     "@mui/material": "7.3.9",
     "@mui/x-tree-view": "8.27.2",
     "ace-builds": "1.43.6",
@@ -81,8 +82,6 @@
     "globals": "16.5.0",
     "html-webpack-plugin": "5.6.6",
     "husky": "9.1.7",
-    "less": "4.6.4",
-    "less-loader": "12.3.2",
     "lint-staged": "16.4.0",
     "markdownlint": "0.40.0",
     "markdownlint-cli": "0.48.0",
@@ -90,7 +89,6 @@
     "mocha": "11.7.5",
     "neostandard": "0.12.2",
     "postcss": "8.5.8",
-    "postcss-less": "6.0.0",
     "prettier": "3.8.1",
     "responsive-loader": "3.1.2",
     "sharp": "0.34.5",
@@ -112,7 +110,7 @@
       "prettier --write"
     ],
     "*.{json,css}": "prettier --write",
-    "*.less": "stylelint --cache --fix",
+    "*.css": "stylelint --cache --fix",
     "*.md": "npx markdownlint-cli --fix --config .markdownlint.jsonc"
   },
   "overrides": {

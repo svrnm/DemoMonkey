@@ -13,6 +13,8 @@
  */
 import React from 'react'
 import Button from '@mui/material/Button'
+import AddIcon from '@mui/icons-material/Add'
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import Variable from '../../../models/Variable'
 import VariableEditor from '../../shared/Variable'
 
@@ -113,11 +115,7 @@ class GlobalVariables extends React.Component {
             size="small"
             sx={{ textTransform: 'none' }}
             onClick={() => this.addVariable()}
-            startIcon={
-              <svg style={{ width: 16, height: 16 }} viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-              </svg>
-            }
+            startIcon={<AddIcon fontSize="small" />}
           >
             Add Variable
           </Button>
@@ -136,13 +134,14 @@ class GlobalVariables extends React.Component {
         </div>
         {variables.length === 0 && (
           <div className="variables-empty">
-            <svg
-              style={{ width: 48, height: 48, opacity: 0.3 }}
-              viewBox="0 0 24 24"
-              fill="var(--mui-palette-custom-navigation-text)"
-            >
-              <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z" />
-            </svg>
+            <LibraryAddIcon
+              sx={{
+                width: 48,
+                height: 48,
+                opacity: 0.3,
+                color: 'var(--mui-palette-custom-navigation-text)'
+              }}
+            />
             <p>No variables defined</p>
           </div>
         )}

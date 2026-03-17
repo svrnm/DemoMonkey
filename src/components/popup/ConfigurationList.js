@@ -18,6 +18,9 @@ import Switch from '@mui/material/Switch'
 import Chip from '@mui/material/Chip'
 import Tooltip from '@mui/material/Tooltip'
 import IconButton from '@mui/material/IconButton'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import SearchIcon from '@mui/icons-material/Search'
+import CheckIcon from '@mui/icons-material/Check'
 import Configuration from '../../models/Configuration'
 import ToggleConfiguration from '../shared/ToggleConfiguration'
 import ErrorBox from '../shared/ErrorBox'
@@ -185,10 +188,12 @@ class ConfigurationList extends React.Component {
           <div className="popup-include-bar">
             <code className="popup-include-code">{this.buildIncludeRegex()}</code>
             <Tooltip title="Copy to clipboard">
-              <IconButton size="small" onClick={() => this.copyIncludeRegex()}>
-                <svg style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                </svg>
+              <IconButton
+                size="small"
+                aria-label="Copy include regex to clipboard"
+                onClick={() => this.copyIncludeRegex()}
+              >
+                <ContentCopyIcon sx={{ fontSize: 14 }} />
               </IconButton>
             </Tooltip>
           </div>
@@ -203,13 +208,9 @@ class ConfigurationList extends React.Component {
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <svg
-                        style={{ width: 16, height: 16 }}
-                        viewBox="0 0 24 24"
-                        fill="var(--mui-palette-text-secondary)"
-                      >
-                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                      </svg>
+                      <SearchIcon
+                        sx={{ fontSize: 16, color: 'var(--mui-palette-text-secondary)' }}
+                      />
                     </InputAdornment>
                   )
                 }
@@ -247,11 +248,7 @@ class ConfigurationList extends React.Component {
                 color={this.state.onlyShowAvailable ? 'success' : 'default'}
                 onClick={() => this.toggleOnlyShowAvailable()}
                 icon={
-                  this.state.onlyShowAvailable ? (
-                    <svg style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                  ) : undefined
+                  this.state.onlyShowAvailable ? <CheckIcon sx={{ fontSize: 14 }} /> : undefined
                 }
                 sx={{ fontSize: '11px', height: 22 }}
               />
@@ -262,11 +259,7 @@ class ConfigurationList extends React.Component {
                 color={this.state.onlyShowActivated ? 'success' : 'default'}
                 onClick={() => this.toggleOnlyShowActivated()}
                 icon={
-                  this.state.onlyShowActivated ? (
-                    <svg style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                  ) : undefined
+                  this.state.onlyShowActivated ? <CheckIcon sx={{ fontSize: 14 }} /> : undefined
                 }
                 sx={{ fontSize: '11px', height: 22 }}
               />

@@ -2,7 +2,7 @@
 .code-copy-btn:focus-visible {
   opacity: 1;
 }
-// lesshint idSelector: false
+
 #welcome-installation {
   display: none;
 }
