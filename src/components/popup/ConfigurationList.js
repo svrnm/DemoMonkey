@@ -189,7 +189,7 @@ class ConfigurationList extends React.Component {
             <code className="popup-include-code">{this.buildIncludeRegex()}</code>
             <Tooltip title="Copy to clipboard">
               <IconButton size="small" onClick={() => this.copyIncludeRegex()}>
-                <ContentCopyIcon fontSize="small" />
+                <ContentCopyIcon sx={{ fontSize: 14 }} />
               </IconButton>
             </Tooltip>
           </div>
