@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 import React, { useEffect } from 'react'
-import { ThemeProvider, useColorScheme } from '@mui/material/styles'
+import { CssVarsProvider, useColorScheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { theme } from '../../theme'
 
@@ -34,11 +34,11 @@ function ColorSchemeSync({ syncDarkMode, preferDarkMode }) {
 
 function Page({ syncDarkMode, preferDarkMode, className, children }) {
   return (
-    <ThemeProvider theme={theme}>
+    <CssVarsProvider theme={theme}>
       <CssBaseline enableColorScheme />
       <ColorSchemeSync syncDarkMode={syncDarkMode} preferDarkMode={preferDarkMode} />
       <div className={className}>{children}</div>
-    </ThemeProvider>
+    </CssVarsProvider>
   )
 }
 
