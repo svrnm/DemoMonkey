@@ -165,7 +165,7 @@ class Variable extends React.Component {
                 aria-label="Upload from file"
                 onClick={(e) => this.showUploadDialog(e)}
               >
-                <UploadFileIcon fontSize="small" />
+                <UploadFileIcon sx={{ fontSize: 16 }} />
               </IconButton>
             </Tooltip>
             <Tooltip title="Pick color">
@@ -174,7 +174,7 @@ class Variable extends React.Component {
                 aria-label="Pick color"
                 onClick={(e) => this.showColorDialog(e)}
               >
-                <PaletteIcon fontSize="small" />
+                <PaletteIcon sx={{ fontSize: 16 }} />
               </IconButton>
             </Tooltip>
             {this.props.isGlobal ? (
@@ -185,13 +185,13 @@ class Variable extends React.Component {
                   aria-label="Delete variable"
                   onClick={(e) => this.deleteVariable(e)}
                 >
-                  <DeleteIcon fontSize="small" />
+                  <DeleteIcon sx={{ fontSize: 16 }} />
                 </IconButton>
               </Tooltip>
             ) : (
               <Tooltip title="Reset to default">
                 <IconButton size="small" onClick={(e) => this.resetVariable(e)}>
-                  <RefreshIcon fontSize="small" />
+                  <RefreshIcon sx={{ fontSize: 16 }} />
                 </IconButton>
               </Tooltip>
             )}
