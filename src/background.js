@@ -113,10 +113,6 @@ try {
       netRequestManager.removeTab(tabId)
     })
 
-    scope.chrome.tabs.onRemoved.addListener(function (tab) {
-      // TODO: netRequestManager & badge cleanup
-    })
-
     scope.chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.receiver && request.receiver === 'background') {
         if (

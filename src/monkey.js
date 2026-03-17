@@ -46,7 +46,6 @@ try {
       }
 
       function onStart(count) {
-        console.log('Updating Badge:', count)
         if (isTopFrame()) {
           scope.chrome.runtime.sendMessage({
             receiver: 'background',
