@@ -113,14 +113,18 @@ try {
             settings.monkeyInterval
           ).write()
 
+          const eventToken = crypto.randomUUID()
+
           const modeManager = new ModeManager(
             scope,
             $DEMO_MONKEY,
             new Manifest(scope.chrome),
-            settings.isDebugEnabled(),
-            settings.isFeatureEnabled('debugBox'),
+            settings.isLiveEditorEnabled(),
             settings.isLiveModeEnabled(),
-            settings.analyticsSnippet
+            settings.analyticsSnippet,
+            store.getState().configurations,
+            settings.isFeatureEnabled('debugBox'),
+            { eventToken }
           )
 
           function restart() {
@@ -146,9 +150,9 @@ try {
             $DEMO_MONKEY = newMonkey
             modeManager.reload(
               $DEMO_MONKEY,
-              settings.isDebugEnabled(),
-              settings.isFeatureEnabled('debugBox'),
-              settings.isLiveModeEnabled()
+              settings.isLiveEditorEnabled(),
+              settings.isLiveModeEnabled(),
+              store.getState().configurations
             )
           }
 
@@ -158,8 +162,15 @@ try {
             if (['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)) {
               return
             }
-            if (settings.isFeatureEnabled('autoReplace')) {
+            const currentSettings = new Settings(store.getState().settings)
+            if (
+              currentSettings.isFeatureEnabled('autoReplace') ||
+              lastAction.type === 'TOGGLE_LIVE_EDITOR' ||
+              lastAction.type === 'TOGGLE_DEBUG_MODE'
+            ) {
               restart()
+            } else {
+              modeManager.updateConfigs(store.getState().configurations)
             }
           })
 
@@ -168,18 +179,79 @@ try {
           })
 
           scope.document.addEventListener('demomonkey-inline-editing', function (e) {
-            let { search, replacement, command } = JSON.parse(e.detail)
-            const configs = store.getState().configurations.filter((config) => config.enabled)
-            const configuration =
-              configs.length > 0 ? configs[0] : store.getState().configurations[0]
-            if (command) {
-              search = `!${command}(${search})`
+            let detail
+            try {
+              detail = JSON.parse(e.detail)
+            } catch (err) {
+              return
             }
-            configuration.content += '\n' + search + ' = ' + replacement
+            let { search, replacement, command, configId, raw, token } = detail
+            if (token !== eventToken) return
+            let configuration
+            if (configId) {
+              configuration = store.getState().configurations.find((c) => c.id === configId)
+            }
+            if (!configuration) {
+              const configs = store.getState().configurations.filter((config) => config.enabled)
+              configuration = configs.length > 0 ? configs[0] : store.getState().configurations[0]
+            }
+            let newContent
+            if (raw) {
+              newContent = configuration.content + '\n' + search
+            } else {
+              if (command) {
+                search = `!${command}(${search})`
+              }
+              newContent = configuration.content + '\n' + search + ' = ' + replacement
+            }
             store.dispatch({
               type: 'SAVE_CONFIGURATION',
               id: configuration.id,
-              configuration
+              configuration: { ...configuration, content: newContent }
+            })
+          })
+
+          scope.document.addEventListener('demomonkey-toggle-configuration', function (e) {
+            let detail
+            try {
+              detail = JSON.parse(e.detail)
+            } catch (err) {
+              return
+            }
+            const { id, enabled, token } = detail
+            if (token !== eventToken) return
+            store.dispatch({
+              type: 'TOGGLE_CONFIGURATION',
+              id,
+              enabled
+            })
+          })
+
+          scope.document.addEventListener('demomonkey-add-configuration', function (e) {
+            let detail
+            try {
+              detail = JSON.parse(e.detail)
+            } catch (err) {
+              return
+            }
+            if (detail.token !== eventToken) return
+            const id = detail.id || crypto.randomUUID()
+            store.dispatch({
+              type: 'ADD_CONFIGURATION',
+              configuration: {
+                name: detail.name || 'New Config',
+                content: detail.content || '',
+                test: '',
+                enabled: false,
+                values: {},
+                id
+              }
+            })
+            // Enable it after creation since the reducer forces enabled: false
+            store.dispatch({
+              type: 'TOGGLE_CONFIGURATION',
+              id,
+              enabled: true
             })
           })
 

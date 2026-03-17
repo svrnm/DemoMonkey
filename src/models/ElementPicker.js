@@ -35,7 +35,7 @@ class ElementPicker {
       background: 'rgba(153, 235, 255, 0.5)', // transparent light blue
       borderWidth: 5,
       transition: 'all 150ms ease', // set to "" (empty string) to disable
-      ignoreElements: [document.body, document.getElementById('demo-monkey-editor-toggle')],
+      ignoreElements: [document.body, document.getElementById('dm-live-editor-host')],
       action: {},
       matches: () => true
     }

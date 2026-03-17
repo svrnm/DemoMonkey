@@ -49,8 +49,12 @@
       },
       "description": "Live Mode"
     },
-    "debug-mode": {
-      "description": "Debug Mode"
+    "live-editor": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "Toggle Live Editor"
     },
     "toggle-hotkey-group-1": {
       "suggested_key": {

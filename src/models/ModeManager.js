@@ -11,32 +11,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ElementPicker from './ElementPicker'
 import Command from '../commands/Command'
+import LiveEditor from './LiveEditor'
 
 class ModeManager {
   constructor(
     scope,
     monkey,
     manifest,
-    debugMode = false,
-    debugBox = false,
+    liveEditorEnabled = false,
     liveMode = false,
-    analyticsSnippet = ''
+    analyticsSnippet = '',
+    configs = [],
+    autoOpenLiveEditor = false,
+    options = {}
   ) {
     this.monkey = monkey
     this.scope = scope
     this.manifest = manifest
-    this.debugMode = debugMode
-    this.debugBox = debugBox
+    this.liveEditorEnabled = liveEditorEnabled
     this.liveMode = liveMode
     this.analyticsSnippet = analyticsSnippet
+    this.configs = configs
+    this.autoOpenLiveEditor = autoOpenLiveEditor
+    this.options = options
 
     this.started = false
 
-    this.avgRunTime = 0
-    this.maxRunTime = 0
-    this.runCount = 0
+    this.liveEditor = null
 
     this.monkey.addObserver(this)
 
@@ -64,20 +66,25 @@ class ModeManager {
     this.started = true
   }
 
-  reload(monkey, debugMode = false, debugBox = false, liveMode = false) {
-    if (this.demoMonkeyPicker) {
-      this.demoMonkeyPicker.close()
-      delete this.demoMonkeyPicker
-    }
-
+  reload(monkey, liveEditorEnabled = false, liveMode = false, configs = []) {
     this.clearDebugAttributes()
 
     this.monkey = monkey
-    this.debugMode = debugMode
-    this.debugBox = debugBox
+    this.liveEditorEnabled = liveEditorEnabled
     this.liveMode = liveMode
+    this.configs = configs
 
     this.monkey.addObserver(this)
+
+    if (this.liveEditor) {
+      if (!this.liveEditorEnabled) {
+        this.liveEditor.destroy()
+        this.liveEditor = null
+      } else {
+        this.liveEditor.monkey = monkey
+        this.liveEditor.updateConfigs(configs)
+      }
+    }
 
     if (this.started) {
       this.updateMonkeyHead()
@@ -86,9 +93,11 @@ class ModeManager {
 
   update(event) {
     if (event.type === 'applied') {
-      this.updateDebugBox(event.stats.runtime, event.stats.sum, event.stats.undoLength)
+      if (this.liveEditor) {
+        this.liveEditor.updateStats(event.stats.runtime, event.stats.sum, event.stats.undoLength)
+      }
     }
-    if (event.type === 'addUndo' && this.debugMode) {
+    if (event.type === 'addUndo' && this.liveEditorEnabled) {
       event.elements.forEach((undoElement) => {
         if (!undoElement.target) {
           return
@@ -129,7 +138,6 @@ class ModeManager {
   }
 
   addDebugAttribute(element, isHidden, source) {
-    // UndoElement(node, 'display.style', original, 'none')
     element.dataset.demoMonkeyDebug = true
     if (source instanceof Command) {
       element.dataset.demoMonkeyDebugSource = source.toString()
@@ -158,243 +166,84 @@ class ModeManager {
     ;[
       '#demo-monkey-debug-helper-svg',
       '#demo-monkey-debug-helper-style',
-      '#demo-monkey-debug-box'
+      '#demo-monkey-debug-box',
+      '#demo-monkey-debug-tooltip'
     ].forEach((id) => {
       const elem = this.scope.document.querySelector(id)
       if (elem) {
         elem.remove()
       }
     })
+    if (this.liveEditor) {
+      this.liveEditor.destroy()
+      this.liveEditor = null
+    }
+    this.debugTooltip = null
     this.clearDebugAttributes()
   }
 
-  removeEditor() {
-    const oldEditor = this.scope.document.getElementById('demo-monkey-editor')
-    if (oldEditor) {
-      oldEditor.remove()
-    }
-  }
-
-  toggleDebugMode() {
-    if (this.debugMode) {
-      if (this.scope.document.getElementById('demo-monkey-debug-helper-style') === null) {
-        this.scope.document.head.insertAdjacentHTML(
-          'beforeend',
-          `<style id="demo-monkey-debug-helper-style">
-        [data-demo-monkey-debug] { background-color: rgba(255, 255, 0, 0.5); }
-        svg [data-demo-monkey-debug] { filter: url(#dm-debug-filter-visible) }
-        [data-demo-monkey-debug-display] { display: var(--data-demo-monkey-debug-display) !important; background-color: rgba(255, 0, 0, 0.5); }
-        [data-demo-monkey-debug-display] * { display: var(--data-demo-monkey-debug-display) !important; background-color: rgba(255, 0, 0, 0.5); }
-        svg [data-demo-monkey-debug-display] { display: var(--data-demo-monkey-debug-display) !important; filter: url(#dm-debug-filter-hidden) }
-        #demo-monkey-debug-box { position: fixed; bottom: 0px; right: 0px; border: 1px solid rgb(168, 201, 135); backdrop-filter:blur(4px); background: rgb(168, 201, 135, 0.8); z-index: 99999; pointer-events: none; display: flex; flex-wrap: nowrap; justify-content: flex-end; border-radius: 6px 0px 0px 0px; font-family: Robot, arial, sans-serif; font-size: 10pt;  box-shadow: 0 0 2px 2px #ccc;}
-        #demo-monkey-debug-box div { border-right: 1px solid  rgb(168, 201, 135); padding: 4px 16px 0px 16px; }
-        #demo-monkey-debug-box button { pointer-events: auto; }
-        div#demo-monkey-logo { pointer-events: auto; cursor: pointer; padding: 2px; border-right: 0 }
-        #demo-monkey-debug-tooltip {
-          border: 1px solid rgb(168, 201, 135);
-          position: fixed;
-          top: 80;
-          left: 50;
-          padding: 4px;
-          border-radius: 4px;
-          background: rgb(168, 201, 135, 1);
-          box-shadow: 4px 4px 2px 2px rgb(128,128,128,0.4);
-          font-family: Robot, arial, sans-serif; font-size: 10pt;
-          z-index: 99999;
-          display: none;
+  toggleLiveEditor() {
+    if (this.liveEditorEnabled) {
+      if (!this.liveEditor) {
+        this.liveEditor = new LiveEditor(this.scope, this.monkey, this.manifest, this.configs, {
+          eventToken: this.options.eventToken
+        })
+        if (this.autoOpenLiveEditor) {
+          this.liveEditor.open()
         }
-        #demo-monkey-debug-tooltip:after, #demo-monkey-debug-tooltip:before {
-          bottom: 100%;
-          left: 8px;
-          border: solid transparent;
-          content: " ";
-          height: 0;
-          width: 0;
-          position: absolute;
-          pointer-events: none;
-        }
-        #demo-monkey-debug-tooltip:after {
-          border-color: 0;
-          border-bottom-color: rgb(168, 201, 135);
-          border-width: 4px;
-          margin-left: -4px;
-        #demo-monkey-debug-tooltip:before {
-          border-color: 0;
-          border-bottom-color: rgb(168, 201, 135);
-          border-width: 7px;
-          margin-left: -7px;
-        }
-        </style>`
-        )
       }
-      if (this.scope.document.getElementById('demo-monkey-debug-helper-svg') === null) {
-        this.scope.document.body.insertAdjacentHTML(
-          'beforeend',
-          `<svg id="demo-monkey-debug-helper-svg">
-          <defs>
-            <filter x="0" y="0" width="1" height="1" id="dm-debug-filter-visible">
-              <feFlood flood-color="yellow" flood-opacity="0.5" />
-              <feComposite in="SourceGraphic" />
-            </filter>
-            <filter x="0" y="0" width="1" height="1" id="dm-debug-filter-hidden">
-              <feFlood flood-color="red" flood-opacity="0.5" />
-              <feComposite in="SourceGraphic" />
-            </filter>
-          </defs>
-        </svg>`
-        )
-      }
-      if (this.scope.document.getElementById('demo-monkey-debug-box') === null) {
-        this.scope.document.body.insertAdjacentHTML(
-          'beforeend',
-          `
-        <div id="demo-monkey-debug-box">
-          <div id="demo-monkey-logo" title="Click to minimize/maximize Demo Monkey Bar">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAilBMVEVMaXH39/ezs7MyMjIwMDAyMjJcXFxGRkYyMjLm5uaRkZHMzMyoqKgxMTE/Pz8yMjIyMjIwMDDv7+8wMDAyMjJpaWlMS0vc3NwxMTHBwcE0NDR4eHjU1NQzMzOCgoJTU1OdnZ1GRkUyMjL////+/v40NDQ2Njb8/PwnJycrKysuLi4iIiI6OjoSEhJIPXqzAAAAInRSTlMA/v4sWe/9A/z9/f792/2jtHD+DMn+/v0c/j/+/oj+/v36tq3OMgAAAAlwSFlzAAAuIwAALiMBeKU/dgAAA7tJREFUeJyNVmuXqjoMLQi0CCIi+H6dpklLxf//9+5K8cygzj1r8gHBlZ2dx05BiJ9MisNKSPF7kyKhw68RUkoha1oms19BJF8OLeKybhksfgj45r5LaoUK0xRXO/mM8D8AKcU6qVNCpbTWDGqT9Qdi4i9EskB2R/ZHrZBwkUxc5Jv/rkYavUdDpRRhvfty4mwm6NmCQi4vphQtvts1SY/9cRJ9QoPfiGk9uwV+hH+SYLv+rFjUFPyR6IuGnveKzu8UUiQhPmLv7j0GN/SO7zX/+ykU2TIAfX89Hq/Oo9boquP8cnUamaJ+n0UgQD/EFsDGlUfsjw0ARDetUaNWr8KSYklKox4KsNZaKEi7ixnvY85K0Zvc19widCVYA2AslPcsAgsA1sLFkVZYv81Acb3XCAwYawxEf0qwAW0hHzwqbF8zSlAhuRsHNWDAQpyDYWPE0SFiunsFcAl9wTG35TMVA3EcwKUj1Om0ailWpFBXOQNuZQGWw0NeznMuqPD4I8BvGrDQzE+cPqcSx7c9U51IfwC4hiegm8//ArJrHACoQw3fwpbiwOMZcvbMHmUYgIXt47FlwL5nxa6/djPscYoYirYwd9vAYCxUVfi5OVLYznjBRzss2zpFJDfnopuTMSY/FTlAnocmZzxrxLRdjSo/IxEFdW7GwUF+xPtddyFDC8W4R0RENSMSUsqzJDUyBVjYbrqyKOJuc2LGaCTondOKlkFF2m8G/pNcBzzb+R5YUVDMmaDZeNTor+Wt8qhmIkGNsc2zHtFX2xCyGbtkoYk4wT0D+higCKI9D+4CFrp+LBrG/gSz4xN0DskdgxMtxZLcHmDL20DPfhqYmoXYIboMWOjDF4DLyriHH2YhHzS5C0Qjw3ngTGzWj6yfZsBePfX7sYYzd5X2pmHAs4RPy3ry17isPFHCovA6q3rEfwFQ9/e7D4oSZ1Kq96SeKb2VzClFG4+KiJSihLVXEyIiYX/lLXth4QbbUd7ER+J4AK7PqVL1GVGfeLA8sb8NMhHr6eaIlqt2sXwef1KsZzMpW26dhWLcBhMuUBZgOKPn+kwWQopDqokpumMzjsNAc+zGdcCEnV5fbrzXfRYZyAea77d5vt1f+FiAAieH9+v5uiLXMSJ73FVV6fsjywFOlWdR/2RSJGnPPlHcVV5XXRyB2Vf+/Vh9OTHbviobA9DkeQQA24vXi398Q0ghk4XbzPe5NSbaxsfBLVafL+opQgp5WC78sLleN9iny8P641Pgh0c5S5LVKklmvPLv4f8Dj8ywplF/mFkAAAAASUVORK5CYII=" alt="DemoMonkey" width="20" height="20" style="display:block" />
-          </div>
-          <div class="demo-monkey-debug-box-inner">Runtime (ms): <span id="demo-monkey-last-runtime"></span></div>
-          <div class="demo-monkey-debug-box-inner">Inspected: <span id="demo-monkey-elements-count"></span></div>
-          <div class="demo-monkey-debug-box-inner" display="none" id="demo-monkey-ajax-count"></div>
-          <div class="demo-monkey-debug-box-inner">Undo Length: <span id="demo-monkey-undo-length"></span></div>
-          <button class="demo-monkey-debug-box-inner" id="demo-monkey-editor-toggle">Toggle <i>Right-Click</i> Editor</button>
-        </div>
-        <div id="demo-monkey-debug-tooltip"></div>`
-        )
-        this.debugTooltip = this.scope.document.getElementById('demo-monkey-debug-tooltip')
-        this.demoMonkeyPicker = false
-        this.boxVisible = true
-        const logo = this.scope.document.getElementById('demo-monkey-logo')
-        const inner = Array.from(
-          this.scope.document.getElementsByClassName('demo-monkey-debug-box-inner')
-        )
-        const toggleBox = () => {
-          // const box = document.getElementById('demo-monkey-debug-box')
-          if (this.boxVisible) {
-            // box.style.right = (-box.clientWidth + logo.clientWidth) + 'px'
-            inner.forEach((e) => {
-              e.style.display = 'none'
-            })
-          } else {
-            // box.style.right = '0px'
-            inner.forEach((e) => {
-              e.style.display = 'block'
-            })
+      try {
+        if (this.scope.document.getElementById('demo-monkey-debug-helper-style') === null) {
+          this.scope.document.head.insertAdjacentHTML(
+            'beforeend',
+            `<style id="demo-monkey-debug-helper-style">
+          [data-demo-monkey-debug] { background-color: rgba(255, 255, 0, 0.5); }
+          svg [data-demo-monkey-debug] { filter: url(#dm-debug-filter-visible) }
+          [data-demo-monkey-debug-display] { display: var(--data-demo-monkey-debug-display) !important; background-color: rgba(255, 0, 0, 0.5); }
+          [data-demo-monkey-debug-display] * { display: var(--data-demo-monkey-debug-display) !important; background-color: rgba(255, 0, 0, 0.5); }
+          svg [data-demo-monkey-debug-display] { display: var(--data-demo-monkey-debug-display) !important; filter: url(#dm-debug-filter-hidden) }
+          #demo-monkey-debug-tooltip {
+            border: 1px solid rgb(168, 201, 135);
+            position: fixed;
+            top: 80px;
+            left: 50px;
+            padding: 4px;
+            border-radius: 4px;
+            background: rgb(168, 201, 135, 1);
+            box-shadow: 4px 4px 2px 2px rgb(128,128,128,0.4);
+            font-family: Robot, arial, sans-serif; font-size: 10pt;
+            z-index: 99999;
+            display: none;
           }
-          this.boxVisible = !this.boxVisible
+          </style>`
+          )
         }
-        if (!this.debugBox) {
-          toggleBox()
+        if (this.scope.document.getElementById('demo-monkey-debug-helper-svg') === null) {
+          this.scope.document.body.insertAdjacentHTML(
+            'beforeend',
+            `<svg id="demo-monkey-debug-helper-svg">
+            <defs>
+              <filter x="0" y="0" width="1" height="1" id="dm-debug-filter-visible">
+                <feFlood flood-color="yellow" flood-opacity="0.5" />
+                <feComposite in="SourceGraphic" />
+              </filter>
+              <filter x="0" y="0" width="1" height="1" id="dm-debug-filter-hidden">
+                <feFlood flood-color="red" flood-opacity="0.5" />
+                <feComposite in="SourceGraphic" />
+              </filter>
+            </defs>
+          </svg>`
+          )
         }
-        logo.addEventListener('click', toggleBox)
-        this.scope.document
-          .getElementById('demo-monkey-editor-toggle')
-          .addEventListener('click', (e) => {
-            const callback = (target, clickEvent, mouseEvent) => {
-              this.removeEditor()
-
-              // console.log(target, clickEvent, mouseEvent)
-
-              const container = this.scope.document.createElement('div')
-              container.style.position = 'absolute'
-              container.id = 'demo-monkey-editor'
-              container.style.top = clickEvent.clientY + 'px'
-              container.style.left = clickEvent.clientX + 'px'
-              container.style['z-index'] = 2147483647
-
-              const apply = (event, search, replacement, command = false) => {
-                event.preventDefault()
-                this.scope.document.dispatchEvent(
-                  new CustomEvent('demomonkey-inline-editing', {
-                    detail: JSON.stringify({
-                      search,
-                      replacement,
-                      command
-                    })
-                  })
-                )
-                container.remove()
-              }
-
-              const [editor, cb] = (() => {
-                // Special handler for flow map icons
-                if (target.classList.contains('adsFlowNodeTypeIcon')) {
-                  try {
-                    const label =
-                      target.parentElement.parentElement.querySelector('title').textContent
-                    const e = this.scope.document.createElement('select')
-                    ;[
-                      'java',
-                      '.net',
-                      'php',
-                      'node.js',
-                      'python',
-                      'c++',
-                      'webserver',
-                      'wmb',
-                      'go'
-                    ].forEach((label) => {
-                      const o = this.scope.document.createElement('option')
-                      o.text = label
-                      e.add(o, null)
-                    })
-                    e.addEventListener('change', (event) =>
-                      apply(event, label, event.target.value, 'appdynamics.replaceFlowmapIcon')
-                    )
-                    return [e, false]
-                  } catch (error) {
-                    return [error.getMessage(), () => {}]
-                  }
-                }
-                const text = target.textContent.trim()
-                const e = this.scope.document.createElement('input')
-                e.value = text
-                e.size = text.length + 2 > 60 ? 60 : text.length + 2
-                e.addEventListener('keyup', function (event) {
-                  if (event.keyCode === 13) {
-                    apply(event, text, e.value)
-                  }
-                })
-                return [e, (event) => apply(event, text, e.value)]
-              })()
-
-              container.addEventListener('keyup', function (event) {
-                if (event.keyCode === 27) {
-                  container.remove()
-                }
-              })
-
-              this.scope.document.body.appendChild(container)
-              container.appendChild(editor)
-              editor.focus()
-              clickEvent.preventDefault()
-
-              if (cb !== false) {
-                const saveButton = this.scope.document.createElement('button')
-                saveButton.innerHTML = 'Save'
-
-                const cancelButton = this.scope.document.createElement('button')
-                cancelButton.innerHTML = 'Cancel'
-
-                cancelButton.addEventListener('click', (e) => container.remove())
-                saveButton.addEventListener('click', cb)
-
-                container.appendChild(saveButton)
-                container.appendChild(cancelButton)
-              }
-            }
-
-            if (this.demoMonkeyPicker) {
-              this.demoMonkeyPicker.close()
-              delete this.demoMonkeyPicker
-            } else {
-              this.demoMonkeyPicker = new ElementPicker({
-                action: {
-                  trigger: 'contextmenu',
-                  callback
-                }
-              })
-            }
-          })
+        if (this.scope.document.getElementById('demo-monkey-debug-tooltip') === null) {
+          this.scope.document.body.insertAdjacentHTML(
+            'beforeend',
+            '<div id="demo-monkey-debug-tooltip"></div>'
+          )
+        }
+        this.debugTooltip = this.scope.document.getElementById('demo-monkey-debug-tooltip')
+      } catch (e) {
+        // Debug highlight helpers may fail on pages with strict CSP — the Live Editor still works
       }
     } else {
       this.removeDebugElements()
@@ -402,8 +251,8 @@ class ModeManager {
   }
 
   _getDemoMonkeyMode() {
-    if (this.debugMode) {
-      return 'debug'
+    if (this.liveEditorEnabled) {
+      return 'live-editor'
     }
     if (this.liveMode) {
       return 'live'
@@ -419,44 +268,20 @@ class ModeManager {
         const snippet = document.createRange().createContextualFragment(this.analyticsSnippet)
         this.scope.document.head.prepend(snippet)
       }
-      this.toggleDebugMode()
     } else {
       delete this.scope.document.head.dataset.demoMonkeyVersion
       delete this.scope.document.head.dataset.demoMonkeyMode
-      this.removeDebugElements()
-    }
-  }
-
-  updateDebugBox(lastTime, sum, undoLength) {
-    const e1 = this.scope.document.getElementById('demo-monkey-last-runtime')
-    if (e1) {
-      this.runCount++
-      this.avgRunTime += (lastTime - this.avgRunTime) / this.runCount
-      this.maxRunTime = Math.max(lastTime, this.maxRunTime)
-      if (this.runCount % 10 === 0) {
-        e1.innerHTML =
-          lastTime.toFixed(2) +
-          ' (avg: ' +
-          this.avgRunTime.toFixed(2) +
-          ', max: ' +
-          this.maxRunTime.toFixed(2) +
-          ')'
+      if (!this.liveEditorEnabled) {
+        this.removeDebugElements()
       }
     }
-    const e2 = this.scope.document.getElementById('demo-monkey-undo-length')
-    if (e2) {
-      e2.innerHTML = undoLength
-    }
-    const e3 = this.scope.document.getElementById('demo-monkey-elements-count')
-    if (e3) {
-      e3.innerHTML = Object.keys(sum)
-        .reduce((acc, key) => {
-          if (sum[key] > 0) {
-            return acc.concat(`${key}: ${sum[key]}`)
-          }
-          return acc
-        }, [])
-        .join(', ')
+    this.toggleLiveEditor()
+  }
+
+  updateConfigs(configs) {
+    this.configs = configs
+    if (this.liveEditor) {
+      this.liveEditor.updateConfigs(configs)
     }
   }
 }
