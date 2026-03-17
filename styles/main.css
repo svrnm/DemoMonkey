@@ -1,7 +1,7 @@
-@import 'navigation';
-@import 'welcome';
-@import 'editor';
-@import 'ace';
+@import 'navigation.css';
+@import 'welcome.css';
+@import 'editor.css';
+@import 'ace.css';
 
 body,
 html,
