@@ -31,6 +31,9 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import TextField from '@mui/material/TextField'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
+import CodeIcon from '@mui/icons-material/Code'
+import TuneIcon from '@mui/icons-material/Tune'
+import KeyboardIcon from '@mui/icons-material/Keyboard'
 
 const TAB_NAMES = ['configuration', 'variables']
 
@@ -419,9 +422,16 @@ class Editor extends React.Component {
             }}
             sx={{ px: 1 }}
           >
-            <Tab label="Configuration" id="current-configuration-editor" />
-            <Tab label="Variables" />
             <Tab
+              icon={<CodeIcon />}
+              iconPosition="start"
+              label="Configuration"
+              id="current-configuration-editor"
+            />
+            <Tab icon={<TuneIcon />} iconPosition="start" label="Variables" />
+            <Tab
+              icon={<KeyboardIcon />}
+              iconPosition="start"
               label="Shortcuts"
               onClick={(e) => {
                 e.preventDefault()

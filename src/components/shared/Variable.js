@@ -16,12 +16,14 @@ import AceEditor from 'react-ace'
 import { base64Decode } from '../../helpers/base64'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
+import UploadFileIcon from '@mui/icons-material/UploadFile'
+import PaletteIcon from '@mui/icons-material/Palette'
+import DeleteIcon from '@mui/icons-material/Delete'
+import RefreshIcon from '@mui/icons-material/Refresh'
 import 'ace-builds/src-noconflict/theme-xcode'
 import 'ace-builds/src-noconflict/theme-merbivore'
 import 'ace-builds/src-noconflict/mode-html'
 import 'ace-builds/src-noconflict/mode-javascript'
-
-const smallIconStyle = { width: 16, height: 16 }
 
 class Variable extends React.Component {
   constructor(props) {
@@ -163,9 +165,7 @@ class Variable extends React.Component {
                 aria-label="Upload from file"
                 onClick={(e) => this.showUploadDialog(e)}
               >
-                <svg style={smallIconStyle} viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 13.01l1.41 1.41L11 12.84V16h2v-3.16l1.59 1.59L16 13.01 12.01 9 8 13.01z" />
-                </svg>
+                <UploadFileIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title="Pick color">
@@ -174,9 +174,7 @@ class Variable extends React.Component {
                 aria-label="Pick color"
                 onClick={(e) => this.showColorDialog(e)}
               >
-                <svg style={smallIconStyle} viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
-                </svg>
+                <PaletteIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             {this.props.isGlobal ? (
@@ -187,17 +185,13 @@ class Variable extends React.Component {
                   aria-label="Delete variable"
                   onClick={(e) => this.deleteVariable(e)}
                 >
-                  <svg style={smallIconStyle} viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-                  </svg>
+                  <DeleteIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             ) : (
               <Tooltip title="Reset to default">
                 <IconButton size="small" onClick={(e) => this.resetVariable(e)}>
-                  <svg style={smallIconStyle} viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21a9 9 0 000-18z" />
-                  </svg>
+                  <RefreshIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             )}

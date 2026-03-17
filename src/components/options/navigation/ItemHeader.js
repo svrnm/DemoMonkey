@@ -16,6 +16,12 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { formatRelativeTime, formatISO } from '../../../helpers/timeFormat'
 import Popup from '../../shared/Popup'
+import FolderIcon from '@mui/icons-material/Folder'
+import DescriptionIcon from '@mui/icons-material/Description'
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
+import TaskIcon from '@mui/icons-material/Task'
+import DeleteIcon from '@mui/icons-material/Delete'
+import DownloadIcon from '@mui/icons-material/Download'
 
 function ItemHeader({ node, style: styleProp, onDelete, onDownload }) {
   const [optionsVisible, setOptionsVisible] = useState(false)
@@ -58,46 +64,27 @@ function ItemHeader({ node, style: styleProp, onDelete, onDownload }) {
 
   const isEnabled = isDirectory ? hasEnabledDescendant(node) : node.enabled
 
-  const iconSize = 14
-  const iconStyle = {
-    width: iconSize,
-    height: iconSize,
-    marginRight: 4,
+  const iconSx = {
+    fontSize: 14,
+    mr: '4px',
     flexShrink: 0,
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
+    color: isEnabled
+      ? 'var(--mui-palette-success-main)'
+      : 'var(--mui-palette-custom-navigation-text)'
   }
 
   function renderIcon() {
-    const iconColor = isEnabled
-      ? 'var(--mui-palette-success-main)'
-      : 'var(--mui-palette-custom-navigation-text)'
     if (isDirectory) {
-      return (
-        <svg style={iconStyle} viewBox="0 0 24 24" fill={iconColor}>
-          <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
-        </svg>
-      )
+      return <FolderIcon sx={iconSx} />
     }
     if (isTemplate) {
-      return (
-        <svg style={iconStyle} viewBox="0 0 24 24" fill={iconColor} opacity={isEnabled ? 1 : 0.6}>
-          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM9 13h6v2H9v-2zm0 4h6v2H9v-2z" />
-        </svg>
-      )
+      return <DescriptionIcon sx={{ ...iconSx, opacity: isEnabled ? 1 : 0.6 }} />
     }
     if (node.enabled) {
-      // Task icon — file with checkmark
-      return (
-        <svg style={iconStyle} viewBox="0 0 24 24" fill={iconColor}>
-          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-2.7 6.7L8.5 12.9l1.1-1.1 1.7 1.7 3.6-3.6 1.1 1.1-4.7 4.7z" />
-        </svg>
-      )
+      return <TaskIcon sx={iconSx} />
     }
-    return (
-      <svg style={iconStyle} viewBox="0 0 24 24" fill={iconColor}>
-        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z" />
-      </svg>
-    )
+    return <InsertDriveFileIcon sx={iconSx} />
   }
 
   function renderTimeStamp() {
@@ -141,13 +128,7 @@ function ItemHeader({ node, style: styleProp, onDelete, onDownload }) {
             onClick={(event) => onDownload(event, node)}
             title="Download"
           >
-            <svg
-              style={{ width: 12, height: 12, verticalAlign: 'middle' }}
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-            </svg>
+            <DownloadIcon sx={{ fontSize: 12, verticalAlign: 'middle' }} />
           </button>
         )}
         <button
@@ -155,13 +136,7 @@ function ItemHeader({ node, style: styleProp, onDelete, onDownload }) {
           onClick={() => setShowDeletePopup(true)}
           title="Delete"
         >
-          <svg
-            style={{ width: 12, height: 12, verticalAlign: 'middle' }}
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-          </svg>
+          <DeleteIcon sx={{ fontSize: 12, verticalAlign: 'middle' }} />
         </button>
       </div>
       <Menu
