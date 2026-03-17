@@ -11,6 +11,9 @@ DemoMonkey-*.zip
 .eslintcache
 .stylelintcache
 
+# Worktrees
+.worktrees
+
 # Playwright
 playwright-report/
 test-results/
