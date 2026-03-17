@@ -14,8 +14,7 @@
 const optionalFeatures = function (state, action) {
   switch (action.type) {
     case 'TOGGLE_OPTIONAL_FEATURE':
-      state[action.optionalFeature] = !state[action.optionalFeature]
-      return state
+      return { ...state, [action.optionalFeature]: !state[action.optionalFeature] }
     default:
       return state
   }

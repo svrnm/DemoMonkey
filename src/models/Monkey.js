@@ -16,6 +16,9 @@ import Repository from './Repository'
 import UndoElement from '../commands/UndoElement'
 import { logger } from '../helpers/logger'
 
+const MIN_INTERVAL_MS = 100
+const MAX_UNDO_ELEMENTS = 100000
+
 class Monkey {
   constructor(
     rawConfigurations,
@@ -35,9 +38,9 @@ class Monkey {
     this.featureFlags = featureFlags
 
     this.intervalTime = intervalTime
-    if (typeof this.intervalTime !== 'number' || this.intervalTime < 100) {
+    if (typeof this.intervalTime !== 'number' || this.intervalTime < MIN_INTERVAL_MS) {
       logger('warn', 'Interval time is not well-defined: ', this.intervalTime).write()
-      this.intervalTime = 100
+      this.intervalTime = MIN_INTERVAL_MS
     }
     this.intervals = []
 
@@ -85,7 +88,7 @@ class Monkey {
   addUndo(elements) {
     if (this.withUndo) {
       // Simple protection against loops that fill up the undo array.
-      if (this.undo.length > 100000) {
+      if (this.undo.length > MAX_UNDO_ELEMENTS) {
         logger(
           'warn',
           'Too many undo elements, disabling undo feature. Your configuration might have a replacement loop.'

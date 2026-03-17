@@ -83,7 +83,6 @@ class ReplaceImage extends Command {
 
       if (key === 'style.backgroundImage') {
         target.style.backgroundImage = `url("${this.replace}")`
-        console.log(new UndoElement(target, key, original, `url("${this.replace}")`))
         result.push(new UndoElement(target, key, original, `url("${this.replace}")`))
       } else {
         target[key] = this.replace
