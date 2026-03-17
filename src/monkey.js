@@ -117,10 +117,11 @@ try {
             scope,
             $DEMO_MONKEY,
             new Manifest(scope.chrome),
-            settings.isDebugEnabled(),
-            settings.isFeatureEnabled('debugBox'),
+            settings.isLiveEditorEnabled(),
             settings.isLiveModeEnabled(),
-            settings.analyticsSnippet
+            settings.analyticsSnippet,
+            store.getState().configurations,
+            settings.isFeatureEnabled('debugBox')
           )
 
           function restart() {
@@ -146,9 +147,9 @@ try {
             $DEMO_MONKEY = newMonkey
             modeManager.reload(
               $DEMO_MONKEY,
-              settings.isDebugEnabled(),
-              settings.isFeatureEnabled('debugBox'),
-              settings.isLiveModeEnabled()
+              settings.isLiveEditorEnabled(),
+              settings.isLiveModeEnabled(),
+              store.getState().configurations
             )
           }
 
@@ -158,8 +159,14 @@ try {
             if (['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)) {
               return
             }
-            if (settings.isFeatureEnabled('autoReplace')) {
+            if (
+              settings.isFeatureEnabled('autoReplace') ||
+              lastAction.type === 'TOGGLE_LIVE_EDITOR' ||
+              lastAction.type === 'TOGGLE_DEBUG_MODE'
+            ) {
               restart()
+            } else {
+              modeManager.updateConfigs(store.getState().configurations)
             }
           })
 
@@ -168,18 +175,58 @@ try {
           })
 
           scope.document.addEventListener('demomonkey-inline-editing', function (e) {
-            let { search, replacement, command } = JSON.parse(e.detail)
-            const configs = store.getState().configurations.filter((config) => config.enabled)
-            const configuration =
-              configs.length > 0 ? configs[0] : store.getState().configurations[0]
-            if (command) {
-              search = `!${command}(${search})`
+            let { search, replacement, command, configId, raw } = JSON.parse(e.detail)
+            let configuration
+            if (configId) {
+              configuration = store.getState().configurations.find((c) => c.id === configId)
             }
-            configuration.content += '\n' + search + ' = ' + replacement
+            if (!configuration) {
+              const configs = store.getState().configurations.filter((config) => config.enabled)
+              configuration = configs.length > 0 ? configs[0] : store.getState().configurations[0]
+            }
+            if (raw) {
+              configuration.content += '\n' + search
+            } else {
+              if (command) {
+                search = `!${command}(${search})`
+              }
+              configuration.content += '\n' + search + ' = ' + replacement
+            }
             store.dispatch({
               type: 'SAVE_CONFIGURATION',
               id: configuration.id,
               configuration
+            })
+          })
+
+          scope.document.addEventListener('demomonkey-toggle-configuration', function (e) {
+            const { id, enabled } = JSON.parse(e.detail)
+            store.dispatch({
+              type: 'TOGGLE_CONFIGURATION',
+              id,
+              enabled
+            })
+          })
+
+          scope.document.addEventListener('demomonkey-add-configuration', function (e) {
+            const detail = JSON.parse(e.detail)
+            const id = detail.id || crypto.randomUUID()
+            store.dispatch({
+              type: 'ADD_CONFIGURATION',
+              configuration: {
+                name: detail.name || 'New Config',
+                content: detail.content || '',
+                test: '',
+                enabled: false,
+                values: {},
+                id
+              }
+            })
+            // Enable it after creation since the reducer forces enabled: false
+            store.dispatch({
+              type: 'TOGGLE_CONFIGURATION',
+              id,
+              enabled: true
             })
           })
 

@@ -23,7 +23,13 @@ class Settings {
       typeof settings.monkeyInterval === 'number'
         ? settings.monkeyInterval
         : parseInt(settings.monkeyInterval)
-    this.debugMode = typeof settings.debugMode === 'boolean' ? settings.debugMode : false
+    this.liveEditorEnabled =
+      typeof settings.liveEditorEnabled === 'boolean'
+        ? settings.liveEditorEnabled
+        : typeof settings.debugMode === 'boolean'
+          ? settings.debugMode
+          : false
+    this.debugMode = this.liveEditorEnabled
     this.liveMode = typeof settings.liveMode === 'boolean' ? settings.liveMode : false
     this.globalVariables = Array.isArray(settings.globalVariables) ? settings.globalVariables : []
   }
@@ -35,8 +41,12 @@ class Settings {
     )
   }
 
+  isLiveEditorEnabled() {
+    return this.liveEditorEnabled
+  }
+
   isDebugEnabled() {
-    return this.debugMode
+    return this.liveEditorEnabled
   }
 
   isLiveModeEnabled() {

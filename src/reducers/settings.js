@@ -67,10 +67,12 @@ const settings = function (state = '', action) {
         ...state,
         globalVariables: action.globalVariables
       }
+    case 'TOGGLE_LIVE_EDITOR':
     case 'TOGGLE_DEBUG_MODE':
       return {
         ...state,
-        debugMode: !state.debugMode
+        liveEditorEnabled: !state.liveEditorEnabled,
+        debugMode: !state.liveEditorEnabled
       }
     case 'TOGGLE_LIVE_MODE':
       return {

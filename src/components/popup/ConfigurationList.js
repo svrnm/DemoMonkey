@@ -45,8 +45,8 @@ class ConfigurationList extends React.Component {
     this.setState({ onlyShowActivated: !this.state.onlyShowActivated })
   }
 
-  toggleDebugMode() {
-    this.props.actions.toggleDebugMode()
+  toggleLiveEditor() {
+    this.props.actions.toggleLiveEditor()
   }
 
   renderItem(configuration) {
@@ -110,13 +110,20 @@ class ConfigurationList extends React.Component {
   }
 
   renderList() {
+    const latestIds =
+      this.getConfigurations().length >= 12 ? new Set(this.getLatest().map((c) => c.id)) : new Set()
     const items = this.getList()
+      .filter((c) => !latestIds.has(c.id))
       .map((c) => this.renderItem(c))
       .filter(Boolean)
     return (
       <div>
         {this.renderLatest()}
-        {items.length > 0 ? items : <div className="popup-empty">No matching configurations</div>}
+        {items.length > 0 || latestIds.size > 0 ? (
+          items
+        ) : (
+          <div className="popup-empty">No matching configurations</div>
+        )}
       </div>
     )
   }
@@ -263,13 +270,13 @@ class ConfigurationList extends React.Component {
             {this.getConfigurations().length < 1 ? this.renderEmpty() : this.renderList()}
           </div>
           <div className="popup-footer">
-            <Tooltip title="Adds performance statistics overlay to the page" placement="top">
-              <span className="popup-debug-label">Debug Mode</span>
+            <Tooltip title="Opens an interactive Live Editor overlay on the page" placement="top">
+              <span className="popup-debug-label">Live Editor</span>
             </Tooltip>
             <Switch
               size="small"
-              checked={this.props.settings.debugMode}
-              onChange={() => this.toggleDebugMode()}
+              checked={!!this.props.settings.liveEditorEnabled}
+              onChange={() => this.toggleLiveEditor()}
             />
           </div>
         </div>

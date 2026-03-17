@@ -131,11 +131,11 @@ const optionalFeatures = [
     id: 'debugBox',
     group: 'Appearance',
     defaultValue: false,
-    label: 'Expand Debug Box',
+    label: 'Auto-open Live Editor',
     description: (
       <span>
-        Show the debug box with statistics in full length when running DemoMonkey in{' '}
-        <i>debug mode</i>.
+        Automatically open the Live Editor panel when it is enabled, instead of showing only the
+        floating button.
       </span>
     )
   },

@@ -66,8 +66,8 @@ try {
         contexts: ['action']
       })
       scope.chrome.contextMenus.create({
-        id: 'dmToggleDebugMode',
-        title: 'Toggle Debug Mode',
+        id: 'dmToggleLiveEditor',
+        title: 'Toggle Live Editor',
         contexts: ['action']
       })
     })
@@ -136,6 +136,9 @@ try {
         }
         if (request.task && request.task === 'clearUrls') {
           netRequestManager.clear()
+        }
+        if (request.task && request.task === 'openOptionsPage') {
+          scope.chrome.runtime.openOptionsPage()
         }
       }
     })
@@ -319,8 +322,8 @@ try {
         if (command === 'live-mode') {
           store.dispatch({ type: 'TOGGLE_LIVE_MODE' })
         }
-        if (command === 'debug-mode') {
-          store.dispatch({ type: 'TOGGLE_DEBUG_MODE' })
+        if (command === 'live-editor') {
+          store.dispatch({ type: 'TOGGLE_LIVE_EDITOR' })
         }
       })
 
@@ -328,8 +331,8 @@ try {
         const { menuItemId } = info
         if (menuItemId === 'dmToggleLiveMode') {
           store.dispatch({ type: 'TOGGLE_LIVE_MODE' })
-        } else if (menuItemId === 'dmToggleDebugMode') {
-          store.dispatch({ type: 'TOGGLE_DEBUG_MODE' })
+        } else if (menuItemId === 'dmToggleLiveEditor') {
+          store.dispatch({ type: 'TOGGLE_LIVE_EDITOR' })
         }
       })
     }
