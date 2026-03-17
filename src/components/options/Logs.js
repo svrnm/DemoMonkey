@@ -20,8 +20,8 @@ import TableCell from '@mui/material/TableCell'
 import { formatRelativeTime, formatISO } from '../../helpers/timeFormat'
 
 const levelColors = {
-  error: 'var(--danger-color)',
-  warn: 'var(--warning-color)'
+  error: 'var(--mui-palette-error-main)',
+  warn: 'var(--mui-palette-warning-main)'
 }
 
 function Logs({ entries }) {

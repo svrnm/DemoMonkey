@@ -1,94 +1,13 @@
-@import 'colors';
 @import 'navigation';
 @import 'welcome';
 @import 'editor';
 @import 'ace';
 
-.light-mode {
-  --base-color: @base;
-  --topbar-color: @base;
-  --base-link-color: @base;
-  --darker-base-color: darken(@base, 20%);
-  --highlight-background-color: #eee;
-  --hover-link-color: lighten(@base, 20%);
-  --input-background-color: #fefefe;
-  --lighter-base-color: lighten(@base, 75%);
-  --mode-color: #fff;
-  --mode-text-color: #111;
-  --navigation-background: desaturate(lighten(@base, 79%), 40%);
-  --navigation-read-only: lighten(@base, 20%);
-  --navigation-item-color: rgb(241, 247, 236);
-  --navigation-active-color: #a8c987;
-  --navigation-text-color: #284907;
-  --help-text-color: #666;
-  --success-color: #4a8c1c;
-  --danger-color: @danger;
-  --warning-color: @warning;
-  --warning-background-color: lighten(@warning, 37%);
-  --editor-title-background: #fff;
-  --editor-comment-color: #a50;
-  --editor-group-color: #a00;
-  --editor-option-color: #f50;
-  --editor-search-color: #00f;
-  --editor-function-color: #708;
-  --editor-import-color: #31b404;
-  --editor-variable-color: #bf00ff;
-  --editor-disabled-color: #f3f3f3;
-  --editor-string-url-color: #0cc8ed;
-  --table-header-color: #ccc;
-  --table-2n-color: #f0f0f0;
-}
-
-.dark-mode {
-  --mode-color: #000;
-  --mode-text-color: #eee;
-  --base-color: @darkBase;
-  --topbar-color: lighten(@darkBase, 15%);
-  --base-link-color: #eee;
-  --hover-link-color: #aaa;
-  --lighter-base-color: lighten(@darkBase, 25%);
-  --darker-base-color: lighten(@darkBase, 20%);
-  --highlight-background-color: #444;
-  --input-background-color: #444;
-  --navigation-background: desaturate(lighten(@darkBase, 21%), 40%);
-  --navigation-read-only: lighten(@darkBase, 20%);
-  --navigation-item-color: #222;
-  --navigation-active-color: #444;
-  --navigation-text-color: #eee;
-  --help-text-color: #aaa;
-  --warning-color: @warning;
-  --danger-color: lighten(@danger, 20%);
-  --warning-background-color: darken(@warning, 37%);
-  --success-color: lighten(@success, 20%);
-  --editor-title-background: #030303;
-  --editor-comment-color: #09ffe7;
-  --editor-group-color: #0b0;
-  --editor-option-color: spin(#f50, 180);
-  --editor-search-color: spin(#00f, 180);
-  --editor-function-color: #f79580;
-  --editor-import-color: #d060f8;
-  --editor-variable-color: spin(#bf00ff, 180);
-  --editor-disabled-color: spin(#f3f3f3, 180);
-  --editor-url-color: #0cc8ed;
-  --table-header-color: #666;
-  --table-2n-color: #333;
-}
-
-html {
-  .light-mode();
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    .dark-mode();
-  }
-}
-
 body,
 html,
 .app-container {
-  background-color: var(--mode-color);
-  color: var(--mode-text-color);
+  background-color: var(--mui-palette-background-default);
+  color: var(--mui-palette-text-primary);
   font-family: sans-serif;
   font-size: 12px;
 
@@ -101,13 +20,13 @@ html,
 }
 
 button:not([class*='Mui']) {
-  background-color: white;
-  border: 1px solid #ccc;
+  background-color: var(--mui-palette-background-paper);
+  border: 1px solid var(--mui-palette-custom-table-header);
   margin: 8px 1px;
 
   &:focus,
   &:hover {
-    box-shadow: 0 0 10px lighten(@base, 20%);
+    box-shadow: 0 0 10px var(--mui-palette-custom-hover-link);
   }
 }
 
@@ -147,7 +66,7 @@ label:not([class*='Mui']) {
     align-items: center;
     gap: 4px;
     padding: 6px 8px;
-    background: var(--highlight-background-color);
+    background: var(--mui-palette-custom-highlight);
     border-radius: 6px;
     margin-bottom: 8px;
 
@@ -157,7 +76,7 @@ label:not([class*='Mui']) {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      color: var(--help-text-color);
+      color: var(--mui-palette-text-secondary);
     }
   }
 
@@ -167,7 +86,7 @@ label:not([class*='Mui']) {
 
   .popup-include-hint {
     font-size: 11px;
-    color: var(--help-text-color);
+    color: var(--mui-palette-text-secondary);
     margin-bottom: 4px;
   }
 
@@ -182,7 +101,7 @@ label:not([class*='Mui']) {
 
     .popup-filter-label {
       font-size: 11px;
-      color: var(--help-text-color);
+      color: var(--mui-palette-text-secondary);
       margin-right: 2px;
     }
   }
@@ -191,27 +110,27 @@ label:not([class*='Mui']) {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    border-top: 1px solid var(--highlight-background-color);
+    border-top: 1px solid var(--mui-palette-custom-highlight);
     margin-top: 6px;
     padding-top: 2px;
 
     .popup-debug-label {
       font-size: 11px;
-      color: var(--help-text-color);
+      color: var(--mui-palette-text-secondary);
     }
   }
 
   .popup-empty {
     text-align: center;
     padding: 24px 0;
-    color: var(--help-text-color);
+    color: var(--mui-palette-text-secondary);
     font-size: 13px;
   }
 
   .configurations-list {
     max-height: 340px;
     overflow: hidden auto;
-    border: 1px solid var(--highlight-background-color);
+    border: 1px solid var(--mui-palette-custom-highlight);
     border-radius: 6px;
   }
 
@@ -219,14 +138,14 @@ label:not([class*='Mui']) {
     display: flex;
     align-items: center;
     padding: 2px 4px;
-    border-bottom: 1px solid var(--highlight-background-color);
+    border-bottom: 1px solid var(--mui-palette-custom-highlight);
 
     &:last-child {
       border-bottom: none;
     }
 
     &:hover {
-      background: var(--highlight-background-color);
+      background: var(--mui-palette-custom-highlight);
     }
 
     label {
@@ -237,13 +156,13 @@ label:not([class*='Mui']) {
 
     .toggle-config-folder {
       font-size: 11px;
-      color: var(--help-text-color);
+      color: var(--mui-palette-text-secondary);
     }
   }
 
   .latest-configurations {
-    background-color: var(--lighter-base-color);
-    border-bottom: 1px solid var(--highlight-background-color);
+    background-color: var(--mui-palette-custom-lighter-base);
+    border-bottom: 1px solid var(--mui-palette-custom-highlight);
     padding: 4px 0;
 
     .latest-title {
@@ -251,7 +170,7 @@ label:not([class*='Mui']) {
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: var(--help-text-color);
+      color: var(--mui-palette-text-secondary);
       padding: 2px 8px;
     }
   }
@@ -263,7 +182,7 @@ label:not([class*='Mui']) {
       display: flex;
       padding: 6px 0;
       font-size: 13px;
-      border-bottom: 1px solid var(--highlight-background-color);
+      border-bottom: 1px solid var(--mui-palette-custom-highlight);
 
       &:last-child {
         border-bottom: none;
@@ -273,27 +192,27 @@ label:not([class*='Mui']) {
         width: 80px;
         flex-shrink: 0;
         font-weight: 600;
-        color: var(--help-text-color);
+        color: var(--mui-palette-text-secondary);
       }
     }
   }
 }
 
 a {
-  color: var(--base-link-color);
+  color: var(--mui-palette-custom-base-link);
 
   &:hover {
-    color: var(--hover-link-color);
+    color: var(--mui-palette-custom-hover-link);
   }
 }
 
 textarea {
-  border: 1px solid desaturate(lighten(@base, 40%), 30%);
+  border: 1px solid var(--mui-palette-custom-table-header);
 }
 
 input:not([class*='Mui']) {
-  background: var(--input-background-color);
-  color: var(--mode-text-color);
+  background: var(--mui-palette-background-paper);
+  color: var(--mui-palette-text-primary);
 }
 
 .main-grid {
@@ -314,7 +233,7 @@ input:not([class*='Mui']) {
 }
 
 .current-view {
-  background: var(--mode-color);
+  background: var(--mui-palette-background-default);
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -331,9 +250,9 @@ input:not([class*='Mui']) {
 }
 
 .no-variables {
-  background: var(--warning-background-color);
-  border: 1px solid var(--warning-color);
-  color: var(--warning-color);
+  background: var(--mui-palette-custom-warning-background);
+  border: 1px solid var(--mui-palette-warning-main);
+  color: var(--mui-palette-warning-main);
   margin: 1em;
   padding: 1em;
 
@@ -354,7 +273,7 @@ input:not([class*='Mui']) {
   flex-direction: column;
   align-items: center;
   padding: 48px 0;
-  color: var(--help-text-color);
+  color: var(--mui-palette-text-secondary);
 
   p {
     margin-top: 12px;
@@ -369,7 +288,7 @@ input:not([class*='Mui']) {
 }
 
 .variable-card {
-  border: 1px solid var(--highlight-background-color);
+  border: 1px solid var(--mui-palette-custom-highlight);
   border-radius: 8px;
   overflow: hidden;
 
@@ -377,7 +296,7 @@ input:not([class*='Mui']) {
     display: flex;
     align-items: center;
     padding: 8px 12px;
-    background: var(--highlight-background-color);
+    background: var(--mui-palette-custom-highlight);
     gap: 8px;
   }
 
@@ -393,13 +312,13 @@ input:not([class*='Mui']) {
   }
 
   .variable-prefix {
-    color: var(--success-color);
+    color: var(--mui-palette-success-main);
     font-weight: 700;
   }
 
   .variable-owner {
     font-size: 12px;
-    color: var(--help-text-color);
+    color: var(--mui-palette-text-secondary);
     font-weight: normal;
     font-family: sans-serif;
   }
@@ -411,12 +330,12 @@ input:not([class*='Mui']) {
     padding: 4px 8px;
     font-family: monospace;
     font-size: 14px;
-    background: var(--input-background-color);
-    color: var(--mode-text-color);
+    background: var(--mui-palette-background-paper);
+    color: var(--mui-palette-text-primary);
     outline: none;
 
     &:focus {
-      border-color: var(--success-color);
+      border-color: var(--mui-palette-success-main);
     }
   }
 
@@ -429,8 +348,8 @@ input:not([class*='Mui']) {
   .variable-card-description {
     padding: 6px 12px;
     font-size: 12px;
-    color: var(--help-text-color);
-    border-bottom: 1px solid var(--highlight-background-color);
+    color: var(--mui-palette-text-secondary);
+    border-bottom: 1px solid var(--mui-palette-custom-highlight);
   }
 
   .variable-card-editor {
@@ -439,7 +358,7 @@ input:not([class*='Mui']) {
 
   .variable-image-preview {
     padding: 8px 12px;
-    border-top: 1px solid var(--highlight-background-color);
+    border-top: 1px solid var(--mui-palette-custom-highlight);
 
     img {
       max-height: 80px;
@@ -452,21 +371,21 @@ input:not([class*='Mui']) {
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    border-top: 1px solid var(--highlight-background-color);
+    border-top: 1px solid var(--mui-palette-custom-highlight);
 
     .variable-color-swatch {
       display: inline-block;
       width: 24px;
       height: 24px;
       border-radius: 4px;
-      border: 1px solid var(--highlight-background-color);
+      border: 1px solid var(--mui-palette-custom-highlight);
       flex-shrink: 0;
     }
 
     .variable-color-value {
       font-family: monospace;
       font-size: 12px;
-      color: var(--help-text-color);
+      color: var(--mui-palette-text-secondary);
     }
   }
 }
@@ -479,8 +398,8 @@ input:not([class*='Mui']) {
 }
 
 .read-only {
-  background: #efefef;
-  border: 1px solid #ccc;
+  background: var(--mui-palette-custom-highlight);
+  border: 1px solid var(--mui-palette-custom-table-header);
 }
 
 .settings {
@@ -501,7 +420,7 @@ input:not([class*='Mui']) {
   h1,
   h2,
   h3 {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--mui-palette-custom-highlight);
     padding-bottom: 8px;
   }
 }
@@ -524,14 +443,14 @@ input:not([class*='Mui']) {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--help-text-color);
+    color: var(--mui-palette-text-secondary);
     margin: 0 0 8px;
     padding: 0;
     border: none;
   }
 
   .feature-group-items {
-    border: 1px solid var(--highlight-background-color);
+    border: 1px solid var(--mui-palette-custom-highlight);
     border-radius: 8px;
     overflow: hidden;
   }
@@ -540,14 +459,14 @@ input:not([class*='Mui']) {
     display: flex;
     align-items: flex-start;
     padding: 10px 12px;
-    border-bottom: 1px solid var(--highlight-background-color);
+    border-bottom: 1px solid var(--mui-palette-custom-highlight);
 
     &:last-child {
       border-bottom: none;
     }
 
     &:hover {
-      background: var(--highlight-background-color);
+      background: var(--mui-palette-custom-highlight);
     }
 
     .feature-item-toggle {
@@ -570,7 +489,7 @@ input:not([class*='Mui']) {
 
     .feature-item-description {
       font-size: 12px;
-      color: var(--help-text-color);
+      color: var(--mui-palette-text-secondary);
       margin-top: 2px;
       line-height: 1.4;
     }
@@ -578,11 +497,11 @@ input:not([class*='Mui']) {
 }
 
 .danger-title {
-  color: var(--danger-color) !important;
+  color: var(--mui-palette-error-main) !important;
 }
 
 .danger-zone {
-  border-color: var(--danger-color) !important;
+  border-color: var(--mui-palette-error-main) !important;
 }
 
 .trash-header {
@@ -597,7 +516,7 @@ input:not([class*='Mui']) {
   align-items: center;
   justify-content: center;
   padding: 48px 0;
-  color: var(--help-text-color);
+  color: var(--mui-palette-text-secondary);
 
   p {
     margin-top: 12px;
@@ -609,14 +528,14 @@ input:not([class*='Mui']) {
   display: flex;
   align-items: center;
   padding: 10px 12px;
-  border-bottom: 1px solid var(--highlight-background-color);
+  border-bottom: 1px solid var(--mui-palette-custom-highlight);
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover {
-    background: var(--highlight-background-color);
+    background: var(--mui-palette-custom-highlight);
   }
 
   .trash-item-info {
@@ -641,7 +560,7 @@ input:not([class*='Mui']) {
   margin-bottom: 1em;
 
   & label {
-    color: var(--success-color);
+    color: var(--mui-palette-success-main);
     display: block;
     font-size: 110%;
     font-weight: bold;
@@ -649,21 +568,21 @@ input:not([class*='Mui']) {
   }
 
   & .help {
-    color: var(--help-text-color);
+    color: var(--mui-palette-text-secondary);
   }
 }
 
 .warning-box {
-  background: var(--warning-background-color);
-  border: 1px solid var(--warning-color);
-  color: var(--warning-color);
+  background: var(--mui-palette-custom-warning-background);
+  border: 1px solid var(--mui-palette-warning-main);
+  color: var(--mui-palette-warning-main);
   margin: 8px;
   margin-bottom: 0;
   padding: 4px;
 }
 
 .unsaved-warning {
-  color: @danger;
+  color: var(--mui-palette-error-main);
 }
 
 .no-warning-box {
@@ -689,17 +608,17 @@ input:not([class*='Mui']) {
 }
 
 .ace_editor {
-  border: 1px solid #ccc;
+  border: 1px solid var(--mui-palette-custom-table-header);
   height: calc(100% - 50px);
 }
 
 .connection-status-failed {
-  color: var(--danger-color);
+  color: var(--mui-palette-error-main);
   font-weight: bold;
 }
 
 .connection-status-connected {
-  color: var(--success-color);
+  color: var(--mui-palette-success-main);
 }
 
 .scrolling-pane {

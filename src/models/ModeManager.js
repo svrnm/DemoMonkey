@@ -166,7 +166,8 @@ class ModeManager {
     ;[
       '#demo-monkey-debug-helper-svg',
       '#demo-monkey-debug-helper-style',
-      '#demo-monkey-debug-box'
+      '#demo-monkey-debug-box',
+      '#demo-monkey-debug-tooltip'
     ].forEach((id) => {
       const elem = this.scope.document.querySelector(id)
       if (elem) {
@@ -177,6 +178,7 @@ class ModeManager {
       this.liveEditor.destroy()
       this.liveEditor = null
     }
+    this.debugTooltip = null
     this.clearDebugAttributes()
   }
 
@@ -203,8 +205,8 @@ class ModeManager {
           #demo-monkey-debug-tooltip {
             border: 1px solid rgb(168, 201, 135);
             position: fixed;
-            top: 80;
-            left: 50;
+            top: 80px;
+            left: 50px;
             padding: 4px;
             border-radius: 4px;
             background: rgb(168, 201, 135, 1);

@@ -102,7 +102,7 @@ class GlobalVariables extends React.Component {
 
     return (
       <div>
-        <p style={{ color: 'var(--help-text-color)', margin: '16px 0 20px' }}>
+        <p style={{ color: 'var(--mui-palette-text-secondary)', margin: '16px 0 20px' }}>
           Global variables are available in all configurations. Use them for images, colors, or
           values you reuse across demos.
         </p>
@@ -139,7 +139,7 @@ class GlobalVariables extends React.Component {
             <svg
               style={{ width: 48, height: 48, opacity: 0.3 }}
               viewBox="0 0 24 24"
-              fill="var(--navigation-text-color)"
+              fill="var(--mui-palette-custom-navigation-text)"
             >
               <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z" />
             </svg>

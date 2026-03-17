@@ -64,7 +64,7 @@ class App extends React.Component {
           }}
           sx={{
             minHeight: 36,
-            borderBottom: '1px solid var(--highlight-background-color)',
+            borderBottom: '1px solid var(--mui-palette-custom-highlight)',
             '& .MuiTab-root': { minHeight: 36, py: 0, fontSize: '13px', textTransform: 'none' }
           }}
         >

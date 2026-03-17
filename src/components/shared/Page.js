@@ -11,10 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import { lightTheme, darkTheme } from '../../theme'
+import { theme } from '../../theme'
 
 function Page({ syncDarkMode, preferDarkMode, className, children }) {
   const [isDark, setIsDark] = useState(() => {
@@ -63,20 +63,11 @@ function Page({ syncDarkMode, preferDarkMode, className, children }) {
     }
 
     const root = document.documentElement
+    const colorScheme = isDark ? 'dark' : 'light'
 
-    if (syncDarkMode) {
-      root.classList.remove('dark-mode')
-      root.classList.remove('light-mode')
-    } else if (isDark) {
-      root.classList.add('dark-mode')
-      root.classList.remove('light-mode')
-    } else {
-      root.classList.remove('dark-mode')
-      root.classList.add('light-mode')
-    }
+    // Set MUI color scheme attribute — drives cssVariables mode
+    root.setAttribute('data-mui-color-scheme', colorScheme)
   }, [syncDarkMode, isDark])
-
-  const theme = useMemo(() => (isDark ? darkTheme : lightTheme), [isDark])
 
   return (
     <ThemeProvider theme={theme}>

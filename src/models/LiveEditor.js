@@ -233,8 +233,10 @@ class LiveEditor {
     wrapper.appendChild(this.panel)
 
     // FAB
-    this.fab = this.scope.document.createElement('div')
+    this.fab = this.scope.document.createElement('button')
+    this.fab.type = 'button'
     this.fab.className = 'dm-le-fab'
+    this.fab.setAttribute('aria-label', 'Toggle DemoMonkey Live Editor')
     const fabIcon = this.scope.document.createElement('img')
     fabIcon.src = MONKEY_ICON_DATA
     fabIcon.alt = 'DemoMonkey'
@@ -509,12 +511,6 @@ class LiveEditor {
       const parts = text.split(/\s+/)
       const cmd = parts[0].toLowerCase()
       const args = text.slice(cmd.length)
-
-      if (cmd === '/new' || (this.configSelect && this.configSelect.value === '__new__')) {
-        if (cmd !== '/new') {
-          // User selected "New Config..." from dropdown, treat input as rule after creating
-        }
-      }
 
       if (commands[cmd]) {
         commands[cmd].handler(this, args)

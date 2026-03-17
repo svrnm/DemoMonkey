@@ -162,8 +162,9 @@ try {
             if (['SET_CURRENT_VIEW', 'APPEND_LOG_ENTRIES'].includes(lastAction.type)) {
               return
             }
+            const currentSettings = new Settings(store.getState().settings)
             if (
-              settings.isFeatureEnabled('autoReplace') ||
+              currentSettings.isFeatureEnabled('autoReplace') ||
               lastAction.type === 'TOGGLE_LIVE_EDITOR' ||
               lastAction.type === 'TOGGLE_DEBUG_MODE'
             ) {
