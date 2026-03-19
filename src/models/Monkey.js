@@ -157,6 +157,8 @@ class Monkey {
       'style'
     )
 
+    this._applyOnShadowRoots(configuration, sum)
+
     // Apply the text commands on the title element
     this.addUndo(configuration.apply(this.scope.document, 'title', 'text'))
 
@@ -174,9 +176,10 @@ class Monkey {
     })
   }
 
-  _applyOnXpathGroup(configuration, xpath, groupName, key) {
+  _applyOnXpathGroup(configuration, xpath, groupName, key, contextNode) {
     let text, i
-    const texts = this.scope.document.evaluate(xpath, this.scope.document, null, 6, null)
+    const ctx = contextNode || this.scope.document
+    const texts = this.scope.document.evaluate(xpath, ctx, null, 6, null)
     for (i = 0; (text = texts.snapshotItem(i)) !== null; i += 1) {
       this.addUndo(configuration.apply(text, key, groupName))
     }
@@ -307,6 +310,107 @@ class Monkey {
         }
       })
     this.addUndo(undos)
+  }
+
+  _collectOpenShadowRoots(root) {
+    const shadowRoots = []
+
+    // Prefer a TreeWalker-based traversal to avoid materializing a full NodeList
+    const ownerDocument = root.ownerDocument || root
+
+    if (ownerDocument && typeof ownerDocument.createTreeWalker === 'function') {
+      const walker = ownerDocument.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null, false)
+
+      let current = walker.currentNode
+      while (current) {
+        const el = current
+        if (el.shadowRoot && el.id !== 'dm-live-editor-host') {
+          shadowRoots.push(el.shadowRoot)
+          shadowRoots.push(...this._collectOpenShadowRoots(el.shadowRoot))
+        }
+        current = walker.nextNode()
+      }
+
+      return shadowRoots
+    }
+
+    // Fallback for environments without TreeWalker support
+    let elements
+
+    // Guard against invalid roots that do not support querySelectorAll
+    if (!root || typeof root.querySelectorAll !== 'function') {
+      if (logger && typeof logger.warn === 'function') {
+        logger.warn(
+          'Monkey._collectOpenShadowRoots: root does not support querySelectorAll; skipping shadow root collection.'
+        )
+      }
+      return shadowRoots
+    }
+
+    try {
+      elements = root.querySelectorAll('*')
+    } catch (e) {
+      if (logger && typeof logger.warn === 'function') {
+        logger.warn(
+          'Monkey._collectOpenShadowRoots: error while querying elements from root; skipping shadow root collection.',
+          e
+        )
+      }
+      return shadowRoots
+    }
+
+    for (const el of elements) {
+      if (el.shadowRoot && el.id !== 'dm-live-editor-host') {
+        shadowRoots.push(el.shadowRoot)
+        shadowRoots.push(...this._collectOpenShadowRoots(el.shadowRoot))
+      }
+    }
+    return shadowRoots
+  }
+
+  _applyOnShadowRoots(configuration, sum) {
+    const shadowRoots = this._collectOpenShadowRoots(this.scope.document)
+    for (const shadowRoot of shadowRoots) {
+      sum.text += this._applyOnXpathGroup(
+        configuration,
+        './/text()[ normalize-space(.) != ""]',
+        'text',
+        'data',
+        shadowRoot
+      )
+      configuration.getTextAttributes().forEach((attribute) => {
+        sum.text += this._applyOnXpathGroup(
+          configuration,
+          `.//*[@${attribute}]`,
+          'text',
+          attribute,
+          shadowRoot
+        )
+      })
+      sum.input += this._applyOnXpathGroup(configuration, './/input', 'input', 'value', shadowRoot)
+      sum.input += this._applyOnXpathGroup(
+        configuration,
+        './/textarea',
+        'input',
+        'value',
+        shadowRoot
+      )
+      sum.image += this._applyOnXpathGroup(configuration, './/img', 'image', 'src', shadowRoot)
+      sum.image += this._applyOnXpathGroup(
+        configuration,
+        './/div[contains(@ad-test-id, "dash-image-widget-renderer")]',
+        'image',
+        'style.backgroundImage',
+        shadowRoot
+      )
+      sum.image += this._applyOnXpathGroup(
+        configuration,
+        './/dash-kit-image-widget2/div/ui-kit-card-v1/div/div/div',
+        'image',
+        'style.backgroundImage',
+        shadowRoot
+      )
+    }
   }
 
   run(configuration) {

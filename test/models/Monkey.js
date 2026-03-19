@@ -119,6 +119,277 @@ describe('Monkey', function () {
     })
   })
 
+  describe('#apply with shadow DOM', function () {
+    it('should change text nodes inside open shadow roots', function () {
+      const shadowTextNode = { data: 'monkey-in-shadow' }
+      const mainTextNode = { data: 'monkey-main' }
+      const mockShadowRoot = {
+        querySelectorAll: function () {
+          return []
+        }
+      }
+      const mockShadowHost = {
+        id: 'shadow-host',
+        shadowRoot: mockShadowRoot
+      }
+
+      const shadowScope = {
+        ...scope,
+        document: {
+          title: 'test',
+          querySelectorAll: function (selector) {
+            if (selector === '*') {
+              return [mockShadowHost]
+            }
+            return []
+          },
+          evaluate: function (xpath, contextNode) {
+            if (contextNode === mockShadowRoot) {
+              return {
+                snapshotItem: function (i) {
+                  if (xpath === './/text()[ normalize-space(.) != ""]' && i === 0) {
+                    return shadowTextNode
+                  }
+                  return null
+                }
+              }
+            }
+            return {
+              snapshotItem: function (i) {
+                if (xpath === '//body//text()[ normalize-space(.) != ""]' && i === 0) {
+                  return mainTextNode
+                }
+                return null
+              }
+            }
+          }
+        }
+      }
+
+      const monkey = new Monkey([], shadowScope)
+      monkey.apply(new Configuration('monkey = ape'))
+      assert.equal(mainTextNode.data, 'ape-main')
+      assert.equal(shadowTextNode.data, 'ape-in-shadow')
+    })
+
+    it('should skip the DemoMonkey live editor shadow root', function () {
+      const shadowTextNode = { data: 'monkey-editor' }
+      const mockShadowRoot = {
+        querySelectorAll: function () {
+          return []
+        }
+      }
+      const liveEditorHost = {
+        id: 'dm-live-editor-host',
+        shadowRoot: mockShadowRoot
+      }
+
+      const shadowScope = {
+        ...scope,
+        document: {
+          title: 'test',
+          querySelectorAll: function (selector) {
+            if (selector === '*') {
+              return [liveEditorHost]
+            }
+            return []
+          },
+          evaluate: function (xpath, contextNode) {
+            if (contextNode === mockShadowRoot) {
+              return {
+                snapshotItem: function (i) {
+                  if (i === 0) return shadowTextNode
+                  return null
+                }
+              }
+            }
+            return {
+              snapshotItem: function () {
+                return null
+              }
+            }
+          }
+        }
+      }
+
+      const monkey = new Monkey([], shadowScope)
+      monkey.apply(new Configuration('monkey = ape'))
+      assert.equal(shadowTextNode.data, 'monkey-editor')
+    })
+
+    it('should traverse nested shadow roots', function () {
+      const outerTextNode = { data: 'monkey-outer' }
+      const innerTextNode = { data: 'monkey-inner' }
+      const innerShadowRoot = {
+        querySelectorAll: function () {
+          return []
+        }
+      }
+      const innerHost = {
+        id: 'inner-host',
+        shadowRoot: innerShadowRoot
+      }
+      const outerShadowRoot = {
+        querySelectorAll: function (selector) {
+          if (selector === '*') {
+            return [innerHost]
+          }
+          return []
+        }
+      }
+      const outerHost = {
+        id: 'outer-host',
+        shadowRoot: outerShadowRoot
+      }
+
+      const shadowScope = {
+        ...scope,
+        document: {
+          title: 'test',
+          querySelectorAll: function (selector) {
+            if (selector === '*') {
+              return [outerHost]
+            }
+            return []
+          },
+          evaluate: function (xpath, contextNode) {
+            if (contextNode === outerShadowRoot) {
+              return {
+                snapshotItem: function (i) {
+                  if (xpath === './/text()[ normalize-space(.) != ""]' && i === 0) {
+                    return outerTextNode
+                  }
+                  return null
+                }
+              }
+            }
+            if (contextNode === innerShadowRoot) {
+              return {
+                snapshotItem: function (i) {
+                  if (xpath === './/text()[ normalize-space(.) != ""]' && i === 0) {
+                    return innerTextNode
+                  }
+                  return null
+                }
+              }
+            }
+            return {
+              snapshotItem: function () {
+                return null
+              }
+            }
+          }
+        }
+      }
+
+      const monkey = new Monkey([], shadowScope)
+      monkey.apply(new Configuration('monkey = ape'))
+      assert.equal(outerTextNode.data, 'ape-outer')
+      assert.equal(innerTextNode.data, 'ape-inner')
+    })
+
+    it('should undo replacements inside shadow roots', function () {
+      const shadowTextNode = { data: 'monkey-shadow' }
+      const mockShadowRoot = {
+        querySelectorAll: function () {
+          return []
+        }
+      }
+      const mockShadowHost = {
+        id: 'shadow-host',
+        shadowRoot: mockShadowRoot
+      }
+
+      const shadowScope = {
+        ...scope,
+        document: {
+          title: 'test',
+          querySelectorAll: function (selector) {
+            if (selector === '*') {
+              return [mockShadowHost]
+            }
+            return []
+          },
+          evaluate: function (xpath, contextNode) {
+            if (contextNode === mockShadowRoot) {
+              return {
+                snapshotItem: function (i) {
+                  if (xpath === './/text()[ normalize-space(.) != ""]' && i === 0) {
+                    return shadowTextNode
+                  }
+                  return null
+                }
+              }
+            }
+            return {
+              snapshotItem: function () {
+                return null
+              }
+            }
+          }
+        }
+      }
+
+      const monkey = new Monkey(
+        [{ content: 'monkey = ape\n@include = ', name: 'a', enabled: true }],
+        shadowScope
+      )
+
+      monkey.start()
+      assert.equal(shadowTextNode.data, 'ape-shadow')
+
+      monkey.stop()
+      assert.equal(shadowTextNode.data, 'monkey-shadow')
+    })
+
+    it('should process inputs inside shadow roots', function () {
+      const shadowInput = { value: 'monkey-input' }
+      const mockShadowRoot = {
+        querySelectorAll: function () {
+          return []
+        }
+      }
+      const mockShadowHost = {
+        id: 'shadow-host',
+        shadowRoot: mockShadowRoot
+      }
+
+      const shadowScope = {
+        ...scope,
+        document: {
+          title: 'test',
+          querySelectorAll: function (selector) {
+            if (selector === '*') {
+              return [mockShadowHost]
+            }
+            return []
+          },
+          evaluate: function (xpath, contextNode) {
+            if (contextNode === mockShadowRoot) {
+              return {
+                snapshotItem: function (i) {
+                  if (xpath === './/input' && i === 0) {
+                    return shadowInput
+                  }
+                  return null
+                }
+              }
+            }
+            return {
+              snapshotItem: function () {
+                return null
+              }
+            }
+          }
+        }
+      }
+
+      const monkey = new Monkey([], shadowScope)
+      monkey.apply(new Configuration('monkey = ape'))
+      assert.equal(shadowInput.value, 'ape-input')
+    })
+  })
+
   describe('#runAll', function () {
     it('should return an array of interval ids', function () {
       intervalId = 0
